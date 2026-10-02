@@ -1,0 +1,25 @@
+{
+  "horarios": {
+    "estudo": "18h às 18h50",
+    "gira": "19h"
+  },
+  "giras": [
+    { "data": "2026-09-11", "atende": "Baiano", "linhas": ["Oriente", "Iemanjá"], "gravura": "concha" },
+    { "data": "2026-09-25", "atende": "Preto-Velho", "linhas": ["Criança"], "festa": "Festa da Criança", "gravura": "pirulito" },
+    { "data": "2026-10-09", "atende": "Preto-Velho", "linhas": ["Ogum", "Exu"], "gravura": "espada" },
+    { "data": "2026-10-23", "atende": "Baiano", "linhas": ["Boiadeiro"], "gravura": "laco" },
+    { "data": "2026-11-06", "atende": "Preto-Velho", "linhas": ["Criança"], "gravura": "pirulito" },
+    { "data": "2026-11-20", "atende": "Baiano", "linhas": ["Oriente"], "aviso": "Sujeito a alteração", "gravura": "crescente" },
+    { "data": "2026-12-04", "atende": "Preto-Velho", "linhas": ["Iemanjá", "Ogum"], "festa": "Festa de Iemanjá", "gravura": "concha" },
+    { "data": "2026-12-18", "atende": "Baiano", "linhas": ["Boiadeiro", "Exu"], "festa": "Encerramento", "gravura": "laco" }
+  ],
+  "festas": [
+    { "data": "2026-01-30", "nome": "Caboclo" },
+    { "data": "2026-04-24", "nome": "Ogum" },
+    { "data": "2026-05-22", "nome": "Preto-Velho" },
+    { "data": "2026-07-03", "nome": "Baiano" },
+    { "data": "2026-09-25", "nome": "Criança" },
+    { "data": "2026-12-04", "nome": "Iemanjá" },
+    { "data": "2026-12-18", "nome": "Encerramento" }
+  ]
+}

@@ -1,0 +1,65 @@
+---
+import Botao from './Botao.astro';
+import site from '../data/site.json';
+const links = [
+  ['A Casa', '/a-casa/'], ['Agenda', '/agenda/'], ['Estudos', '/estudos/'],
+  ['Pontos', '/pontos/'], ['Corrente', '/corrente/'], ['Primeira vez', '/primeira-vez/'],
+];
+const atual = Astro.url.pathname;
+const contato = site.links.whatsapp || '/primeira-vez/#contato';
+---
+<div class="faixa-topo">
+  <div class="contido faixa-topo__in">
+    <p><span class="longo">É a sua primeira vez na Casa? Veja como é uma gira, o que vestir e como chegar.</span><span class="curto">Primeira vez na Casa?</span></p>
+    <a class="seta" href="/primeira-vez/"><span class="longo">Guia da primeira visita</span><span class="curto">Veja o guia</span> <span aria-hidden="true">→</span></a>
+  </div>
+</div>
+<header class="nav">
+  <div class="contido nav__in">
+    <a class="marca" href="/"><span class="estrela" aria-hidden="true">✦</span> Pai Oxalá<span class="sr-only">, página inicial</span></a>
+    <nav aria-label="Principal">
+      <ul class="links" id="menu">
+        {links.map(([t, h]) => <li><a href={h} aria-current={atual.startsWith(h) ? 'page' : undefined}>{t}</a></li>)}
+        <li class="links__cta"><Botao href={contato} externo={!!site.links.whatsapp}>Falar com a Casa</Botao></li>
+      </ul>
+    </nav>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+  </div>
+</header>
+<script>
+  const b = document.querySelector<HTMLButtonElement>('.menu-btn');
+  const nav = document.querySelector('.nav');
+  b?.addEventListener('click', () => {
+    const aberto = b.getAttribute('aria-expanded') === 'true';
+    b.setAttribute('aria-expanded', String(!aberto));
+    b.textContent = aberto ? 'Menu' : 'Fechar';
+    nav?.classList.toggle('aberto', !aberto);
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && nav?.classList.contains('aberto')) b?.click(); });
+</script>
+<style>
+  .faixa-topo { background: var(--tinta); color: var(--papel); font-size: var(--t-nota); }
+  .faixa-topo__in { display: flex; justify-content: space-between; align-items: center; gap: 1rem; min-height: 2.75rem; }
+  .faixa-topo .seta { color: var(--ouro-texto); font-size: .6875rem; }
+  .curto { display: none; }
+  .nav { background: var(--papel); border-bottom: 1px solid var(--pedra); position: sticky; top: 0; z-index: 50; }
+  .nav__in { display: flex; align-items: center; justify-content: space-between; min-height: 4.5rem; gap: 2rem; }
+  .marca { font-size: 1.25rem; font-weight: 600; text-decoration: none; letter-spacing: -.01em; white-space: nowrap; }
+  .estrela { color: var(--ouro-escuro); }
+  .links { list-style: none; margin: 0; padding: 0; display: flex; align-items: center; gap: clamp(1rem, 2vw, 1.75rem); }
+  .links a:not(.botao) { text-decoration: none; font-size: .9375rem; padding-block: .75rem; }
+  .links a:not(.botao):hover, .links a[aria-current] { text-decoration: underline; text-underline-offset: 6px; text-decoration-color: var(--ouro); text-decoration-thickness: 2px; }
+  .links__cta { margin-left: clamp(0rem, 3vw, 2.5rem); }
+  .menu-btn { display: none; font: 500 .75rem var(--mono); letter-spacing: .12em; text-transform: uppercase; background: transparent; color: var(--tinta); border: 1.5px solid var(--tinta); min-height: 44px; padding: 0 1rem; cursor: pointer; }
+  @media (max-width: 960px) {
+    .longo { display: none; } .curto { display: inline; }
+    .menu-btn { display: inline-flex; align-items: center; }
+    .links { display: none; position: absolute; left: 0; right: 0; top: 100%; flex-direction: column; align-items: stretch; gap: 0;
+      background: var(--papel); border-bottom: 1px solid var(--pedra); padding: .5rem var(--gutter) 1.5rem; }
+    .aberto .links { display: flex; }
+    .links li { border-bottom: 1px solid var(--pedra); }
+    .links a:not(.botao) { display: block; font-size: 1.25rem; padding-block: 1rem; }
+    .links__cta { margin: 1.25rem 0 0; border: 0 !important; }
+    .links__cta :global(.botao) { width: 100%; }
+  }
+</style>

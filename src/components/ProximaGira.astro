@@ -1,0 +1,49 @@
+---
+import { proximaGira, agenda } from '../lib/gira.js';
+const g = proximaGira();
+---
+<article class="pg" aria-labelledby="pg-titulo" data-giras={JSON.stringify(agenda.giras)}>
+  <p class="pg__selo rotulo">Próxima gira</p>
+  {g ? (
+    <div class="pg__corpo">
+      <div class="pg__data">
+        <span class="pg__dia" data-campo="dia">{g.dia}</span>
+        <span class="rotulo"><span data-campo="mes">{g.mes}</span> · <span data-campo="ano">{g.ano}</span><br /><span data-campo="semana">{g.semana}</span> · {g.hora}</span>
+      </div>
+      <h2 id="pg-titulo" class="destaque"><em data-campo="titulo">{g.titulo}</em></h2>
+      <p class="nota" data-campo="resumo">{g.resumo}</p>
+      {g.aviso && <p class="nota pg__aviso" data-campo="aviso">{g.aviso}</p>}
+      <a class="pg__cal" data-campo="calendario" href={g.calendario} target="_blank" rel="noopener">Adicionar ao calendário<span class="sr-only"> (abre o Google Agenda)</span></a>
+    </div>
+  ) : (
+    <div class="pg__corpo"><h2 id="pg-titulo" class="destaque"><em>Agenda em atualização</em></h2>
+      <p class="nota">As próximas datas serão publicadas em breve. <a href="/agenda/">Ver agenda</a></p></div>
+  )}
+</article>
+<script>
+  // O site é estático: se a página ficar velha, recalcula a próxima gira no navegador.
+  import { proximaGira } from '../lib/gira.js';
+  const el = document.querySelector<HTMLElement>('.pg');
+  const g = proximaGira();
+  if (el && g) {
+    for (const k of ['dia', 'mes', 'ano', 'semana', 'titulo', 'resumo'] as const) {
+      const n = el.querySelector(`[data-campo="${k}"]`); if (n) n.textContent = String(g[k]);
+    }
+    el.querySelector<HTMLAnchorElement>('[data-campo="calendario"]')?.setAttribute('href', g.calendario);
+  }
+</script>
+<style>
+  .pg { position: relative; background: var(--papel); color: var(--tinta); border: 1.5px solid var(--tinta);
+    box-shadow: var(--sombra); border-top: 8px solid var(--vermelho); padding: 2rem 1.75rem 1.75rem; }
+  .pg__selo { display: inline-block; background: var(--vermelho); color: var(--papel); padding: .3rem .75rem; border-radius: 999px; font-size: .6875rem; }
+  .pg__data { display: flex; align-items: center; gap: 1rem; margin: 1rem 0 1.25rem; padding-bottom: 1.25rem; border-bottom: 1.5px solid var(--tinta); }
+  .pg__dia { font-size: clamp(4rem, 7vw, 5.5rem); font-weight: 600; line-height: .9; letter-spacing: -.05em; }
+  .pg__data .rotulo { font-size: .75rem; line-height: 1.7; }
+  .pg h2 { margin-bottom: .75rem; }
+  .pg .nota { color: var(--texto-suave); font-size: .9375rem; }
+  .pg__aviso { margin-top: .5rem; font-style: italic; }
+  .pg__cal { display: flex; align-items: center; justify-content: center; min-height: 44px; margin-top: 1.5rem;
+    border: 1.5px solid var(--tinta); text-decoration: none; font: 500 .6875rem var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+  .pg__cal::before { content: '+ '; margin-right: .3em; }
+  .pg__cal:hover { background: var(--tinta); color: var(--papel); }
+</style>

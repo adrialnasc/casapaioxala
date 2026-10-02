@@ -1,0 +1,12 @@
+---
+/** Gravura decorativa (alt vazio por padrão). Passe alt quando a imagem informar algo. */
+interface Props { nome: string; alt?: string; largura?: number; class?: string; espelhar?: boolean; eager?: boolean }
+const { nome, alt = '', largura = 480, class: cls = '', espelhar = false, eager = false } = Astro.props;
+---
+<img src={`/gravuras/${nome}.webp`} alt={alt} width={largura} height={largura}
+  loading={eager ? 'eager' : 'lazy'} decoding="async"
+  class:list={['gravura', cls, { espelhar }]} aria-hidden={alt ? undefined : 'true'} />
+<style>
+  .gravura { object-fit: contain; height: auto; }
+  .espelhar { transform: scaleX(-1); }
+</style>
