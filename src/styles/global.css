@@ -27,7 +27,8 @@ p { text-wrap: pretty; }
 
 /* layout */
 .contido { width: 100%; max-width: calc(var(--largura) + 2 * var(--gutter)); margin-inline: auto; padding-inline: var(--gutter); }
-.secao { padding-block: clamp(4rem, 9vw, 7.5rem); }
+.secao { padding-block: var(--esp-secao); }
+.secao--colada { padding-top: var(--esp-colada); }
 
 /* tipografia */
 .display { font-size: var(--t-display); line-height: .98; letter-spacing: -.04em; }
@@ -42,7 +43,7 @@ p { text-wrap: pretty; }
 .suave { color: var(--texto-suave); }
 
 /* rótulo com fio à esquerda */
-.kicker { display: flex; align-items: center; gap: .75rem; margin-bottom: 1.25rem; }
+.kicker { display: flex; align-items: center; gap: .75rem; margin-bottom: var(--esp-item); }
 .kicker::before { content: ''; width: 2rem; height: 1px; background: currentColor; opacity: .7; }
 
 /* link com seta */
