@@ -1,10 +1,237 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Botao from '../../components/Botao.astro';
+import Gravura from '../../components/Gravura.astro';
+import Cabecalho from '../../components/Cabecalho.astro';
+import LinhaGira from '../../components/LinhaGira.astro';
+import site from '../../data/site.json';
+import { agenda, todasGiras, proximaGira, porExtenso } from '../../lib/gira.js';
+
+const L = site.links;
+const H = agenda.horarios;
+const giras = todasGiras();
+const g = proximaGira();
+const webcal = `webcal://${new URL(Astro.site!).host}/agenda.ics`;
+const contato = L.whatsapp || '/primeira-vez/#contato';
+const linhaParaPontos = (l: string) => ({ Oriente: 'Ritos da Casa', 'Iemanjá': 'Iemanjá', Ogum: 'Ogum', Exu: 'Exus', 'Criança': 'Crianças', Boiadeiro: 'Boiadeiros' } as Record<string, string>)[l];
+const prep = [
+  { t: 'Antes', itens: ['Resguardo conforme orientação da Casa', 'Banho de ervas', 'Chegar no horário'] },
+  { t: 'O que trazer', itens: ['Roupa branca da Casa', 'Guias', 'Toalha e fio de contas'] },
+  { t: 'Na Casa', itens: ['Firmeza antes de entrar', 'Silêncio no estudo mediúnico', 'Obedecer ao cambone'] },
+];
+// Orientações da Ialorixá Magdalena, 1º de março de 1983, como estão no componente "Deveres · abas" do Figma.
+const deveres = [
+  { aba: 'Com o sagrado', itens: [
+    ['01', 'Manter a aura sempre limpa: cultivar a moral, a calma, a educação e a delicadeza, afastar o ódio, a inveja, a cobiça, a vingança e o orgulho, respeitar para ser respeitado e levar o nome de Pai Oxalá acima de tudo.'],
+    ['02', 'Acender uma vela para o seu Anjo de Guarda.'],
+    ['04', 'Amar e respeitar seus Orixás e Guias, pois são eles que te guiam.'],
+    ['10', 'Fazer orações diárias ao Anjo da Guarda, aos Guias e aos Orixás, ao se levantar ou ao se deitar.'],
+    ['12', 'Nunca desejar o mal a ninguém nem devolver o mal recebido, pois a lei do retorno não falha.'],
+  ] },
+  { aba: 'Na gira', itens: [
+    ['03', 'Respeitar a roupa de santo, usando-a só no trabalho mediúnico.'],
+    ['05', 'Respeitar o horário de início dos trabalhos, pois muitos irmãos precisam acordar cedo no dia seguinte.'],
+    ['06', 'Seguir com respeito as orientações do seu Orientador Espiritual, que tem a incumbência de mostrar o bom caminho.'],
+    ['08', 'Nos dias de trabalho, estar sempre com o corpo limpo.'],
+    ['09', 'Tomar o banho de defesa antes dos trabalhos ou sempre que os Guias mandarem.'],
+  ] },
+  { aba: 'No dia a dia', itens: [
+    ['07', 'Evitar bebidas alcoólicas. Nos dias de trabalho, não beber e não comer carne.'],
+    ['11', 'Manter respeito com os Exus, sem colocá-los ao nível ou à frente dos Orixás, e nunca pedir que façam o mal.'],
+    ['13', 'Manter a paz dentro do lar. Assim você ajuda outras pessoas a encontrá-la.'],
+    ['14', 'Dar de graça o que de graça Deus lhe deu.'],
+    ['15', 'Lembrar que a impaciência e a falta de educação sujam o nome da nossa Umbanda. Pense nisso e sorria sempre.'],
+  ] },
+];
+const estudar = [
+  { t: 'Livro de pontos', d: 'Todos os pontos por linha', h: '/pontos/#livro', g: 'atabaque' },
+  { t: 'Playlists', d: 'Para aprender a cantar', h: '/pontos/#playlists', g: 'folha' },
+  { t: 'Apresentações', d: 'As aulas da Casa, como Conhecendo a Umbanda', h: '/estudos/', calendario: true },
+  { t: 'Fundamentos da Casa', d: 'Regras e organização', h: '/a-casa/#acervo', g: 'nuvem' },
+];
+const estrelas = Array.from({ length: 46 }, (_, i) => ({ x: (i * 37.7) % 100, y: (i * 53.3) % 100, s: 8 + ((i * 7) % 14) }));
 ---
-<Base titulo="Corrente · Casa de Umbanda Pai Oxalá">
-  <section class="secao contido">
-    <p class="rotulo kicker suave">Em construção</p>
-    <h1 class="titulo-g">Corrente</h1>
-    <p class="leitura suave" style="margin-top:1.25rem;max-width:36rem">Esta página está sendo preparada. Volte em breve.</p>
+<Base titulo="Corrente · Casa de Umbanda Pai Oxalá" descricao="O que os médiuns da Casa de Umbanda Pai Oxalá precisam no dia a dia: preparação, calendário, pontos e estudos.">
+  <Cabecalho tema="t-noite" titulo="Para a <em>corrente</em>" lead="O que os médiuns da Casa precisam no dia a dia: preparação, calendário, pontos e estudos.">
+    <div slot="deco" class="cab__deco co-ceu" aria-hidden="true">
+      {estrelas.map((e) => <span style={`left:${e.x}%;top:${e.y}%;font-size:${e.s}px`}>✦</span>)}
+      <Gravura nome="crescente" largura={480} class="co-lua" eager />
+    </div>
+  </Cabecalho>
+
+  {g && (
+    <section class="contido co-prox" aria-labelledby="co-prox-t">
+      <article class="cartao co-prox__card" data-proxima>
+        <span class="co-prox__barra" aria-hidden="true"></span>
+        <div class="co-prox__txt">
+          <h2 id="co-prox-t" class="titulo" data-campo="extenso">{porExtenso(g)}</h2>
+          <p class="leitura">Chegada dos médiuns {H.chegadaMediuns} · Estudo mediúnico {H.estudo} · Gira {H.gira} · <span data-campo="resumo">{g.linhas.join(' e ')}, atende {g.atende}</span></p>
+        </div>
+        <div class="co-prox__btns">
+          {linhaParaPontos(g.linhas[0]) && <Botao href="/pontos/#livro" variante="papel">Pontos de {g.linhas[0]} →</Botao>}
+          <Botao href="#preparacao" variante="papel">Checklist</Botao>
+        </div>
+      </article>
+    </section>
+  )}
+
+  <section id="preparacao" class="secao t-papel-escuro co-prep" aria-labelledby="prep-t">
+    <div class="contido">
+      <h2 id="prep-t" class="titulo">Preparação para a <em>gira</em></h2>
+      <ul class="grade grade--3 prep">
+        {prep.map((p, i) => (
+          <li class="cartao"><fieldset><legend class="subtitulo">{p.t}</legend>
+            {p.itens.map((it, j) => <label class="check"><input type="checkbox" name={`prep-${i}-${j}`} /><span>{it}</span></label>)}
+          </fieldset></li>
+        ))}
+      </ul>
+      <p class="nota suave prep__nota">As marcações ficam só neste aparelho e servem para você se organizar.</p>
+    </div>
+  </section>
+
+  <section class="secao" aria-labelledby="dev-t">
+    <div class="contido">
+      <p class="rotulo dev__fonte">Orientações da Ialorixá Magdalena · 1º de março de 1983</p>
+      <h2 id="dev-t" class="titulo">Deveres de um <em>bom médium</em></h2>
+      <div class="dev">
+        <div class="abas">
+          <div class="chips" role="tablist" aria-label="Deveres">
+            {deveres.map((d, i) => <button type="button" role="tab" class="chip" id={`aba-${i}`} aria-controls={`painel-${i}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>{d.aba}</button>)}
+          </div>
+          {deveres.map((d, i) => (
+            <div role="tabpanel" id={`painel-${i}`} aria-labelledby={`aba-${i}`} hidden={i !== 0} tabindex="0">
+              <ol class="deveres">{d.itens.map(([n, t]) => <li><span class="dev__n" aria-hidden="true">{n}</span><span><span class="sr-only">Dever {Number(n)}: </span>{t}</span></li>)}</ol>
+            </div>
+          ))}
+        </div>
+        <aside class="manual cartao cartao--escuro" aria-labelledby="manual-t">
+          <Gravura nome="velas" largura={160} class="manual__g" />
+          <p class="rotulo manual__rot">PDF · só para a corrente</p>
+          <h3 id="manual-t" class="titulo-p">Manual do médium</h3>
+          <p class="suave">Roupa, guias, frequência e as orientações da Casa para quem está na corrente, num arquivo para guardar no celular.</p>
+          {L.manualMedium ? <Botao href={L.manualMedium} variante="tinta" externo>Baixar o manual ↓</Botao> : <p class="em-breve">Peça o manual à Casa</p>}
+          <p class="nota suave"><em>O arquivo pede a senha do grupo da corrente.</em></p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao secao--sem-topo" aria-labelledby="cc-t">
+    <div class="contido">
+      <div class="secao__topo"><h2 id="cc-t" class="titulo">Calendário da <em>corrente</em></h2><Botao href={webcal} variante="papel">Assinar no meu celular</Botao></div>
+      <ul class="lista-giras" data-futuras>{giras.map((x) => <LinhaGira g={x} />)}</ul>
+    </div>
+  </section>
+
+  <section class="secao t-noite" aria-labelledby="ec-t">
+    <div class="contido">
+      <h2 id="ec-t" class="titulo">Estudar em <em class="ouro">casa</em></h2>
+      <ul class="grade grade--4 estudar">
+        {estudar.map((e) => (
+          <li><a class="cartao est" href={e.h}>
+            {e.calendario ? <img src="/gravuras/calendario.png" alt="" width="64" height="64" class="est__g" /> : <Gravura nome={e.g!} largura={120} class="est__g" />}
+            <span class="destaque est__t">{e.t}</span>
+            <span class="suave-tinta">{e.d}</span>
+            <span class="est__abrir">Abrir →</span>
+          </a></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="secao" aria-labelledby="gf-t">
+    <div class="contido">
+      <div class="fechado t-noite">
+        <div><h2 id="gf-t" class="subtitulo">O que fica só no grupo da corrente</h2>
+          <p class="leitura">Atas completas, escalas, nomes, orientações individuais e avisos internos. A entrada no grupo é combinada com a Casa.</p></div>
+        <Botao href={contato} variante="papel" externo={!!L.whatsapp}>Falar com a Casa</Botao>
+      </div>
+    </div>
   </section>
 </Base>
+
+<script>
+  import { proximaGira, porExtenso } from '../../lib/gira.js';
+  const ref = new Date(); ref.setHours(0, 0, 0, 0);
+  document.querySelectorAll<HTMLElement>('[data-futuras] > li').forEach((li) => { li.hidden = new Date(li.dataset.data + 'T00:00:00') < ref; });
+  const g = proximaGira(); const card = document.querySelector('[data-proxima]');
+  if (g && card) {
+    const e = card.querySelector('[data-campo="extenso"]'); if (e) e.textContent = porExtenso(g);
+    const r = card.querySelector('[data-campo="resumo"]'); if (r) r.textContent = `${g.linhas.join(' e ')}, atende ${g.atende}`;
+  }
+  // checklist guardado só no aparelho
+  document.querySelectorAll<HTMLInputElement>('.check input').forEach((c) => {
+    try { c.checked = localStorage.getItem('corrente:' + c.name) === '1'; } catch {}
+    c.addEventListener('change', () => { try { localStorage.setItem('corrente:' + c.name, c.checked ? '1' : '0'); } catch {} });
+  });
+  // abas dos deveres
+  const abas = [...document.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+  const ativar = (a: HTMLButtonElement) => {
+    abas.forEach((x) => { const on = x === a; x.setAttribute('aria-selected', String(on)); x.tabIndex = on ? 0 : -1;
+      document.getElementById(x.getAttribute('aria-controls')!)!.hidden = !on; });
+  };
+  abas.forEach((a, i) => {
+    a.addEventListener('click', () => ativar(a));
+    a.addEventListener('keydown', (ev) => {
+      const d = ev.key === 'ArrowRight' ? 1 : ev.key === 'ArrowLeft' ? -1 : 0; if (!d) return;
+      const n = abas[(i + d + abas.length) % abas.length]; ativar(n); n.focus(); ev.preventDefault();
+    });
+  });
+</script>
+
+<style>
+  .co-ceu { inset: 0; }
+  .co-ceu span { position: absolute; color: var(--ouro-claro); line-height: 1; opacity: .8; }
+  .co-ceu :global(.co-lua) { position: absolute; right: 2%; top: 50%; transform: translateY(-50%); width: min(36vw, 523px); }
+  .co-prox { padding-top: var(--esp-colada); }
+  .co-prox__card { display: grid; grid-template-columns: auto 1fr auto; gap: 2.5rem; align-items: center; padding: 2rem 1.75rem; }
+  .co-prox__barra { width: 14px; align-self: stretch; background: var(--vermelho); }
+  .co-prox__txt { display: grid; gap: .5rem; }
+  .co-prox__btns { display: flex; gap: .5rem; flex-wrap: wrap; }
+  .co-prep { margin-top: var(--esp-secao); }
+  .prep { margin-top: var(--esp-bloco); }
+  .prep fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: .75rem; }
+  .prep legend { font-weight: 600; margin-bottom: .75rem; padding: 0; }
+  .check { display: grid; grid-template-columns: 1.25rem 1fr; gap: .625rem; align-items: start; cursor: pointer; min-height: 1.75rem; }
+  .check input { appearance: none; width: 1.125rem; height: 1.125rem; margin: .25rem 0 0; border: 1.5px solid var(--tinta); background: var(--papel); display: grid; place-items: center; cursor: pointer; }
+  .check input:checked { background: var(--tinta); }
+  .check input:checked::after { content: '✓'; color: var(--papel); font-size: .75rem; line-height: 1; }
+  .check input:checked + span { text-decoration: line-through; color: var(--texto-suave); }
+  .prep__nota { margin-top: var(--esp-grupo); }
+  .dev__fonte { color: var(--vermelho); margin-bottom: 1rem; }
+  .dev { display: grid; grid-template-columns: 720fr 400fr; gap: 5rem; margin-top: var(--esp-bloco); align-items: start; }
+  .abas [role="tab"] { color: var(--tinta); }
+  .abas [role="tab"][aria-selected="true"] { background: var(--tinta); color: var(--papel); }
+  .deveres { list-style: none; padding: 0; margin: 2.25rem 0 0; display: grid; gap: 1.5rem; }
+  .deveres li { display: grid; grid-template-columns: 3rem 1fr; gap: 1rem; font-size: var(--t-destaque-p); line-height: 1.5; }
+  .dev__n { font-size: var(--t-subtitulo); font-style: italic; font-weight: 600; color: var(--vermelho); line-height: 1.1; }
+  .manual { display: grid; gap: 1rem; justify-items: start; padding: 2rem; box-shadow: var(--sombra-p); border-width: 1px; }
+  .manual :global(.manual__g) { width: 7.5rem; }
+  .manual__rot { color: var(--vermelho); }
+  .lista-giras { list-style: none; padding: 0; margin: 0; }
+  .estudar { margin-top: var(--esp-bloco); }
+  .est { display: grid; gap: .75rem; align-content: start; height: 100%; text-decoration: none; }
+  a.est:hover { transform: translate(3px, 3px); box-shadow: 3px 3px 0 var(--tinta); }
+  .est :global(.est__g), .est .est__g { width: 3.5rem; height: 3.5rem; object-fit: contain; }
+  .est__t { font-weight: 600; }
+  .suave-tinta { color: var(--texto-suave); }
+  .est__abrir { font-weight: 600; margin-top: auto; }
+  .fechado { display: flex; justify-content: space-between; align-items: center; gap: 2rem; border: 1.5px solid var(--tinta); box-shadow: var(--sombra); padding: 2rem 2.25rem; }
+  .fechado h2 { font-weight: 600; margin-bottom: .5rem; }
+  @media (max-width: 860px) {
+    .co-ceu :global(.co-lua) { width: 60vw; right: -12%; opacity: .45; }
+    .co-prox__card { grid-template-columns: 1fr; gap: 1rem; padding: 1.5rem 1.25rem; }
+    .co-prox__barra { height: 10px; width: 100%; }
+    .co-prox__btns { display: grid; }
+    .dev { grid-template-columns: 1fr; gap: 2.5rem; }
+    .abas .chips { flex-wrap: nowrap; overflow-x: auto; padding-bottom: .25rem; }
+    .abas [role="tab"] { flex: none; }
+    .deveres li { grid-template-columns: 2.25rem 1fr; }
+    .manual { padding: 1.5rem; }
+    .fechado { display: grid; padding: 1.5rem 1.25rem; box-shadow: var(--sombra-p); }
+    .estudar { gap: var(--esp-item); }
+    .est { grid-template-columns: 3rem 1fr; column-gap: 1rem; }
+    .est .est__g, .est :global(.est__g) { grid-row: span 3; width: 3rem; height: 3rem; }
+    .est__abrir { display: none; }
+  }
+</style>

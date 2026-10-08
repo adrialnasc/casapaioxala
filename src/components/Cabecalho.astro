@@ -1,0 +1,13 @@
+---
+/** Cabeçalho das páginas internas. `titulo` aceita <em> para a palavra em itálico. */
+interface Props { tema: string; titulo: string; lead?: string; id?: string; class?: string }
+const { tema, titulo, lead, id = 'pagina-t', class: cls = '' } = Astro.props;
+---
+<header class:list={['cab', tema, cls]} aria-labelledby={id}>
+  <slot name="deco" />
+  <div class="contido cab__in">
+    <h1 id={id} class="cab__titulo" set:html={titulo} />
+    {lead && <p class="leitura cab__lead suave">{lead}</p>}
+    <slot />
+  </div>
+</header>

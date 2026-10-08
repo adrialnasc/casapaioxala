@@ -1,6 +1,6 @@
 ---
 /** Botão da Casa. variante: ouro | papel | contorno */
-interface Props { href: string; variante?: 'ouro' | 'papel' | 'contorno'; externo?: boolean; class?: string }
+interface Props { href: string; variante?: 'ouro' | 'papel' | 'contorno' | 'tinta'; externo?: boolean; class?: string }
 const { href, variante = 'ouro', externo = false, class: cls = '' } = Astro.props;
 ---
 <a class:list={['botao', `botao--${variante}`, cls]} href={href}
@@ -10,7 +10,7 @@ const { href, variante = 'ouro', externo = false, class: cls = '' } = Astro.prop
 <style>
   .botao {
     display: inline-flex; align-items: center; justify-content: center; gap: .5em;
-    min-height: 44px; padding: .75rem 1.25rem;
+    min-height: 44px; padding: .75rem 1.25rem; white-space: nowrap; text-align: center;
     font-family: var(--mono); font-weight: 500; font-size: .75rem; letter-spacing: .12em; text-transform: uppercase;
     text-decoration: none; color: var(--tinta); border: 1.5px solid var(--tinta);
     box-shadow: var(--sombra-p); transition: transform .12s, box-shadow .12s;
@@ -19,6 +19,8 @@ const { href, variante = 'ouro', externo = false, class: cls = '' } = Astro.prop
   .botao:active { transform: translate(4px, 4px); box-shadow: none; }
   .botao--ouro { background: var(--ouro); }
   .botao--papel { background: var(--papel); }
+  .botao--tinta { background: var(--tinta); color: var(--papel); box-shadow: 4px 4px 0 var(--ouro); }
+  .botao--tinta:hover { box-shadow: 2px 2px 0 var(--ouro); }
   .botao--contorno { background: transparent; box-shadow: none; }
   .botao--contorno:hover { transform: none; background: color-mix(in srgb, var(--tinta) 8%, transparent); }
 </style>

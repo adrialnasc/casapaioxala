@@ -1,10 +1,148 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Botao from '../../components/Botao.astro';
+import Gravura from '../../components/Gravura.astro';
+import Cabecalho from '../../components/Cabecalho.astro';
+import LinhaGira from '../../components/LinhaGira.astro';
+import site from '../../data/site.json';
+import { agenda, todasGiras, proximaGira, MESES_CURTOS } from '../../lib/gira.js';
+
+const giras = todasGiras();
+const hoje = new Date(); const ref = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
+const passou = (iso) => new Date(iso + 'T00:00:00') < ref;
+const g = proximaGira();
+const meses = [...new Set(giras.map((x) => x.mesNum))];
+const festas = agenda.festas.map((f) => { const d = new Date(f.data + 'T00:00:00'); return { ...f, rotulo: `${f.nome} · ${String(d.getDate()).padStart(2, '0')}/${MESES_CURTOS[d.getMonth()]}` }; });
+const comAviso = giras.filter((x) => x.aviso).map((x) => `${x.dia}/${x.mesCurto}`);
+const ano = giras[0]?.ano ?? hoje.getFullYear();
+const webcal = `webcal://${new URL(Astro.site!).host}/agenda.ics`;
+const contato = site.links.whatsapp || '/primeira-vez/#contato';
 ---
-<Base titulo="Agenda · Casa de Umbanda Pai Oxalá">
-  <section class="secao contido">
-    <p class="rotulo kicker suave">Em construção</p>
-    <h1 class="titulo-g">Agenda</h1>
-    <p class="leitura suave" style="margin-top:1.25rem;max-width:36rem">Esta página está sendo preparada. Volte em breve.</p>
+<Base titulo="Agenda · Casa de Umbanda Pai Oxalá" descricao={`Giras quinzenais às sextas-feiras. Estudo mediúnico das ${agenda.horarios.estudo}, só para médiuns. Gira de Umbanda às ${agenda.horarios.gira}, aberta à assistência.`}>
+  <Cabecalho tema="t-mata" titulo='<span class="it">Agenda</span>' lead={`Estudo mediúnico, voltado ao kardecismo, das ${agenda.horarios.estudo} (só para médiuns). Gira de Umbanda a partir das ${agenda.horarios.gira}, aberta à assistência.`}>
+    <div slot="deco" class="cab__deco ag-deco" aria-hidden="true"><span class="ag-ano">{ano}</span><Gravura nome="solr" largura={480} class="ag-sol" eager /></div>
+    <div class="cab__acoes"><Botao href={webcal}>Assinar calendário da Casa</Botao></div>
+  </Cabecalho>
+
+  <section class="contido pg-faixa-sec" aria-labelledby="prox-t">
+    {g && (
+      <article class="pgf cartao" data-proxima>
+        <span class="pgf__barra" aria-hidden="true"></span>
+        <p class="pgf__data"><span class="pgf__dia" data-campo="dia">{g.dia}</span><span><span data-campo="mesCurto">{g.mesCurto}</span> · <span data-campo="semana">{g.semana.toLowerCase()}</span></span></p>
+        <div class="pgf__txt">
+          <p class="rotulo">Próxima gira</p>
+          <h2 id="prox-t" class="titulo">Atende <em data-campo="atende">{g.atende}</em></h2>
+          <p>Linha de <span data-campo="linhasTxt">{g.linhas.join(' e ')}</span> · a partir das {g.hora}</p>
+        </div>
+        <a class="seta" data-campo="calendario" href={g.calendario} target="_blank" rel="noopener">+ Só esta gira no calendário<span class="sr-only"> (abre o Google Agenda)</span></a>
+      </article>
+    )}
+  </section>
+
+  <section class="secao secao--colada" aria-labelledby="cal-t">
+    <div class="contido">
+      <div class="secao__topo">
+        <h2 id="cal-t" class="titulo">Próximas <em>giras</em></h2>
+        <ul class="chips" aria-label="Filtrar por mês">
+          {meses.map((m) => <li><button type="button" class="chip" data-filtro-mes={m} aria-pressed="false">{MESES_CURTOS[m]}</button></li>)}
+        </ul>
+      </div>
+      <ul class="lista-giras" data-futuras>
+        {giras.map((x) => <LinhaGira g={x} />)}
+      </ul>
+      <p class="nota suave vazio" hidden>Nenhuma gira neste mês.</p>
+    </div>
+  </section>
+
+  <section class="secao t-mata" aria-labelledby="festas-t">
+    <div class="contido">
+      <h2 id="festas-t" class="titulo">Datas <em class="ouro">especiais</em></h2>
+      <ul class="chips festas">
+        {festas.map((f) => <li><span class:list={['chip', passou(f.data) ? 'chip--passada' : 'festa--futura']} data-festa={f.data}>{f.rotulo}<span class="sr-only">{passou(f.data) ? ' (já aconteceu)' : ' (próxima)'}</span></span></li>)}
+      </ul>
+      <p class="leitura suave festas__leg">Em creme, as próximas festas. Com contorno tracejado, as que já passaram.{comAviso.length > 0 && ` A gira de ${comAviso.join(' e ')} pode sofrer alterações.`}</p>
+    </div>
+  </section>
+
+  <section class="secao" aria-label="Giras que já aconteceram">
+    <div class="contido">
+      <details class="sanfona sanfona--topo">
+        <summary>Giras que já aconteceram em {ano}<span class="sanfona__extra">mostrar</span></summary>
+        <ul class="lista-giras" data-passadas>
+          {giras.map((x) => <LinhaGira g={x} />)}
+        </ul>
+      </details>
+      <div class="cartao cartao--escuro aviso">
+        <p class="leitura">Algumas datas podem mudar. Confirme a programação com a Casa antes de ir.</p>
+        <a class="seta" href={contato} {...(site.links.whatsapp ? { target: '_blank', rel: 'noopener' } : {})}>Falar com a Casa <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
   </section>
 </Base>
+
+<script>
+  import { proximaGira } from '../../lib/gira.js';
+  const ref = new Date(); ref.setHours(0, 0, 0, 0);
+  const passou = (iso: string) => new Date(iso + 'T00:00:00') < ref;
+  // separa as giras futuras das que já aconteceram, com a data de hoje do visitante
+  document.querySelectorAll<HTMLElement>('[data-futuras] > li').forEach((li) => { li.hidden = passou(li.dataset.data!); });
+  document.querySelectorAll<HTMLElement>('[data-passadas] > li').forEach((li) => { li.hidden = !passou(li.dataset.data!); });
+  const passadas = document.querySelectorAll('[data-passadas] > li:not([hidden])').length;
+  const det = document.querySelector<HTMLElement>('.sanfona--topo'); if (det) det.hidden = passadas === 0;
+  document.querySelectorAll<HTMLElement>('[data-festa]').forEach((el) => {
+    const p = passou(el.dataset.festa!); el.classList.toggle('chip--passada', p); el.classList.toggle('festa--futura', !p);
+    const sr = el.querySelector('.sr-only'); if (sr) sr.textContent = p ? ' (já aconteceu)' : ' (próxima)';
+  });
+  // próxima gira
+  const g = proximaGira(); const card = document.querySelector('[data-proxima]');
+  if (g && card) {
+    const v: Record<string, string> = { dia: g.dia, mesCurto: g.mesCurto, semana: g.semana.toLowerCase(), atende: g.atende, linhasTxt: g.linhas.join(' e ') };
+    for (const k in v) { const n = card.querySelector(`[data-campo="${k}"]`); if (n) n.textContent = v[k]; }
+    card.querySelector('[data-campo="calendario"]')?.setAttribute('href', g.calendario);
+  }
+  // filtro por mês
+  const botoes = document.querySelectorAll<HTMLButtonElement>('[data-filtro-mes]');
+  const vazio = document.querySelector<HTMLElement>('.vazio');
+  botoes.forEach((b) => b.addEventListener('click', () => {
+    const ativo = b.getAttribute('aria-pressed') === 'true';
+    botoes.forEach((x) => x.setAttribute('aria-pressed', 'false'));
+    if (!ativo) b.setAttribute('aria-pressed', 'true');
+    let n = 0;
+    document.querySelectorAll<HTMLElement>('[data-futuras] > li').forEach((li) => {
+      const ok = !passou(li.dataset.data!) && (ativo || li.dataset.mes === b.dataset.filtroMes);
+      li.hidden = !ok; if (ok) n++;
+    });
+    if (vazio) vazio.hidden = n > 0;
+  }));
+</script>
+
+<style>
+  .ag-deco { inset: 0; }
+  .ag-ano { position: absolute; left: calc(var(--gutter) - .05em); top: -.12em; font-size: clamp(9rem, 21vw, 19.5rem); font-weight: 600; line-height: 1; letter-spacing: -.04em;
+    color: transparent; -webkit-text-stroke: 2px var(--ouro-claro); opacity: .45; }
+  .ag-deco :global(.ag-sol) { position: absolute; right: -14%; top: 50%; transform: translateY(-50%); width: min(66vw, 950px); filter: grayscale(1) brightness(1.7); mix-blend-mode: screen; opacity: .35; }
+  .pg-faixa-sec { padding-top: var(--esp-colada); }
+  .pgf { display: grid; grid-template-columns: auto auto 1fr auto; align-items: center; gap: 2.5rem; padding: 2.25rem 1.75rem; }
+  .pgf__barra { width: 14px; align-self: stretch; background: var(--vermelho); }
+  .pgf__data { display: grid; justify-items: center; }
+  .pgf__dia { font-size: var(--t-display); font-weight: 600; line-height: .95; letter-spacing: -.05em; }
+  .pgf__txt { display: grid; gap: .5rem; }
+  .pgf__txt .rotulo { font-size: .75rem; }
+  .lista-giras { list-style: none; padding: 0; margin: 0; }
+  .festas { margin-top: var(--esp-bloco); }
+  .festas .chip { border-color: var(--papel); color: var(--creme); }
+  .festas .festa--futura { background: var(--papel); color: var(--mata); }
+  .festas__leg { margin-top: var(--esp-bloco); }
+  .sanfona--topo { border-top: 1.5px solid var(--tinta); margin-bottom: var(--esp-bloco); }
+  .sanfona--topo summary::after { content: '▾'; font-size: .875rem; }
+  .sanfona--topo[open] summary::after { content: '▴'; }
+  .sanfona--topo[open] .sanfona__extra { visibility: hidden; }
+  .aviso { display: flex; justify-content: space-between; align-items: center; gap: var(--esp-grupo); flex-wrap: wrap; }
+  @media (max-width: 860px) {
+    .ag-ano { display: none; }
+    .ag-deco :global(.ag-sol) { width: 120vw; right: -70%; opacity: .25; }
+    .pgf { grid-template-columns: 1fr; gap: 1rem; padding: 1.5rem 1.25rem; }
+    .pgf__barra { height: 10px; width: 100%; }
+    .aviso { display: grid; }
+  }
+</style>

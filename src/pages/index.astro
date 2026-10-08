@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Botao from '../components/Botao.astro';
 import Gravura from '../components/Gravura.astro';
 import ProximaGira from '../components/ProximaGira.astro';
+import Regencia from '../components/Regencia.astro';
 import site from '../data/site.json';
 import { agenda } from '../lib/gira.js';
 
@@ -93,19 +94,7 @@ const contato = L.whatsapp || '/primeira-vez/#contato';
   </section>
 
   <!-- REGÊNCIA -->
-  <section class="secao t-mata regencia" aria-labelledby="reg-t">
-    <Gravura nome="folha" class="regencia__folha" largura={480} />
-    <div class="contido regencia__in">
-      <div><p class="rotulo kicker ouro">Fundamento e direção</p>
-        <h2 id="reg-t" class="titulo-g">Regida pelo<br /><em class="ouro">Caboclo Xamã</em></h2>
-        <p class="regencia__p suave">Sob a regência do Caboclo Xamã e a proteção do Caboclo Pena Branca, a Casa preserva os fundamentos e as regras estruturados pela Ialorixá Magdalena.</p></div>
-      <figure class="regencia__cit">
-        <span class="regencia__aspas ouro" aria-hidden="true">“</span>
-        <blockquote class="titulo-p"><p><em>A nenhum viraremos as costas, pois esta é a vontade do Pai.</em></p></blockquote>
-        <figcaption class="rotulo ouro">Caboclo das Sete Encruzilhadas · 1908</figcaption>
-      </figure>
-    </div>
-  </section>
+  <Regencia />
 
   <!-- COMUNIDADE -->
   <section class="secao" aria-labelledby="com-t">
@@ -115,7 +104,7 @@ const contato = L.whatsapp || '/primeira-vez/#contato';
         <div class="banner__txt"><p class="rotulo kicker suave">Comunidade no WhatsApp</p>
           <h2 id="com-t" class="titulo">Fique <em>por perto.</em></h2>
           <p class="suave">Avisos de gira, novos materiais de estudo e playlists, direto no celular.</p></div>
-        <Botao href={L.comunidade || '#'} externo={!!L.comunidade}>Entrar na comunidade</Botao>
+        <Botao href={L.comunidade || '/comunidade/'} externo={!!L.comunidade}>Entrar na comunidade</Botao>
       </div>
     </div>
   </section>
@@ -149,8 +138,8 @@ const contato = L.whatsapp || '/primeira-vez/#contato';
       <h2 id="pl-t" class="titulo-g">Para firmar. <em class="ouro">Para caminhar.</em></h2>
       <p class="destaque pl__lead">Pontos cantados para ouvir e aprender. Na discoteca, músicas que acompanham a corrente fora do terreiro.</p>
       <div class="pl__btns">
-        <Botao href={L.youtube || '#'} variante="papel" externo={!!L.youtube}>YouTube</Botao>
-        <Botao href={L.spotify || '#'} variante="papel" externo={!!L.spotify}>Spotify</Botao>
+        {L.youtube && <Botao href={L.youtube} variante="papel" externo>YouTube</Botao>}
+        {L.spotify && <Botao href={L.spotify} variante="papel" externo>Spotify</Botao>}
       </div>
       <ul class="pl">
         {playlists.map((p) => (
@@ -215,16 +204,6 @@ const contato = L.whatsapp || '/primeira-vez/#contato';
   .pl__foto { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .pv__btns { display: flex; flex-direction: column; gap: var(--esp-item); align-items: stretch; }
 
-  /* REGÊNCIA */
-  .regencia { position: relative; overflow: hidden; }
-  .regencia :global(.regencia__folha) { position: absolute; right: -6%; top: 50%; width: min(60vw, 760px); transform: translateY(-50%) rotate(-12deg);
-    filter: grayscale(1) brightness(1.7); mix-blend-mode: screen; opacity: .16; pointer-events: none; }
-  .regencia__in { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: var(--esp-bloco) var(--esp-secao); align-items: center; }
-  .regencia__p { max-width: 30rem; margin-top: var(--esp-grupo); }
-  .regencia__cit { border-left: 2px solid var(--ouro); padding-left: clamp(1.5rem, 3vw, 2.5rem); }
-  .regencia__aspas { font-size: 5rem; line-height: .6; font-weight: 600; display: block; margin-bottom: .75rem; }
-  .regencia__cit figcaption { margin-top: var(--esp-grupo); font-size: .6875rem; }
-
   /* BANNER */
   .banner { display: grid; grid-template-columns: auto 1fr auto; gap: var(--esp-grupo) var(--esp-bloco); align-items: center; border: 1.5px solid var(--tinta); box-shadow: var(--sombra); padding: var(--esp-bloco) var(--esp-bloco); background: var(--papel); }
   .banner__estrela { font-size: 4rem; color: var(--ouro); line-height: 1; }
@@ -262,7 +241,7 @@ const contato = L.whatsapp || '/primeira-vez/#contato';
     .pl { grid-template-columns: repeat(2, 1fr); }
   }
   @media (max-width: 860px) {
-    .hero__in, .raizes, .regencia__in { grid-template-columns: 1fr; }
+    .hero__in, .raizes { grid-template-columns: 1fr; }
     .hero__in { padding-bottom: 0; row-gap: var(--esp-secao); }
     .hero__card { margin-inline: calc(-1 * var(--gutter)); padding: var(--esp-colada) var(--gutter); background: var(--papel-escuro); }
     .hero__texto :global(.botao), .pv :global(.botao) { width: 100%; }
@@ -274,7 +253,6 @@ const contato = L.whatsapp || '/primeira-vez/#contato';
     .central :global(.central__g) { width: 44px; margin: 0; order: 1; }
     .central__txt { order: 2; gap: .1rem; } .central__txt .subtitulo { font-size: 1.25rem; }
     .raizes__txt { padding-top: 0; }
-    .regencia__cit { border-left: 0; padding-left: 0; }
     .banner { grid-template-columns: 1fr; gap: var(--esp-grupo); padding: var(--esp-colada) var(--esp-grupo); }
     .banner__estrela { display: none; }
     .estudos { grid-template-columns: 1fr; }

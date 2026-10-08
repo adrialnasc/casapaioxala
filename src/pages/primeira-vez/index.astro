@@ -1,10 +1,225 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Botao from '../../components/Botao.astro';
+import Gravura from '../../components/Gravura.astro';
+import site from '../../data/site.json';
+import { agenda, proximaGira, porExtenso } from '../../lib/gira.js';
+
+const L = site.links;
+const H = agenda.horarios;
+const g = proximaGira();
+const contato = L.whatsapp || '#contato';
+// Horários de 19h30 e 21h vêm do Figma e ainda precisam de confirmação da Casa.
+const gira = [
+  { h: H.estudo.split(' ')[0], t: 'Estudo mediúnico', d: 'Fechado, só para os médiuns. A assistência aguarda do lado de fora.', g: 'solr' },
+  { h: H.gira, t: 'Abertura', d: 'Defumação, pontos de abertura e saudação aos Orixás.', g: 'crescente' },
+  { h: '19h30', t: 'Atendimento', d: 'As entidades da linha do dia atendem a assistência, por ordem de chegada.', g: 'lua' },
+  { h: '21h', t: 'Encerramento', d: 'Pontos de subida e agradecimento. Todos saem juntos.', g: 'nuvem' },
+];
+const passos = [
+  { t: 'Chegar', d: `A gira começa às ${H.gira} e é aberta à assistência.`, g: 'crescente' },
+  { t: 'Saudar a tronqueira', d: 'Na entrada, cumprimente a tronqueira, o ponto de força que guarda a Casa.', g: 'galo' },
+  { t: 'Cumprimentar os irmãos', d: 'Diga boa noite a quem já está na Casa.', g: 'folha' },
+  { t: 'Acender uma vela', d: 'Uma vela para o seu anjo da guarda.', g: 'velas' },
+  { t: 'Cantar', d: 'Acompanhe os pontos cantados junto com a corrente.', g: 'atabaque' },
+  { t: 'Participar do atendimento', d: 'Aguarde sua vez para conversar com a entidade.', g: 'cachimbo' },
+];
+const notas = [
+  { t: 'Sentiu algum mal-estar?', d: 'Avise um médium da Casa. Ele vai te levar aos mais velhos, que vão te auxiliar.' },
+  { t: 'Precisa ir ao banheiro?', d: 'Pode ir, sem problema.' },
+  { t: 'Quer ajudar a Casa?', d: 'Doações são bem-vindas, como velas e ervas.' },
+];
+const listas = [
+  { t: 'O que vestir', itens: ['Roupa clara, de preferência branca', 'Nada muito curto ou decotado', 'Sapato fácil de tirar'] },
+  { t: 'Durante a gira', itens: ['Celular guardado e no silencioso', 'Sem fotos nem vídeos', 'Silêncio e atenção; aguarde ser chamado'] },
+  { t: 'O que levar', itens: ['Nada é obrigatório', 'A caridade é gratuita', 'Se quiser, uma vela branca'] },
+];
+const falar = 'Converse com a Casa antes da visita, que ela orienta você.';
+const faq = [
+  ['Preciso ser umbandista para ir?', 'Não. Não precisa ser umbandista nem conhecer nada antes. A gira é aberta à assistência.'],
+  ['Paga alguma coisa?', 'Não. A caridade é gratuita e não se paga pelo atendimento espiritual. Doações, como velas e ervas, são bem-vindas, mas nada é obrigatório.'],
+  ['Posso levar criança?', falar],
+  ['Posso ir sozinho?', falar],
+  ['Por que o endereço não está no site?', 'O endereço é passado pela Casa por mensagem privada, antes da visita. Peça o seu pelo botão Falar com a Casa.'],
+  ['Posso ir se estiver menstruada, doente ou de luto?', falar],
+];
 ---
-<Base titulo="Primeira vez · Casa de Umbanda Pai Oxalá">
-  <section class="secao contido">
-    <p class="rotulo kicker suave">Em construção</p>
-    <h1 class="titulo-g">Primeira vez</h1>
-    <p class="leitura suave" style="margin-top:1.25rem;max-width:36rem">Esta página está sendo preparada. Volte em breve.</p>
+<Base titulo="Primeira vez · Casa de Umbanda Pai Oxalá" descricao="Tudo o que você precisa saber para a sua primeira gira na Casa de Umbanda Pai Oxalá: como é a gira, o que vestir, o que levar e como chegar.">
+  <header class="cab t-terra pv-cab" aria-labelledby="pagina-t">
+    <div class="contido pv-cab__in">
+      <div class="cab__in">
+        <h1 id="pagina-t" class="cab__titulo">Bem-vindo <em>à Casa</em></h1>
+        <p class="leitura cab__lead suave">Não precisa ser umbandista nem conhecer nada antes. Aqui está tudo o que você precisa saber para a sua primeira gira.</p>
+      </div>
+      <div class="prateleira" aria-hidden="true">
+        <Gravura nome="lua" largura={160} class="pr-lua" eager />
+        <div class="pr-itens">
+          <Gravura nome="ramo" largura={240} class="pr-ramo" eager />
+          <Gravura nome="coco" largura={160} class="pr-coco" eager />
+          <Gravura nome="concha" largura={160} class="pr-concha" eager />
+          <Gravura nome="rosa" largura={160} class="pr-rosa" eager />
+          <Gravura nome="cachimbo" largura={160} class="pr-cachimbo" eager />
+        </div>
+        <span class="pr-tabua"></span>
+      </div>
+    </div>
+  </header>
+
+  <section class="secao secao--colada t-papel-escuro" aria-labelledby="umb-t">
+    <div class="contido umb">
+      <div>
+        <h2 id="umb-t" class="titulo">O que é a <em>Umbanda</em></h2>
+        <p class="leitura suave secao__lead">Na vivência da Casa, a Umbanda é orientada pela fé, pela caridade e pela busca de harmonia espiritual. Cada casa pratica a Umbanda de acordo com sua tradição e seus fundamentos.</p>
+        <a class="seta umb__link" href="/estudos/">Quer se aprofundar? Ver Estudos <span aria-hidden="true">→</span></a>
+      </div>
+      <Gravura nome="folha" largura={240} class="umb__g" />
+    </div>
+  </section>
+
+  <section class="secao t-terra" aria-labelledby="ceu-t">
+    <div class="contido">
+      <h2 id="ceu-t" class="titulo">Como é uma gira, <em class="ouro">do começo ao fim</em></h2>
+      <ol class="ceu">
+        {gira.map((x) => (
+          <li>
+            <span class="ceu__astro" aria-hidden="true"><Gravura nome={x.g} largura={240} /></span>
+            <span class="titulo-p ouro ceu__h">{x.h}</span>
+            <span class="destaque ceu__t">{x.t}</span>
+            <span class="ceu__d">{x.d}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="secao t-papel-escuro" aria-labelledby="passo-t">
+    <div class="contido">
+      <p class="rotulo pv-rot">Passo a passo</p>
+      <h2 id="passo-t" class="titulo">Chegando na <em>gira</em></h2>
+      <p class="leitura suave secao__lead">O caminho de quem vem pela primeira vez, da porta até o atendimento.</p>
+      <ol class="passos">
+        {passos.map((p, i) => (
+          <li>
+            <span class="passo__med" aria-hidden="true"><Gravura nome={p.g} largura={160} /><span class="passo__n">{i + 1}</span></span>
+            <span class="destaque passo__t"><span class="sr-only">Passo {i + 1}: </span>{p.t}</span>
+            <span class="suave">{p.d}</span>
+          </li>
+        ))}
+      </ol>
+      <ul class="grade grade--3 notas">
+        {notas.map((n) => <li class="cartao nota-card"><p class="destaque nota-card__t"><span aria-hidden="true">✦ </span>{n.t}</p><p class="suave">{n.d}</p></li>)}
+      </ul>
+      <p class="rotulo pv-rot listas__rot">Para a sua primeira gira</p>
+      <ul class="grade grade--3">
+        {listas.map((l) => <li class="cartao"><h3 class="subtitulo lista__t">{l.t}</h3><ul class="estrelas">{l.itens.map((i) => <li>{i}</li>)}</ul></li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="secao" aria-labelledby="cons-t">
+    <div class="contido cons">
+      <Gravura nome="atabaque" largura={240} class="cons__g" />
+      <div>
+        <h2 id="cons-t" class="titulo">Como funciona a <em>consulta</em></h2>
+        <p class="leitura suave secao__lead cons__p">Você conversa com uma entidade da linha do dia. Normalmente um cambone fica ao lado, explicando e traduzindo o que a entidade fala. Não se assuste. Fale com sinceridade e escute com humildade. O que acontece na Casa fica na Casa.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao t-papel-escuro" aria-labelledby="faq-t">
+    <div class="contido">
+      <h2 id="faq-t" class="titulo">Perguntas <em>frequentes</em></h2>
+      <div class="faq">
+        {faq.map(([q, r]) => <details class="sanfona"><summary>{q}</summary><p class="sanfona__corpo leitura suave">{r}</p></details>)}
+      </div>
+    </div>
+  </section>
+
+  <section id="contato" class="secao" aria-labelledby="vir-t">
+    <div class="contido">
+      <div class="vir cartao">
+        <div>
+          <h2 id="vir-t" class="titulo">Pronto para <em>vir?</em></h2>
+          <p class="leitura suave">{g ? <>Próxima gira: <span data-campo="extenso">{porExtenso(g).toLowerCase()}</span>, {g.hora}. </> : null}O endereço é enviado pelo WhatsApp.</p>
+        </div>
+        <div class="vir__btns">
+          {L.whatsapp ? <Botao href={L.whatsapp} externo>Falar com a Casa</Botao> : <p class="em-breve">O WhatsApp da Casa entra aqui em breve</p>}
+          <Botao href="/agenda/" variante="papel">Ver a agenda</Botao>
+        </div>
+      </div>
+    </div>
   </section>
 </Base>
+
+<script>
+  import { proximaGira, porExtenso } from '../../lib/gira.js';
+  const g = proximaGira(); const e = document.querySelector('[data-campo="extenso"]');
+  if (g && e) e.textContent = porExtenso(g).toLowerCase();
+</script>
+
+<style>
+  .pv-cab__in { display: grid; grid-template-columns: 1fr 1fr; align-items: end; gap: var(--esp-bloco); }
+  .prateleira { position: relative; padding-top: 5rem; padding-bottom: var(--esp-cabecalho); }
+  .prateleira :global(.pr-lua) { position: absolute; right: 8%; top: 1rem; width: 7rem; }
+  .pr-itens { display: flex; align-items: flex-end; justify-content: center; gap: .25rem; }
+  .pr-itens :global(.gravura) { flex: none; }
+  .pr-itens :global(.pr-ramo) { width: 9.5rem; } .pr-itens :global(.pr-coco) { width: 9rem; }
+  .pr-itens :global(.pr-concha) { width: 7.5rem; } .pr-itens :global(.pr-rosa) { width: 8rem; } .pr-itens :global(.pr-cachimbo) { width: 9.5rem; }
+  .pr-tabua { display: block; height: 14px; background: #6B4A2E; border: 1.5px solid var(--tinta); margin-top: -2px; }
+  .pv-rot { color: var(--vermelho); margin-bottom: 1rem; }
+
+  .umb { display: grid; grid-template-columns: 1fr 160px; gap: 3.5rem; align-items: center; }
+  .umb__link { margin-top: var(--esp-item); font-family: var(--serif); text-transform: none; letter-spacing: 0; font-size: var(--t-destaque-p); font-weight: 600; }
+  .umb :global(.umb__g) { width: 160px; }
+
+  .ceu { list-style: none; padding: 0; margin: var(--esp-bloco) 0 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; position: relative; }
+  .ceu::before { content: ''; position: absolute; left: 6rem; right: 10%; top: 6.25rem; border-top: 1.5px dashed var(--ouro-claro); }
+  .ceu li { display: grid; gap: .5rem; align-content: start; position: relative; }
+  .ceu__astro { width: 12.5rem; max-width: 100%; aspect-ratio: 1; border-radius: 50%; background: var(--papel); border: 1.5px solid var(--ouro); display: grid; place-items: center; margin-bottom: 1.25rem; }
+  .ceu__astro :global(.gravura) { width: 70%; }
+  .ceu__h { font-weight: 600; }
+  .ceu__t { font-weight: 600; }
+  .ceu__d { color: var(--pedra); }
+
+  .passos { list-style: none; padding: 0; margin: var(--esp-bloco) 0; display: grid; grid-template-columns: repeat(6, 1fr); gap: 1.5rem; }
+  .passos li { display: grid; gap: .875rem; align-content: start; }
+  .passo__med { position: relative; width: 7.5rem; height: 7.5rem; border-radius: 50%; background: var(--papel); border: 1px solid var(--tinta); display: grid; place-items: center; }
+  .passo__med :global(.gravura) { width: 68%; }
+  .passo__n { position: absolute; top: -.25rem; right: -.25rem; width: 2.125rem; height: 2.125rem; border-radius: 50%; background: var(--vermelho); color: var(--papel); display: grid; place-items: center; font-weight: 600; font-size: 1rem; }
+  .passo__t { font-weight: 600; }
+  .notas { margin-bottom: var(--esp-bloco); }
+  .nota-card { border-width: 1px; display: grid; gap: .625rem; align-content: start; }
+  .nota-card__t { font-weight: 600; }
+  .listas__rot { margin-top: var(--esp-bloco); }
+  .lista__t { font-weight: 600; margin-bottom: 1rem; }
+
+  .cons { display: grid; grid-template-columns: 160px 1fr; gap: 3.5rem; align-items: center; }
+  .cons :global(.cons__g) { width: 160px; }
+  .cons__p { max-width: none; }
+  .faq { margin-top: var(--esp-bloco); }
+  .vir { display: flex; justify-content: space-between; align-items: center; gap: 2rem; padding: 2.5rem; }
+  .vir .titulo { margin-bottom: .625rem; }
+  .vir__btns { display: flex; gap: .75rem; flex-wrap: wrap; align-items: center; }
+
+  @media (max-width: 1100px) { .passos { grid-template-columns: repeat(3, 1fr); row-gap: 2.5rem; } }
+  @media (max-width: 860px) {
+    .pv-cab__in { grid-template-columns: 1fr; gap: 0; }
+    .pv-cab .cab__in { padding-bottom: 0; }
+    .prateleira { padding-top: 4.5rem; padding-bottom: var(--esp-colada); }
+    .prateleira :global(.pr-lua) { width: 4.5rem; right: 4%; }
+    .pr-itens :global(.pr-ramo) { width: 4.5rem; } .pr-itens :global(.pr-coco) { width: 4.5rem; }
+    .pr-itens :global(.pr-concha) { width: 3.75rem; } .pr-itens :global(.pr-rosa) { width: 4rem; } .pr-itens :global(.pr-cachimbo) { width: 4.75rem; }
+    .umb, .cons { grid-template-columns: 1fr; gap: 1.5rem; }
+    .umb :global(.umb__g) { width: 96px; order: -1; } .cons :global(.cons__g) { width: 96px; }
+    .ceu { grid-template-columns: 1fr; gap: 1.5rem; }
+    .ceu::before { left: 2.5rem; right: auto; top: 2rem; bottom: 2rem; border-top: 0; border-left: 1.5px dashed var(--ouro-claro); }
+    .ceu li { grid-template-columns: 5rem 1fr; column-gap: 1.25rem; }
+    .ceu__astro { width: 5rem; grid-row: span 3; margin: 0; position: relative; z-index: 1; }
+    .passos { grid-template-columns: 1fr; gap: 0; }
+    .passos li { grid-template-columns: 4.5rem 1fr; column-gap: 1rem; row-gap: .25rem; padding-block: 1rem; border-bottom: 1px solid var(--pedra); }
+    .passo__med { width: 4.5rem; height: 4.5rem; grid-row: span 2; }
+    .passo__n { width: 1.75rem; height: 1.75rem; font-size: .875rem; }
+    .vir { display: grid; padding: 1.5rem 1.25rem; }
+    .vir__btns { display: grid; }
+  }
+</style>

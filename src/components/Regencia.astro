@@ -1,0 +1,30 @@
+---
+import Gravura from './Gravura.astro';
+---
+<section class="secao t-mata regencia" aria-labelledby="reg-t">
+  <Gravura nome="folha" class="regencia__folha" largura={480} />
+  <div class="contido regencia__in">
+    <div><p class="rotulo kicker ouro">Fundamento e direção</p>
+      <h2 id="reg-t" class="titulo-g">Regida pelo<br /><em class="ouro">Caboclo Xamã</em></h2>
+      <p class="regencia__p suave">Sob a regência do Caboclo Xamã e a proteção do Caboclo Pena Branca, a Casa preserva os fundamentos e as regras estruturados pela Ialorixá Magdalena.</p></div>
+    <figure class="regencia__cit">
+      <span class="regencia__aspas ouro" aria-hidden="true">“</span>
+      <blockquote class="titulo-p"><p><em>A nenhum viraremos as costas, pois esta é a vontade do Pai.</em></p></blockquote>
+      <figcaption class="rotulo ouro">Caboclo das Sete Encruzilhadas · 1908</figcaption>
+    </figure>
+  </div>
+</section>
+<style>
+  .regencia { position: relative; overflow: hidden; }
+  .regencia :global(.regencia__folha) { position: absolute; right: -6%; top: 50%; width: min(60vw, 760px); transform: translateY(-50%) rotate(-12deg);
+    filter: grayscale(1) brightness(1.7); mix-blend-mode: screen; opacity: .16; pointer-events: none; }
+  .regencia__in { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: var(--esp-bloco) var(--esp-secao); align-items: center; }
+  .regencia__p { max-width: 30rem; margin-top: var(--esp-grupo); }
+  .regencia__cit { border-left: 2px solid var(--ouro); padding-left: clamp(1.5rem, 3vw, 2.5rem); }
+  .regencia__aspas { font-size: 5rem; line-height: .6; font-weight: 600; display: block; margin-bottom: .75rem; }
+  .regencia__cit figcaption { margin-top: var(--esp-grupo); font-size: .6875rem; }
+  @media (max-width: 860px) {
+    .regencia__in { grid-template-columns: 1fr; }
+    .regencia__cit { border-left: 0; padding-left: 0; }
+  }
+</style>

@@ -1,10 +1,200 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Gravura from '../../components/Gravura.astro';
+import Cabecalho from '../../components/Cabecalho.astro';
+import Regencia from '../../components/Regencia.astro';
+
+const linha = [
+  { t: 'Fundação', d: 'Ialorixá Magdalena e Senhor Carlos' },
+  { t: 'Registro', d: 'nº 152 na União Regional Umbandista' },
+  { t: '2000', d: 'Senhor Carlos' },
+  { t: '2023', d: 'Ialorixá Magdalena' },
+  { t: 'Hoje', d: 'as filhas seguem a Casa' },
+];
 ---
-<Base titulo="A Casa · Casa de Umbanda Pai Oxalá">
-  <section class="secao contido">
-    <p class="rotulo kicker suave">Em construção</p>
-    <h1 class="titulo-g">A Casa</h1>
-    <p class="leitura suave" style="margin-top:1.25rem;max-width:36rem">Esta página está sendo preparada. Volte em breve.</p>
+<Base titulo="A Casa · Memórias da Casa de Umbanda Pai Oxalá" descricao="A trajetória da Ialorixá Magdalena e do Senhor Carlos na fundação da Casa de Umbanda Pai Oxalá, sob a proteção do Caboclo Pena Branca e a regência do Caboclo Xamã.">
+  <Cabecalho tema="t-noite" titulo="Memórias da <em>Casa</em>" lead="Preservadas pela família e pela corrente, estas memórias contam a trajetória da Ialorixá Magdalena e do Senhor Carlos na fundação de um lar espiritual, sob a proteção do Caboclo Pena Branca." class="ac-cab">
+    <Gravura slot="deco" nome="velas" largura={480} class="cab__deco ac-velas" eager />
+  </Cabecalho>
+
+  <nav class="contido indice" aria-label="Capítulos">
+    <ol>
+      <li><a href="#cap-1"><span>I</span> O chamado</a></li>
+      <li><a href="#cap-2"><span>II</span> As provas de fé</a></li>
+      <li><a href="#cap-3"><span>III</span> O fiel escudeiro</a></li>
+      <li><a href="#acervo">Acervo</a></li>
+      <li><a href="#linha">Linha do tempo</a></li>
+    </ol>
+  </nav>
+
+  <section id="cap-1" class="secao secao--colada cap" aria-labelledby="cap1-t">
+    <div class="contido cap__in">
+      <img class="moldura cap__foto" src="/fotos/magdalena-chamado.webp" width="476" height="456" loading="lazy" alt="Ialorixá Magdalena, sentada, vestida de branco e com guias no pescoço, em foto do acervo da família" />
+      <div class="cap__txt">
+        <p class="cap__num"><span class="num" aria-hidden="true">I</span><span class="chip">O chamado</span></p>
+        <h2 id="cap1-t" class="titulo">Uma experiência compreendida como <em>chamado</em></h2>
+        <p class="leitura suave">A Ialorixá Magdalena foi batizada na fé católica e frequentava a igreja. Em certo período da vida, passou por um mal-estar persistente. Procurou diferentes médicos, mas não encontrou uma explicação para o que sentia. Segundo a história preservada pela família, ao buscar orientação religiosa, ela compreendeu aquela experiência como um chamado para trabalhar a espiritualidade.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="cap-2" class="secao t-noite cap cap--escuro" aria-labelledby="cap2-t">
+    <Gravura nome="ramo" largura={480} class="cap__textura" />
+    <div class="contido cap__in cap__in--inv">
+      <div class="cap__txt">
+        <p class="cap__num"><span class="num ouro" aria-hidden="true">II</span><span class="chip">As provas de fé</span></p>
+        <h2 id="cap2-t" class="titulo">Uma prova de fé na <em class="ouro">mata</em></h2>
+        <p class="leitura">No início da caminhada, a Ialorixá Magdalena teve o apoio incondicional do marido, o Senhor Carlos. Entre as memórias que compartilhava estava uma entrega realizada na mata, à noite, sem iluminação e sem conhecer bem o caminho. Ela contava que entrou e saiu em segurança. No dia seguinte, percebeu que a região atravessada era tomada de espinhos.</p>
+        <p class="titulo olho ouro"><em>“Entrou e saiu em segurança.”</em></p>
+        <p class="leitura"><em>Este relato pertence à história de sua caminhada e não é uma orientação a ser repetida.</em></p>
+      </div>
+      <img class="moldura moldura--ouro cap__foto" src="/fotos/prova-de-fe.webp" width="476" height="456" loading="lazy" alt="Fotografia antiga do acervo da família, com plantas e um altar ao fundo" />
+    </div>
+  </section>
+
+  <section id="cap-3" class="secao cap" aria-labelledby="cap3-t">
+    <div class="contido cap__in">
+      <img class="moldura moldura--terra cap__foto" src="/fotos/carlos-escudeiro.webp" width="476" height="456" loading="lazy" alt="Senhor Carlos, em retrato do acervo da família" />
+      <div class="cap__txt">
+        <p class="cap__num"><span class="num" aria-hidden="true">III</span><span class="chip chip--terra">O fiel escudeiro</span></p>
+        <h2 id="cap3-t" class="titulo">Senhor Carlos, o cambone de toda a <em>Casa</em></h2>
+        <p class="leitura suave">O Senhor Carlos foi o fiel escudeiro da Casa e um cambone muito organizado. Cuidava das pautas e lembrava a corrente da importância da atenção e da organização durante os trabalhos. Acima de tudo, amava profundamente a família formada na Casa e a família espiritual que continua a sustentá-la.</p>
+      </div>
+    </div>
+  </section>
+
+  <Regencia />
+
+  <section id="acervo" class="secao t-noite" aria-labelledby="acervo-t">
+    <div class="contido">
+      <div class="doc">
+        <figure class="ficha">
+          <img src="/fotos/registro-152.webp" width="440" height="330" loading="lazy" alt="Fotografia de um encontro na União Regional Umbandista, do acervo da família" />
+          <figcaption><span class="chip">Fotografia</span><span class="subtitulo ficha__t">Registro nº 152</span><span class="suave-tinta">Encontro na União e registro preservados no acervo da família.</span></figcaption>
+        </figure>
+        <div class="doc__txt">
+          <p class="rotulo kicker ouro">Organização e memória</p>
+          <h2 id="acervo-t" class="titulo-g">Fé, fundamento e <em class="ouro">responsabilidade</em></h2>
+          <p class="leitura">Os documentos preservados pela família mostram que a Ialorixá Magdalena cuidou da Casa para além da condução espiritual. Ela trabalhou para manter registros, responsabilidades e normas organizadas, dando continuidade ao trabalho com seriedade.</p>
+          <p class="leitura">As atas registram reuniões de diretoria, prestação de contas, renovação de cargos e a leitura do Regimento Interno Espiritual e do Estatuto da Casa. A documentação da época também mostra que a Casa de Umbanda Pai Oxalá foi registrada junto à União Regional Umbandista da Zona Oeste da Grande São Paulo sob o número 152. Nesse registro, Maria Magdalena Santos Rosenbaum aparece como zeladeira da Casa.</p>
+          <p class="leitura">Segundo os relatos preservados pela família, acredita-se que o registro seja anterior a 1997. Nesse período, a diretoria da União era presidida por Pedro Furlan, conhecido carinhosamente como Senhor Pedrinho, com quem a Ialorixá Magdalena mantinha uma relação próxima.</p>
+        </div>
+      </div>
+      <div class="revela">
+        <p class="rotulo kicker ouro">O que este acervo revela</p>
+        <p class="titulo-p ouro"><em>O compromisso da Ialorixá Magdalena com uma Umbanda organizada, responsável e sustentada por fundamentos compartilhados.</em></p>
+      </div>
+      <div class="atas">
+        <figure class="ficha">
+          <img src="/fotos/ata-organizacao.webp" width="536" height="640" loading="lazy" alt="Página manuscrita de ata de reunião ordinária da diretoria" />
+          <figcaption><span class="chip">Ata</span><span class="subtitulo ficha__t">Organização da Casa</span><span class="suave-tinta">Ata de reunião ordinária da diretoria.</span></figcaption>
+        </figure>
+        <figure class="ficha">
+          <img src="/fotos/ata-continuidade.webp" width="536" height="640" loading="lazy" alt="Página manuscrita de ata de renovação da diretoria, de 2001" />
+          <figcaption><span class="chip">Ata</span><span class="subtitulo ficha__t">Continuidade institucional</span><span class="suave-tinta">Ata de renovação da diretoria, registrada em 2001.</span></figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="festa t-tinta" aria-labelledby="festa-t">
+    <img src="/fotos/festa-uniao.webp" width="880" height="560" loading="lazy" alt="Encontro coletivo na União Regional Umbandista, com muitas pessoas vestidas de branco" class="festa__foto" />
+    <div class="festa__painel t-vinho">
+      <p class="rotulo ouro">Acervo da família</p>
+      <h2 id="festa-t" class="titulo-g">Festa na <em class="ouro">União</em></h2>
+      <p class="leitura">As fotografias preservadas pela família também registram a participação da Casa em encontros coletivos realizados na União Regional Umbandista.</p>
+    </div>
+  </section>
+
+  <section id="linha" class="secao t-mata" aria-labelledby="linha-t">
+    <div class="contido">
+      <h2 id="linha-t" class="titulo-g">Linha do <em class="ouro">tempo</em></h2>
+      <ol class="tempo">
+        {linha.map((x) => <li><span class="tempo__ponto" aria-hidden="true"></span><span class="titulo-p tempo__t">{x.t}</span><span>{x.d}</span></li>)}
+      </ol>
+    </div>
+  </section>
+
+  <section class="secao t-papel-escuro" aria-labelledby="hoje-t">
+    <div class="contido">
+      <h2 id="hoje-t" class="titulo">Uma história que <em>continua</em></h2>
+      <p class="leitura secao__lead hoje__lead">Hoje, as filhas da Ialorixá Magdalena e do Senhor Carlos preservam esse legado e dão continuidade ao cuidado da Casa, sob a proteção do Caboclo Pena Branca e a regência do Caboclo Xamã. A Casa é conduzida pela Mãe Luciane, com a Mãe Rosana, mãe pequena, e o Pai Mário, pai pequeno.</p>
+      <figure class="grupo">
+        <img src="/fotos/corrente.webp" width="1196" height="616" loading="lazy" alt="A corrente da Casa reunida, todos vestidos de branco, diante do congá" />
+        <figcaption><span class="rotulo suave">A corrente da Casa</span><span class="grupo__leg"><em>Fé, caridade e responsabilidade coletiva. Axé.</em></span></figcaption>
+      </figure>
+    </div>
   </section>
 </Base>
+
+<style>
+  :global(.ac-velas) { right: 2%; top: 50%; transform: translateY(-50%); width: min(40vw, 560px); filter: grayscale(1) brightness(1.6); mix-blend-mode: screen; opacity: .22; }
+  .indice { padding-top: var(--esp-grupo); }
+  .indice ol { list-style: none; padding: 0 0 var(--esp-grupo); margin: 0; display: flex; flex-wrap: wrap; gap: .5rem 2rem; border-bottom: 1px solid var(--pedra); }
+  .indice a { display: inline-flex; gap: .5rem; align-items: baseline; padding-block: .5rem; text-decoration: none; font-family: var(--mono); font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; }
+  .indice a span { font-family: var(--serif); font-style: italic; font-weight: 600; font-size: 1.125rem; letter-spacing: 0; color: var(--vermelho); text-transform: none; }
+  .indice a:hover { text-decoration: underline; }
+
+  .cap { position: relative; overflow: hidden; }
+  .cap__in { position: relative; display: grid; grid-template-columns: 480fr 640fr; gap: 5rem; align-items: center; }
+  .cap__in--inv { grid-template-columns: 640fr 480fr; }
+  .cap__txt { display: grid; gap: .75rem; }
+  .cap__num { display: flex; align-items: center; gap: 1.25rem; }
+  .num { font-size: clamp(5.5rem, 12vw, 11.25rem); font-weight: 600; font-style: italic; line-height: .78; color: var(--vermelho); letter-spacing: -.04em; }
+  .cap .chip { color: var(--vermelho); }
+  .cap--escuro .chip { color: var(--papel); border-color: var(--ouro-claro); }
+  .cap--escuro .num { color: var(--ouro-claro); }
+  .chip--terra { color: #6B4A2E !important; }
+  .moldura--ouro { box-shadow: 10px 10px 0 var(--ouro); border-color: var(--ouro-claro); }
+  .moldura--terra { box-shadow: 10px 10px 0 #6B4A2E; }
+  .olho { margin-block: .5rem; }
+  .cap :global(.cap__textura) { position: absolute; right: -6%; bottom: -20%; width: min(48vw, 667px); filter: grayscale(1) brightness(1.6); mix-blend-mode: screen; opacity: .1; pointer-events: none; }
+
+  .doc { display: grid; grid-template-columns: 480fr 640fr; gap: 5rem; align-items: start; }
+  .doc__txt { display: grid; gap: 1.5rem; }
+  .ficha { background: var(--papel); color: var(--tinta); border: 1.5px solid var(--tinta); box-shadow: 10px 10px 0 var(--ouro); padding: 1.25rem 1.25rem 1.75rem; display: grid; gap: 1.125rem; align-self: start; }
+  .ficha img { width: 100%; height: auto; filter: saturate(.85); }
+  .ficha figcaption { display: grid; gap: .5rem; justify-items: start; }
+  .ficha .chip { color: var(--texto-suave); min-height: 2rem; font-size: .6875rem; }
+  .ficha__t { font-weight: 600; }
+  .suave-tinta { color: var(--texto-suave); }
+  .revela { display: grid; grid-template-columns: 260px 1fr; gap: 3rem; padding-block: 2.5rem; margin-block: var(--esp-secao) var(--esp-bloco); border-block: 1px solid var(--ouro-claro); align-items: center; }
+  .revela .kicker { margin: 0; }
+  .atas { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+
+  .festa { display: grid; grid-template-columns: 880fr 560fr; }
+  .festa__foto { width: 100%; height: 100%; object-fit: cover; min-height: 22rem; }
+  .festa__painel { display: grid; align-content: center; gap: 1rem; padding: 4rem var(--gutter) 4rem 4rem; }
+
+  .tempo { list-style: none; padding: 0; margin: var(--esp-bloco) 0 0; display: grid; grid-template-columns: repeat(5, 1fr); position: relative; }
+  .tempo::before { content: ''; position: absolute; left: 0; right: 0; top: 8px; height: 2px; background: var(--papel); }
+  .tempo li { position: relative; display: grid; gap: .625rem; align-content: start; padding-right: 1rem; }
+  .tempo__ponto { width: 18px; height: 18px; border-radius: 50%; background: var(--papel); }
+  .tempo__t { font-weight: 600; }
+
+  .hoje__lead { max-width: none; }
+  .grupo { margin-top: var(--esp-bloco); }
+  .grupo img { width: 100%; height: auto; border: 1.5px solid var(--vinho); box-shadow: 10px 10px 0 var(--vinho); }
+  .grupo figcaption { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding-top: 1.5rem; }
+  .grupo__leg { color: var(--noite); }
+
+  @media (max-width: 860px) {
+    :global(.ac-velas) { width: 70vw; right: -20%; opacity: .16; }
+    .indice ol { gap: 0 1.25rem; }
+    .cap__in, .cap__in--inv, .doc, .atas { grid-template-columns: 1fr; gap: 2rem; }
+    .cap__in--inv .cap__foto { order: -1; }
+    .moldura { box-shadow: 6px 6px 0 var(--vermelho); }
+    .moldura--ouro { box-shadow: 6px 6px 0 var(--ouro); } .moldura--terra { box-shadow: 6px 6px 0 #6B4A2E; }
+    .num { font-size: 4.5rem; }
+    .ficha { box-shadow: 6px 6px 0 var(--ouro); padding: 1rem 1rem 1.25rem; }
+    .revela { grid-template-columns: 1fr; gap: 1rem; }
+    .festa { grid-template-columns: 1fr; }
+    .festa__foto { min-height: 0; aspect-ratio: 880 / 560; }
+    .festa__painel { padding: var(--esp-secao) var(--gutter); }
+    .tempo { grid-template-columns: 1fr; gap: 1.75rem; padding-left: 2rem; }
+    .tempo::before { left: 8px; right: auto; top: 0; bottom: 0; width: 2px; height: auto; }
+    .tempo li { padding: 0; }
+    .tempo__ponto { position: absolute; left: -2rem; top: .6rem; }
+    .grupo img { box-shadow: 6px 6px 0 var(--vinho); }
+  }
+</style>

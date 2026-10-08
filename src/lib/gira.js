@@ -2,6 +2,7 @@ import agenda from '../data/agenda.json';
 
 export const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const DIAS = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+export const MESES_CURTOS = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
 
 /** Junta nomes: ["Ogum","Exu"] -> "Ogum e Exu" */
 export const juntar = (l) => l.length < 2 ? (l[0] ?? '') : l.slice(0, -1).join(', ') + ' e ' + l.at(-1);
@@ -19,6 +20,8 @@ export function descrever(g) {
   return {
     ...g,
     dia: String(d.getDate()).padStart(2, '0'),
+    mesCurto: MESES_CURTOS[d.getMonth()],
+    mesNum: d.getMonth(),
     mes: MESES[d.getMonth()],
     ano: d.getFullYear(),
     semana: DIAS[d.getDay()],
@@ -44,5 +47,11 @@ function linkCalendario(g, linhas) {
   });
   return `https://calendar.google.com/calendar/render?${p}`;
 }
+
+/** Todas as giras do ano, já descritas. */
+export const todasGiras = () => agenda.giras.map(descrever);
+
+/** Data por extenso: "Sexta, 9 de outubro" */
+export const porExtenso = (g) => `${g.semana}, ${Number(g.dia)} de ${g.mes.toLowerCase()}`;
 
 export { agenda };

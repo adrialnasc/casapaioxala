@@ -1,10 +1,193 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Gravura from '../../components/Gravura.astro';
+import site from '../../data/site.json';
+
+const L = site.links;
+const linhas = ['Ritos da Casa', 'Caboclos', 'Pretos-Velhos', 'Baianos', 'Ogum', 'Boiadeiros', 'Iemanjá', 'Marinheiros', 'Crianças', 'Povo Cigano', 'Exus', 'Pombagiras'];
+// Versos como estão no Figma. Não alterar letras de pontos: o texto completo vem do Livro de Pontos da Casa.
+const pontos: Record<string, { t: string; versos: string[] }[]> = {
+  Caboclos: [
+    { t: 'Chegada · Caboclos nº 03', versos: ['Descendo pela mata, faz sua ronda nesta casa', 'Firma o ponto, acende a brasa…'] },
+    { t: 'Firmeza · Caboclos nº 14', versos: ['Lerê, lerê, leraá', 'Caboclo Pena Branca no congá…'] },
+    { t: 'Subida · Caboclos', versos: ['Adeus, meu povo, adeus', 'Caboclo já vai embora…'] },
+  ],
+};
+const inicial = 'Caboclos';
+const slug = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z]+/g, '-');
+const playlists = [
+  { onde: 'YouTube', t: 'Pontos cantados', h: L.youtube },
+  { onde: 'Spotify', t: 'Pontos cantados', h: L.spotify },
+  { onde: 'YouTube', t: 'Toques de atabaque', h: L.youtube },
+];
+const yt = (q: string) => `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`;
+const discos = [
+  { t: 'Os Tincoãs', f: 'disco-tincoas', h: yt('Os Tincoãs') },
+  { t: 'Majur', f: 'disco-majur', h: yt('Majur') },
+  { t: 'Anitta', f: 'disco-anitta', h: yt('Anitta') },
+  { t: 'Clara Nunes', f: 'disco-clara-nunes', h: yt('Clara Nunes') },
+  { t: 'Acervo musical da Casa', f: 'disco-acervo', h: L.youtube },
+];
 ---
-<Base titulo="Pontos · Casa de Umbanda Pai Oxalá">
-  <section class="secao contido">
-    <p class="rotulo kicker suave">Em construção</p>
-    <h1 class="titulo-g">Pontos</h1>
-    <p class="leitura suave" style="margin-top:1.25rem;max-width:36rem">Esta página está sendo preparada. Volte em breve.</p>
+<Base titulo="Pontos e playlists · Casa de Umbanda Pai Oxalá" descricao="Pontos cantados da Casa de Umbanda Pai Oxalá para ouvir e aprender, playlists e a discoteca que acompanha a corrente fora do terreiro.">
+  <header class="cab t-vermelho pt-cab" aria-labelledby="pagina-t">
+    <div class="contido pt-cab__in">
+      <div class="pt-cab__arte" aria-hidden="true"><span class="pt-raios"><i></i><i></i><i></i></span><Gravura nome="atabaque" largura={480} eager /></div>
+      <div class="cab__in pt-cab__txt">
+        <h1 id="pagina-t" class="cab__titulo">Para firmar. <em>Para caminhar.</em></h1>
+        <p class="leitura cab__lead suave">Pontos cantados para ouvir e aprender, e a discoteca que acompanha a corrente fora do terreiro.</p>
+        <ul class="chips pt-atalhos"><li><a class="chip" href="#livro">Livro de pontos</a></li><li><a class="chip" href="#playlists">Playlists</a></li><li><a class="chip" href="#discoteca">Discoteca</a></li></ul>
+      </div>
+    </div>
+  </header>
+
+  <section id="livro" class="secao secao--colada" aria-label="Livro de pontos">
+    <div class="contido livro">
+      <nav class="linhas cartao cartao--escuro" aria-label="Linhas do livro de pontos">
+        <p class="rotulo suave">Linhas</p>
+        <ul>
+          {linhas.map((l) => <li><button type="button" class="linha" data-linha={slug(l)} aria-pressed={l === inicial ? 'true' : 'false'}>{l}</button></li>)}
+        </ul>
+      </nav>
+      <div class="livro__conteudo">
+        {linhas.map((l) => (
+          <div class="painel" data-painel={slug(l)} hidden={l !== inicial}>
+            <h2 class="titulo">{l}</h2>
+            {pontos[l] ? (
+              <>
+                <label class="sr-only" for={`busca-${slug(l)}`}>Buscar um ponto por palavra</label>
+                <input id={`busca-${slug(l)}`} class="busca" type="search" placeholder="Buscar um ponto por palavra" autocomplete="off" data-busca-pontos />
+                <ul class="pontos">
+                  {pontos[l].map((p) => (
+                    <li class="ponto" data-texto={(p.t + ' ' + p.versos.join(' ')).toLowerCase()}>
+                      <p class="ponto__topo"><span class="destaque ponto__t">{p.t}</span>{L.youtube && <a href={L.youtube} target="_blank" rel="noopener" class="ponto__ouvir">Ouvir →<span class="sr-only"> {p.t} no YouTube (abre em nova aba)</span></a>}</p>
+                      <p class="leitura">{p.versos.map((v, i) => <>{i > 0 && <br />}{v}</>)}</p>
+                    </li>
+                  ))}
+                </ul>
+                <p class="suave vazio" hidden>Nenhum ponto encontrado com essa palavra.</p>
+              </>
+            ) : (
+              <div class="painel__vazio">
+                <p class="leitura suave">Os pontos desta linha estão no Livro de Pontos da Casa e entram aqui em breve.</p>
+                {L.livroDePontos && <a class="seta" href={L.livroDePontos} target="_blank" rel="noopener">Abrir o Livro de Pontos ↗<span class="sr-only"> (abre em nova aba)</span></a>}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="playlists" class="secao t-vermelho" aria-labelledby="pl-t">
+    <div class="contido">
+      <h2 id="pl-t" class="titulo">Playlists</h2>
+      <ul class="grade grade--3 pls">
+        {playlists.map((p) => {
+          const Tag = p.h ? 'a' : 'div';
+          return (
+            <li><Tag class="pl cartao" {...(p.h ? { href: p.h, target: '_blank', rel: 'noopener' } : {})}>
+              <span class="pl__capa"><Gravura nome="atabaque" largura={120} /></span>
+              <span class="pl__txt"><span class="chip">{p.onde}</span><span class="pl__t">{p.t}</span>{p.h ? <span class="pl__abrir">Abrir ↗<span class="sr-only"> no {p.onde} (abre em nova aba)</span></span> : <span class="em-breve">Em breve</span>}</span>
+            </Tag></li>
+          );
+        })}
+      </ul>
+    </div>
+  </section>
+
+  <section id="discoteca" class="secao" aria-labelledby="disc-t">
+    <div class="contido">
+      <h2 id="disc-t" class="titulo">Discoteca</h2>
+      <p class="suave secao__lead">Músicas que podem te acompanhar fora do terreiro.</p>
+      <ul class="discos">
+        {discos.map((d) => (
+          <li class="disco">
+            <img src={`/fotos/${d.f}.webp`} alt="" width="220" height="216" loading="lazy" />
+            <p class="disco__t">{d.t}</p>
+            {d.h ? <a class="disco__link rotulo" href={d.h} target="_blank" rel="noopener">Ouvir no YouTube ↗<span class="sr-only"> {d.t} (abre em nova aba)</span></a> : <span class="em-breve">Em breve</span>}
+          </li>
+        ))}
+      </ul>
+    </div>
   </section>
 </Base>
+
+<script>
+  const botoes = document.querySelectorAll<HTMLButtonElement>('[data-linha]');
+  const paineis = document.querySelectorAll<HTMLElement>('[data-painel]');
+  botoes.forEach((b) => b.addEventListener('click', () => {
+    botoes.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    paineis.forEach((p) => { p.hidden = p.dataset.painel !== b.dataset.linha; });
+    if (matchMedia('(max-width: 860px)').matches) document.querySelector(`[data-painel="${b.dataset.linha}"] h2`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }));
+  const tira = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  document.querySelectorAll<HTMLInputElement>('[data-busca-pontos]').forEach((inp) => inp.addEventListener('input', () => {
+    const q = tira(inp.value.trim()); const painel = inp.closest('[data-painel]')!; let n = 0;
+    painel.querySelectorAll<HTMLElement>('.ponto').forEach((p) => { const ok = !q || tira(p.dataset.texto!).includes(q); p.hidden = !ok; if (ok) n++; });
+    const v = painel.querySelector<HTMLElement>('.vazio'); if (v) v.hidden = n > 0;
+  }));
+</script>
+
+<style>
+  .pt-cab__in { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: var(--esp-bloco); }
+  .pt-cab__arte { position: relative; align-self: end; padding-top: 4rem; }
+  .pt-cab__arte :global(.gravura) { width: min(100%, 520px); margin-bottom: -5rem; margin-left: -2rem; }
+  .pt-cab { padding-bottom: 0; }
+  .pt-raios { position: absolute; left: 20%; top: 0; display: flex; gap: 2rem; }
+  .pt-raios i { display: block; width: 4px; height: 4.5rem; background: #E4722A; border-radius: 4px; transform: rotate(-18deg); }
+  .pt-raios i:nth-child(2) { transform: rotate(8deg); margin-top: .8rem; height: 4rem; }
+  .pt-raios i:nth-child(3) { transform: rotate(40deg); margin-top: 2.5rem; height: 3rem; }
+  .pt-cab .cab__titulo { max-width: 12ch; }
+  .pt-atalhos { margin-top: var(--esp-grupo); }
+  .pt-atalhos .chip { border-color: var(--papel); }
+  .pt-atalhos .chip:hover { background: var(--papel); color: var(--vermelho); }
+
+  .livro { display: grid; grid-template-columns: 280px 1fr; gap: 2.5rem; align-items: start; }
+  .linhas { padding: 1.75rem; position: sticky; top: 6rem; }
+  .linhas ul { list-style: none; padding: 0; margin: .75rem 0 0; display: grid; gap: .25rem; }
+  .linha { width: 100%; text-align: left; font: inherit; color: var(--tinta); background: transparent; border: 0; padding: .625rem .75rem; min-height: 2.75rem; cursor: pointer; }
+  .linha:hover { background: color-mix(in srgb, var(--papel) 60%, transparent); }
+  .linha[aria-pressed="true"] { background: var(--papel); font-weight: 600; }
+  .livro__conteudo .titulo { margin-bottom: 1.25rem; }
+  .busca { width: 100%; min-height: 3.25rem; border: 1.25px solid var(--tinta); border-radius: 999px; padding: .75rem 1.25rem .75rem 3rem; font: inherit; color: var(--tinta); background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='none' stroke='%235A5343' stroke-width='2'%3E%3Ccircle cx='8' cy='8' r='6'/%3E%3Cpath d='m13 13 4 4'/%3E%3C/svg%3E") no-repeat 1.25rem center; }
+  .busca::placeholder { color: var(--texto-suave); opacity: 1; }
+  .pontos { list-style: none; padding: 0; margin: .5rem 0 0; }
+  .ponto { padding-block: 1.25rem; border-bottom: 1.5px solid var(--tinta); display: grid; gap: .375rem; }
+  .ponto__topo { display: flex; justify-content: space-between; gap: 1rem; }
+  .ponto__t { font-weight: 600; }
+  .ponto__ouvir { font-weight: 600; text-decoration: none; white-space: nowrap; }
+  .painel__vazio { display: grid; gap: .75rem; padding-top: .5rem; }
+
+  .pls { margin-top: var(--esp-bloco); }
+  .pl { display: flex; gap: 1rem; align-items: center; text-decoration: none; height: 100%; }
+  a.pl:hover { transform: translate(3px, 3px); box-shadow: 3px 3px 0 var(--tinta); }
+  .pl__capa { flex: none; width: 6rem; height: 6rem; background: #E9B7A6; display: grid; place-items: center; }
+  .pl__capa :global(.gravura) { width: 3.5rem; }
+  .pl__txt { display: grid; gap: .375rem; justify-items: start; }
+  .pl__txt .chip { color: var(--texto-suave); border-color: var(--tinta); }
+  .pl__t { font-weight: 600; font-size: var(--t-destaque-p); }
+  .pl__abrir { font-weight: 600; }
+
+  .discos { list-style: none; padding: 0; margin: var(--esp-bloco) 0 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.25rem; }
+  .disco { display: grid; gap: .5rem; align-content: start; position: relative; }
+  .disco img { width: 100%; aspect-ratio: 220 / 216; object-fit: cover; border: 1.5px solid var(--tinta); box-shadow: var(--sombra-p); margin-bottom: .25rem; }
+  .disco__t { font-weight: 600; }
+  .disco__link { color: var(--vermelho); text-decoration: none; font-size: .75rem; padding-block: .25rem; }
+  .disco__link:hover { text-decoration: underline; }
+
+  @media (max-width: 860px) {
+    .pt-cab__in { grid-template-columns: 1fr; gap: 0; }
+    .pt-cab__arte { padding-top: 3rem; justify-self: center; }
+    .pt-cab__arte :global(.gravura) { width: 180px; margin: 0; }
+    .pt-raios { left: 10%; } .pt-raios i { height: 3rem; }
+    .pt-cab__txt { padding-top: 1.5rem; }
+    .pt-atalhos { display: grid; } .pt-atalhos .chip { width: 100%; }
+    .livro { grid-template-columns: 1fr; }
+    .linhas { position: static; padding: 1.25rem; }
+    .linhas ul { grid-template-columns: 1fr 1fr; }
+    .linha { font-size: .9375rem; }
+    .discos { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gutter); gap: 1rem; margin-inline: calc(-1 * var(--gutter)); padding: 0 var(--gutter) 1rem; }
+    .disco { flex: 0 0 72%; scroll-snap-align: start; }
+  }
+</style>
