@@ -60,4 +60,4 @@ p { text-wrap: pretty; }
 .t-papel-escuro { background: var(--papel-escuro); }
 :is(.t-mata,.t-noite,.t-estudos,.t-vermelho,.t-tinta) .ouro { color: var(--ouro-texto); }
 .ouro { color: var(--ouro-escuro); }
-:is(.t-mata,.t-noite,.t-estudos,.t-vermelho,.t-tinta) .suave { color: color-mix(in srgb, var(--papel) 78%, transparent); }
+:is(.t-mata,.t-noite,.t-estudos,.t-vermelho,.t-tinta) .suave { color: color-mix(in srgb, var(--papel) 92%, transparent); }

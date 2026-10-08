@@ -8,12 +8,12 @@ const links = [
 const atual = Astro.url.pathname;
 const contato = site.links.whatsapp || '/primeira-vez/#contato';
 ---
-<div class="faixa-topo">
+<aside class="faixa-topo" aria-label="Aviso para quem vai pela primeira vez">
   <div class="contido faixa-topo__in">
     <p><span class="longo">É a sua primeira vez na Casa? Veja como é uma gira, o que vestir e como chegar.</span><span class="curto">Primeira vez na Casa?</span></p>
     <a class="seta" href="/primeira-vez/"><span class="longo">Guia da primeira visita</span><span class="curto">Veja o guia</span> <span aria-hidden="true">→</span></a>
   </div>
-</div>
+</aside>
 <header class="nav">
   <div class="contido nav__in">
     <a class="marca" href="/"><span class="estrela" aria-hidden="true">✦</span> Pai Oxalá<span class="sr-only">, página inicial</span></a>

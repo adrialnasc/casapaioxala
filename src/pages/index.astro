@@ -14,17 +14,18 @@ const central = [
   { t: 'Corrente', d: 'Para os médiuns da Casa', h: '/corrente/', g: 'solr', c: 't-noite' },
 ];
 const estudos = [
-  { tipo: 'Apresentação', t: 'Conhecendo a Umbanda', d: 'Casa de Umbanda Pai Oxalá', g: 'velas', fundo: 'var(--creme)' },
+  { tipo: 'Apresentação', t: 'Conhecendo a Umbanda', d: 'Casa de Umbanda Pai Oxalá', foto: '/fotos/altar.webp', alt: 'Congá da Casa com imagens e flores' },
   { tipo: 'Caderno', t: 'Caderno de estudos da Casa', d: '81 fontes: perguntas, áudios e mapas', g: 'folha', fundo: '#C9D8DE' },
   { tipo: 'Livro', t: 'Mitologia dos Orixás', d: 'Reginaldo Prandi', capa: true },
 ];
 const playlists = [
   { t: 'Pontos de Baiano', g: 'coco', c: 'var(--vermelho)', claro: false },
   { t: 'Pontos de Caboclo', g: 'atabaque', c: '#E8B8A6', claro: true },
-  { t: 'Discoteca da Casa', g: 'pandeiro', c: 'var(--noite)', claro: false },
+  { t: 'Discoteca da Casa', foto: '/fotos/tincoas.webp', alt: 'Capa de disco de Os Tincoãs', c: 'var(--noite)', claro: false },
   { t: 'Curimba', g: 'atabaque', c: 'var(--vinho)', claro: false },
 ];
 const L = site.links;
+const contato = L.whatsapp || '/primeira-vez/#contato';
 ---
 <Base>
   <!-- HERO -->
@@ -51,7 +52,25 @@ const L = site.links;
     <div class="contido faixa__in">
       <div><p class="rotulo kicker-pt">Atendimento</p><p class="subtitulo">Quinzenal, às sextas</p><p class="nota suave">Todos são bem-vindos e a entrada é gratuita</p></div>
       <div><p class="rotulo kicker-pt">Horários</p><p class="subtitulo">Gira às {agenda.horarios.gira}</p><p class="nota suave">Aberta ao público.<br />Estudo mediúnico kardecista: {agenda.horarios.estudo}, só para médiuns.</p></div>
-      <div><p class="rotulo kicker-pt">Onde estamos</p><p class="subtitulo">Embu-Guaçu · SP</p><p class="nota suave">Solicite o endereço à Casa antes da visita.</p><a class="seta" href="/primeira-vez/">Orientações de visita <span aria-hidden="true">→</span></a></div>
+      <div><p class="rotulo kicker-pt">Onde estamos</p><p class="subtitulo">Embu-Guaçu · SP</p><p class="nota suave">Solicite o endereço à Casa antes da visita.</p><a class="seta" href="/primeira-vez/">Orientações de visita <span aria-hidden="true">→</span></a><Botao href={contato} externo={!!L.whatsapp} class="faixa__cta">Solicitar endereço</Botao></div>
+    </div>
+  </section>
+
+  <!-- MEMÓRIAS -->
+  <section class="secao t-papel-escuro" aria-labelledby="raizes-t">
+    <div class="contido raizes">
+      <div><p class="rotulo kicker suave">Memórias da Casa</p>
+        <h2 id="raizes-t" class="titulo-g">Magdalena<br />e <em style="color: var(--noite)">Carlos</em></h2>
+        <div class="raizes__fotos">
+          <figure><img src="/fotos/magdalena.webp" width="456" height="437" loading="lazy" alt="Ialorixá Magdalena, em foto do acervo da família" /><figcaption class="nota suave">Ialorixá Magdalena</figcaption></figure>
+          <figure><img src="/fotos/carlos.webp" width="456" height="437" loading="lazy" alt="Senhor Carlos, em foto do acervo da família" /><figcaption class="nota suave">Senhor Carlos</figcaption></figure>
+        </div>
+      </div>
+      <div class="raizes__txt">
+        <p class="leitura">Magdalena, Ialorixá da Casa, e Carlos, seu marido e o cambone mais dedicado, ergueram juntos este espaço com fé e trabalho, sob a proteção do Caboclo Pena Branca.</p>
+        <p class="leitura raizes__leg"><em>É o legado deles que sustenta a nossa corrente até hoje.</em></p>
+        <a class="seta" href="/a-casa/">Explorar história e acervo <span aria-hidden="true">→</span></a>
+      </div>
     </div>
   </section>
 
@@ -70,19 +89,6 @@ const L = site.links;
           </a></li>
         ))}
       </ul>
-    </div>
-  </section>
-
-  <!-- RAÍZES -->
-  <section class="secao t-papel-escuro" aria-labelledby="raizes-t">
-    <div class="contido raizes">
-      <div><p class="rotulo kicker suave">Nossas raízes</p>
-        <h2 id="raizes-t" class="titulo-g">Magdalena<br />e <em style="color: var(--noite)">Carlos</em></h2></div>
-      <div class="raizes__txt">
-        <p class="leitura">Magdalena, Ialorixá da Casa, e Carlos, seu marido e o cambone mais dedicado, ergueram juntos este espaço com fé e trabalho, sob a proteção do Caboclo Pena Branca.</p>
-        <p class="leitura raizes__leg"><em>É o legado deles que sustenta a nossa corrente até hoje.</em></p>
-        <a class="seta" href="/a-casa/">Conheça a nossa história <span aria-hidden="true">→</span></a>
-      </div>
     </div>
   </section>
 
@@ -123,7 +129,7 @@ const L = site.links;
         {estudos.map((e) => (
           <li><a href="/estudos/" class="estudo">
             <span class="estudo__img" style={e.fundo ? `background:${e.fundo}` : undefined}>
-              {e.capa ? <span class="estudo__capa"><span class="subtitulo"><em>Mitologia<br />dos Orixás</em></span><span class="rotulo">Reginaldo Prandi</span></span>
+              {e.foto ? <img src={e.foto} alt={e.alt} width="717" height="440" loading="lazy" class="estudo__foto" /> : e.capa ? <span class="estudo__capa"><span class="subtitulo"><em>Mitologia<br />dos Orixás</em></span><span class="rotulo">Reginaldo Prandi</span></span>
                       : <Gravura nome={e.g!} largura={200} />}
             </span>
             <span class="rotulo estudo__tag">{e.tipo}</span>
@@ -150,7 +156,7 @@ const L = site.links;
         {playlists.map((p) => (
           <li><a href={L.youtube || '/pontos/'} class="pl__card">
             <span class="pl__capa" style={`background:${p.c};color:${p.claro ? 'var(--tinta)' : 'var(--papel)'}`}>
-              <Gravura nome={p.g} largura={96} class="pl__g" /><span class="subtitulo"><em>{p.t}</em></span>
+              {p.foto ? <img src={p.foto} alt={p.alt} width="518" height="520" loading="lazy" class="pl__foto" /> : <><Gravura nome={p.g!} largura={96} class="pl__g" /><span class="subtitulo"><em>{p.t}</em></span></>}
             </span>
             <span class="rotulo">{p.t}</span>
           </a></li>
@@ -163,7 +169,7 @@ const L = site.links;
   <section class="contido" aria-labelledby="pv-t"><div class="pv">
     <h2 id="pv-t" class="titulo-p">Vai pela <em>primeira vez?</em></h2>
     <p class="suave">Veja como é uma gira, o que vestir e como chegar.</p>
-    <Botao href="/primeira-vez/" variante="papel">Guia da primeira vez →</Botao>
+    <div class="pv__btns"><Botao href="/primeira-vez/" variante="papel">Guia da primeira vez →</Botao><Botao href={contato} externo={!!L.whatsapp}>Falar com a Casa</Botao></div>
   </div></section>
 </Base>
 
@@ -193,15 +199,21 @@ const L = site.links;
   .central { list-style: none; padding: 0; margin: var(--esp-bloco) 0 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--esp-grupo); }
   .central__card { display: flex; flex-direction: column; min-height: 300px; padding: 1.25rem; text-decoration: none; border: 1.5px solid var(--tinta); box-shadow: var(--sombra); transition: transform .15s, box-shadow .15s; height: 100%; }
   .central__card:hover { transform: translate(3px, 3px); box-shadow: 3px 3px 0 var(--tinta); }
-  .central__topo { display: flex; justify-content: space-between; font-size: .6875rem; opacity: .8; }
+  .central__topo { display: flex; justify-content: space-between; font-size: .6875rem; }
   .central :global(.central__g) { width: 96px; margin: auto auto 1.5rem; }
   .central__txt { display: grid; gap: .35rem; }
-  .central__txt .nota { opacity: .82; }
 
   /* RAÍZES */
   .raizes { display: grid; grid-template-columns: 1fr 1.2fr; gap: var(--esp-grupo) var(--esp-secao); align-items: start; }
   .raizes__txt { display: grid; gap: var(--esp-grupo); padding-top: var(--esp-faixa); }
   .raizes__leg { color: var(--noite); }
+  .raizes__fotos { display: grid; grid-template-columns: 1fr 1fr; gap: var(--esp-grupo); margin-top: var(--esp-bloco); max-width: 30rem; }
+  .raizes__fotos img { width: 100%; height: auto; border: 1.5px solid var(--tinta); box-shadow: var(--sombra-p); filter: sepia(.15); }
+  .raizes__fotos figcaption { margin-top: .5rem; }
+  .faixa :global(.faixa__cta) { margin-top: var(--esp-item); justify-self: start; }
+  .estudo__foto { width: 100%; height: 100%; object-fit: cover; }
+  .pl__foto { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .pv__btns { display: flex; flex-direction: column; gap: var(--esp-item); align-items: stretch; }
 
   /* REGÊNCIA */
   .regencia { position: relative; overflow: hidden; }
@@ -225,7 +237,7 @@ const L = site.links;
   .estudo__img :global(.gravura) { width: 45%; }
   .estudo:hover .estudo__img { transform: translate(2px, 2px); }
   .estudo__capa { display: grid; gap: .5rem; text-align: center; color: var(--papel); }
-  .estudo__capa .rotulo { font-size: .625rem; opacity: .8; }
+  .estudo__capa .rotulo { font-size: .625rem; }
   .estudo__tag { font-size: .625rem; border: 1px solid currentColor; border-radius: 999px; padding: .2rem .65rem; }
   .estudo__t { font-weight: 600; }
   .estudo:hover .estudo__t { text-decoration: underline; }
@@ -236,7 +248,7 @@ const L = site.links;
   .pl__btns { display: flex; gap: .75rem; flex-wrap: wrap; }
   .pl { list-style: none; padding: 0; margin: var(--esp-bloco) 0 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--esp-grupo); }
   .pl__card { display: grid; gap: .75rem; text-decoration: none; }
-  .pl__capa { aspect-ratio: 1; border: 8px solid var(--papel); box-shadow: var(--sombra-p); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; text-align: center; padding: 1rem; }
+  .pl__capa { position: relative; overflow: hidden; aspect-ratio: 1; border: 8px solid var(--papel); box-shadow: var(--sombra-p); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; text-align: center; padding: 1rem; }
   .pl :global(.pl__g) { width: 80px; }
   .pl__card > .rotulo { font-size: .6875rem; }
   .pl__card:hover .pl__capa { transform: translate(2px, 2px); }
@@ -270,7 +282,9 @@ const L = site.links;
     .estudo__img { grid-row: span 4; aspect-ratio: 1; border-width: 3px; margin: 0; }
     .estudo__capa .subtitulo { font-size: .875rem; } .estudo__capa .rotulo { display: none; }
     .estudos__mais { text-align: left; }
-    .pl { display: none; }
+    .pl { grid-template-columns: 1fr 1fr; gap: var(--esp-item); }
+    .pl__capa { border-width: 5px; } .pl__capa .subtitulo { font-size: 1rem; } .pl :global(.pl__g) { width: 44px; }
+    .faixa :global(.faixa__cta) { justify-self: stretch; }
     .pv { grid-template-columns: 1fr; gap: var(--esp-item); border-bottom: 0; }
   }
 </style>
