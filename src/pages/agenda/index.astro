@@ -5,6 +5,7 @@ import Gravura from '../../components/Gravura.astro';
 import Cabecalho from '../../components/Cabecalho.astro';
 import LinhaGira from '../../components/LinhaGira.astro';
 import site from '../../data/site.json';
+import EstadoVazio from '../../components/EstadoVazio.astro';
 import { agenda, todasGiras, proximaGira, MESES_CURTOS } from '../../lib/gira.js';
 
 const giras = todasGiras();
@@ -19,7 +20,7 @@ const webcal = `webcal://${new URL(Astro.site!).host}/agenda.ics`;
 const contato = site.links.whatsapp || '/primeira-vez/#contato';
 ---
 <Base titulo="Agenda · Casa de Umbanda Pai Oxalá" descricao={`Giras quinzenais às sextas-feiras. Estudo mediúnico das ${agenda.horarios.estudo}, só para médiuns. Gira de Umbanda às ${agenda.horarios.gira}, aberta à assistência.`}>
-  <Cabecalho tema="t-mata" titulo='<span class="it">Agenda</span>' lead={`Estudo mediúnico, voltado ao kardecismo, das ${agenda.horarios.estudo} (só para médiuns). Gira de Umbanda a partir das ${agenda.horarios.gira}, aberta à assistência.`}>
+  <Cabecalho tema="t-mata" class="ag-cab" titulo='<span class="it">Agenda</span>' lead={`Estudo mediúnico, voltado ao kardecismo, das ${agenda.horarios.estudo} (só para médiuns). Gira de Umbanda a partir das ${agenda.horarios.gira}, aberta à assistência.`}>
     <div slot="deco" class="cab__deco ag-deco" aria-hidden="true"><span class="ag-ano">{ano}</span><Gravura nome="solr" largura={480} class="ag-sol" eager /></div>
     <div class="cab__acoes"><Botao href={webcal}>Assinar calendário da Casa</Botao></div>
   </Cabecalho>
@@ -50,7 +51,7 @@ const contato = site.links.whatsapp || '/primeira-vez/#contato';
       <ul class="lista-giras" data-futuras>
         {giras.map((x) => <LinhaGira g={x} />)}
       </ul>
-      <p class="nota suave vazio" hidden>Nenhuma gira neste mês.</p>
+      <div class="vazio" hidden><EstadoVazio gravura="crescente" titulo="Sem giras<br />neste mês." texto="A Casa descansa. A próxima gira aparece na agenda." acao="Ver todas as giras" botao /></div>
     </div>
   </section>
 
@@ -114,10 +115,18 @@ const contato = site.links.whatsapp || '/primeira-vez/#contato';
     });
     if (vazio) vazio.hidden = n > 0;
   }));
+  // nenhuma gira futura no ano: mostra o estado vazio
+  if (![...document.querySelectorAll<HTMLElement>('[data-futuras] > li')].some((li) => !li.hidden) && vazio) vazio.hidden = false;
+  vazio?.querySelector('[data-acao-vazio]')?.addEventListener('click', () => {
+    botoes.forEach((x) => x.setAttribute('aria-pressed', 'false'));
+    document.querySelectorAll<HTMLElement>('[data-futuras] > li').forEach((li) => { li.hidden = passou(li.dataset.data!); });
+    if (vazio) vazio.hidden = [...document.querySelectorAll<HTMLElement>('[data-futuras] > li')].some((li) => !li.hidden);
+  });
 </script>
 
 <style>
   .ag-deco { inset: 0; }
+  :global(.ag-cab .cab__titulo) { font-size: clamp(6rem, 11vw, 10rem); line-height: .9; }
   .ag-ano { position: absolute; left: calc(var(--gutter) - .05em); top: -.12em; font-size: clamp(9rem, 21vw, 19.5rem); font-weight: 600; line-height: 1; letter-spacing: -.04em;
     color: transparent; -webkit-text-stroke: 2px var(--ouro-claro); opacity: .45; }
   .ag-deco :global(.ag-sol) { position: absolute; right: -14%; top: 50%; transform: translateY(-50%); width: min(66vw, 950px); filter: grayscale(1) brightness(1.7); mix-blend-mode: screen; opacity: .35; }
@@ -139,7 +148,9 @@ const contato = site.links.whatsapp || '/primeira-vez/#contato';
   .sanfona--topo[open] .sanfona__extra { visibility: hidden; }
   .aviso { display: flex; justify-content: space-between; align-items: center; gap: var(--esp-grupo); flex-wrap: wrap; }
   @media (max-width: 860px) {
-    .ag-ano { display: none; }
+    .ag-ano { font-size: 8.75rem; top: 1.25rem; left: calc(var(--gutter) - .05em); opacity: .4; }
+    .festas { flex-direction: column; flex-wrap: nowrap; }
+    .festas .chip { width: 100%; }
     .ag-deco :global(.ag-sol) { width: 120vw; right: -70%; opacity: .25; }
     .pgf { grid-template-columns: 1fr; gap: 1rem; padding: 1.5rem 1.25rem; }
     .pgf__barra { height: 10px; width: 100%; }

@@ -44,7 +44,7 @@ const deveres = [
   ] },
 ];
 const estudar = [
-  { t: 'Livro de pontos', d: 'Todos os pontos por linha', h: '/pontos/#livro', g: 'atabaque' },
+  { t: 'Livro de pontos', d: 'Todos os pontos por linha', h: '/pontos/#livro-t', g: 'atabaque' },
   { t: 'Playlists', d: 'Para aprender a cantar', h: '/pontos/#playlists', g: 'folha' },
   { t: 'Apresentações', d: 'As aulas da Casa, como Conhecendo a Umbanda', h: '/estudos/', calendario: true },
   { t: 'Fundamentos da Casa', d: 'Regras e organização', h: '/a-casa/#acervo', g: 'nuvem' },
@@ -68,7 +68,7 @@ const estrelas = Array.from({ length: 46 }, (_, i) => ({ x: (i * 37.7) % 100, y:
           <p class="leitura">Chegada dos médiuns {H.chegadaMediuns} · Estudo mediúnico {H.estudo} · Gira {H.gira} · <span data-campo="resumo">{g.linhas.join(' e ')}, atende {g.atende}</span></p>
         </div>
         <div class="co-prox__btns">
-          {linhaParaPontos(g.linhas[0]) && <Botao href="/pontos/#livro" variante="papel">Pontos de {g.linhas[0]} →</Botao>}
+          {linhaParaPontos(g.linhas[0]) && <Botao href={`/pontos/#${linhaParaPontos(g.linhas[0])!.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z]+/g, '-').replace(/-$/, '')}`} variante="papel">Pontos de {g.linhas[0]} →</Botao>}
           <Botao href="#preparacao" variante="papel">Checklist</Botao>
         </div>
       </article>
@@ -118,7 +118,7 @@ const estrelas = Array.from({ length: 46 }, (_, i) => ({ x: (i * 37.7) % 100, y:
 
   <section class="secao secao--sem-topo" aria-labelledby="cc-t">
     <div class="contido">
-      <div class="secao__topo"><h2 id="cc-t" class="titulo">Calendário da <em>corrente</em></h2><Botao href={webcal} variante="papel">Assinar no meu celular</Botao></div>
+      <div class="secao__topo cc-topo"><h2 id="cc-t" class="titulo">Calendário da <em>corrente</em></h2><Botao href={webcal} variante="papel">Assinar no meu celular</Botao></div>
       <ul class="lista-giras" data-futuras>{giras.map((x) => <LinhaGira g={x} />)}</ul>
     </div>
   </section>
@@ -219,19 +219,20 @@ const estrelas = Array.from({ length: 46 }, (_, i) => ({ x: (i * 37.7) % 100, y:
   .fechado { display: flex; justify-content: space-between; align-items: center; gap: 2rem; border: 1.5px solid var(--tinta); box-shadow: var(--sombra); padding: 2rem 2.25rem; }
   .fechado h2 { font-weight: 600; margin-bottom: .5rem; }
   @media (max-width: 860px) {
-    .co-ceu :global(.co-lua) { width: 60vw; right: -12%; opacity: .45; }
+    .co-ceu :global(.co-lua) { position: relative; display: block; width: 240px; right: auto; top: auto; transform: none; margin: var(--esp-cabecalho) 0 0 var(--gutter); }
+    :global(.t-noite.cab .cab__in) { padding-top: 1rem; }
+    .co-ceu { position: relative !important; inset: auto; }
     .co-prox__card { grid-template-columns: 1fr; gap: 1rem; padding: 1.5rem 1.25rem; }
     .co-prox__barra { height: 10px; width: 100%; }
-    .co-prox__btns { display: grid; }
+    .co-prox__btns { flex-wrap: wrap; }
     .dev { grid-template-columns: 1fr; gap: 2.5rem; }
-    .abas .chips { flex-wrap: nowrap; overflow-x: auto; padding-bottom: .25rem; }
-    .abas [role="tab"] { flex: none; }
+    .abas .chips { flex-direction: column; flex-wrap: nowrap; }
+    .abas [role="tab"] { width: 100%; min-height: 2.75rem; justify-content: center; }
     .deveres li { grid-template-columns: 2.25rem 1fr; }
     .manual { padding: 1.5rem; }
-    .fechado { display: grid; padding: 1.5rem 1.25rem; box-shadow: var(--sombra-p); }
+    .fechado { display: grid; justify-items: start; padding: 1.5rem 1.25rem; box-shadow: var(--sombra-p); }
+    .cc-topo { display: grid; } .cc-topo :global(.botao) { width: 100%; }
     .estudar { gap: var(--esp-item); }
-    .est { grid-template-columns: 3rem 1fr; column-gap: 1rem; }
-    .est .est__g, .est :global(.est__g) { grid-row: span 3; width: 3rem; height: 3rem; }
-    .est__abrir { display: none; }
+    .est { padding: 1.75rem; }
   }
 </style>

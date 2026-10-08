@@ -133,7 +133,7 @@ const contato = L.whatsapp || '/primeira-vez/#contato';
 
   <!-- PLAYLISTS -->
   <section class="secao t-vermelho" aria-labelledby="pl-t">
-    <div class="contido">
+    <div class="contido pl-wrap">
       <p class="rotulo kicker ouro">Playlists da Casa</p>
       <h2 id="pl-t" class="titulo-g">Para firmar. <em class="ouro">Para caminhar.</em></h2>
       <p class="destaque pl__lead">Pontos cantados para ouvir e aprender. Na discoteca, músicas que acompanham a corrente fora do terreiro.</p>
@@ -243,7 +243,7 @@ const contato = L.whatsapp || '/primeira-vez/#contato';
   @media (max-width: 860px) {
     .hero__in, .raizes { grid-template-columns: 1fr; }
     .hero__in { padding-bottom: 0; row-gap: var(--esp-secao); }
-    .hero__card { margin-inline: calc(-1 * var(--gutter)); padding: var(--esp-colada) var(--gutter); background: var(--papel-escuro); }
+    .hero__card { margin-inline: calc(-1 * var(--gutter)); padding: 1.75rem var(--gutter) .75rem; background: var(--papel); }
     .hero__texto :global(.botao), .pv :global(.botao) { width: 100%; }
     .faixa__in { grid-template-columns: 1fr; gap: var(--esp-grupo); }
     .faixa__in > div { padding: 0; border: 0; }
@@ -261,6 +261,7 @@ const contato = L.whatsapp || '/primeira-vez/#contato';
     .estudo__capa .subtitulo { font-size: .875rem; } .estudo__capa .rotulo { display: none; }
     .estudos__mais { text-align: left; }
     .pl { grid-template-columns: 1fr 1fr; gap: var(--esp-item); }
+    .pl-wrap { display: flex; flex-direction: column; } .pl-wrap .pl { order: 1; margin-top: var(--esp-grupo); } .pl-wrap > * { order: 0; } .pl-wrap .pl__btns { order: 2; margin-top: var(--esp-grupo); }
     .pl__capa { border-width: 5px; } .pl__capa .subtitulo { font-size: 1rem; } .pl :global(.pl__g) { width: 44px; }
     .faixa :global(.faixa__cta) { justify-self: stretch; }
     .pv { grid-template-columns: 1fr; gap: var(--esp-item); border-bottom: 0; }

@@ -25,7 +25,7 @@ const regras = ['Respeito a todas as tradições e casas', 'Nada de exposição 
       <div class="cab__in">
         <h1 id="pagina-t" class="cab__titulo cm-titulo">Comunidade da Casa no <em>WhatsApp</em></h1>
         <p class="leitura cab__lead suave">Um lugar para receber os avisos da Casa e estudar junto, sem virar bate-papo sem fim.</p>
-        {L.comunidade && <div class="cab__acoes"><Botao href={L.comunidade} externo>Entrar na comunidade</Botao></div>}
+        {L.comunidade ? <div class="cab__acoes cm-so-celular"><Botao href={L.comunidade} externo>Entrar na comunidade</Botao></div> : <p class="em-breve cm-so-celular cm-breve">O link da comunidade entra aqui em breve</p>}
       </div>
       <div class="cm-roda">
         <ul class="cm-roda__itens" aria-hidden="true">
@@ -75,6 +75,7 @@ const regras = ['Respeito a todas as tradições e casas', 'Nada de exposição 
 </Base>
 
 <style>
+  .cm-so-celular { display: none; }
   .cm-cab__in { display: grid; grid-template-columns: 1fr 380px; gap: var(--esp-bloco); align-items: center; }
   .cm-titulo { max-width: 13ch; }
   .cm-roda { position: relative; width: 380px; aspect-ratio: 1; display: grid; place-items: center; margin-block: var(--esp-faixa); }
@@ -103,12 +104,14 @@ const regras = ['Respeito a todas as tradições e casas', 'Nada de exposição 
   .cm-banner .titulo { margin-block: .25rem .5rem; }
   @media (max-width: 960px) {
     .cm-cab__in { grid-template-columns: 1fr; }
-    .cm-roda { width: min(100%, 340px); justify-self: center; margin-top: 0; margin-bottom: var(--esp-colada); }
-    .cm-roda__itens li { width: 3.25rem; height: 3.25rem; margin: -1.625rem; transform: rotate(calc(var(--i) * 30deg - 90deg)) translate(min(140px, 41vw)) rotate(calc(var(--i) * -30deg + 90deg)); }
+    .cm-roda { display: none; }
+    .cm-so-celular { display: flex; } .cm-so-celular :global(.botao) { width: 100%; }
+    .cm-breve { margin-top: var(--esp-grupo); color: var(--ouro-texto); }
     .rec { gap: var(--esp-item); }
     .rec__c { grid-template-columns: 3rem 1fr; column-gap: 1rem; padding: 1.25rem; }
     .rec__c img, .rec__c :global(.gravura) { grid-row: span 2; width: 3rem; height: 3rem; }
-    .cm-banner { grid-template-columns: 1fr; padding: 1.5rem 1.25rem; box-shadow: var(--sombra-p); }
+    .cm-banner { grid-template-columns: 1fr; gap: .875rem; padding: 1.5rem 1.25rem; box-shadow: var(--sombra-p); background: var(--papel); color: var(--tinta); }
+    .cm-banner .kicker { color: var(--texto-suave); } .cm-banner :global(.botao) { width: 100%; }
     .cm-banner__estrela { display: none; }
   }
 </style>

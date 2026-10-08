@@ -1,0 +1,25 @@
+---
+import Gravura from './Gravura.astro';
+/** Estado vazio com gravura: a frase acolhe em vez de dar erro seco. */
+interface Props { gravura: string; titulo: string; texto: string; acao?: string; href?: string; botao?: boolean; class?: string; nivel?: 'h1' | 'h2' | 'p' }
+const { gravura, titulo, texto, acao, href, botao = false, class: cls = '', nivel = 'p' } = Astro.props;
+const T = nivel;
+---
+<div class:list={['vazio-estado', cls]} role={nivel === 'p' ? 'status' : undefined}>
+  <Gravura nome={gravura} largura={240} class="vazio-estado__g" />
+  <T class="vazio-estado__t" set:html={titulo} />
+  <p class="vazio-estado__p">{texto}</p>
+  {acao && (botao
+    ? <button type="button" class="vazio-estado__acao" data-acao-vazio>{acao}</button>
+    : <a class="vazio-estado__acao" href={href}>{acao}</a>)}
+</div>
+<style>
+  .vazio-estado { display: grid; justify-items: center; text-align: center; gap: .875rem; padding: var(--esp-bloco) 1rem; max-width: 26rem; margin-inline: auto; }
+  .vazio-estado :global(.vazio-estado__g) { width: 10rem; margin-bottom: .5rem; }
+  .vazio-estado__t { font-size: var(--t-titulo); line-height: 1.04; letter-spacing: -.03em; font-weight: 600; }
+  .vazio-estado__p { color: var(--texto-suave); font-size: var(--t-destaque); }
+  .vazio-estado__acao { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: .75rem 1.5rem; margin-top: .5rem;
+    font: 500 .75rem var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--tinta); background: var(--ouro);
+    border: 1.5px solid var(--tinta); box-shadow: var(--sombra-p); text-decoration: none; cursor: pointer; }
+  .vazio-estado__acao:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--tinta); }
+</style>

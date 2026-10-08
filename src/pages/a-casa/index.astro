@@ -17,17 +17,21 @@ const linha = [
     <Gravura slot="deco" nome="velas" largura={480} class="cab__deco ac-velas" eager />
   </Cabecalho>
 
-  <nav class="contido indice" aria-label="Capítulos">
-    <ol>
-      <li><a href="#cap-1"><span>I</span> O chamado</a></li>
-      <li><a href="#cap-2"><span>II</span> As provas de fé</a></li>
-      <li><a href="#cap-3"><span>III</span> O fiel escudeiro</a></li>
-      <li><a href="#acervo">Acervo</a></li>
-      <li><a href="#linha">Linha do tempo</a></li>
-    </ol>
+  <nav class="indice t-papel-escuro" aria-labelledby="indice-t">
+    <div class="contido">
+      <p id="indice-t" class="rotulo suave">Nesta página</p>
+      <ul class="chips indice__chips">
+        <li><a class="chip indice__chip" href="#cap-1">I · O chamado</a></li>
+        <li><a class="chip indice__chip" href="#cap-2">II · Prova de fé</a></li>
+        <li><a class="chip indice__chip" href="#cap-3">III · Senhor Carlos</a></li>
+        <li><a class="chip indice__chip" href="#regencia">Regência</a></li>
+        <li><a class="chip indice__chip" href="#acervo">Acervo</a></li>
+        <li><a class="chip indice__chip" href="#linha">Linha do tempo</a></li>
+      </ul>
+    </div>
   </nav>
 
-  <section id="cap-1" class="secao secao--colada cap" aria-labelledby="cap1-t">
+  <section id="cap-1" class="secao cap" aria-labelledby="cap1-t">
     <div class="contido cap__in">
       <img class="moldura cap__foto" src="/fotos/magdalena-chamado.webp" width="476" height="456" loading="lazy" alt="Ialorixá Magdalena, sentada, vestida de branco e com guias no pescoço, em foto do acervo da família" />
       <div class="cap__txt">
@@ -129,11 +133,10 @@ const linha = [
 
 <style>
   :global(.ac-velas) { right: 2%; top: 50%; transform: translateY(-50%); width: min(40vw, 560px); filter: grayscale(1) brightness(1.6); mix-blend-mode: screen; opacity: .22; }
-  .indice { padding-top: var(--esp-grupo); }
-  .indice ol { list-style: none; padding: 0 0 var(--esp-grupo); margin: 0; display: flex; flex-wrap: wrap; gap: .5rem 2rem; border-bottom: 1px solid var(--pedra); }
-  .indice a { display: inline-flex; gap: .5rem; align-items: baseline; padding-block: .5rem; text-decoration: none; font-family: var(--mono); font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; }
-  .indice a span { font-family: var(--serif); font-style: italic; font-weight: 600; font-size: 1.125rem; letter-spacing: 0; color: var(--vermelho); text-transform: none; }
-  .indice a:hover { text-decoration: underline; }
+  .indice { padding-block: 1.5rem; }
+  .indice__chips { margin-top: .75rem; }
+  .indice__chip { background: var(--papel); border-color: var(--tinta); min-height: 2.5rem; font-family: var(--serif); text-transform: none; letter-spacing: 0; font-size: .875rem; font-weight: 500; }
+  .indice__chip:hover { background: var(--tinta); color: var(--papel); }
 
   .cap { position: relative; overflow: hidden; }
   .cap__in { position: relative; display: grid; grid-template-columns: 480fr 640fr; gap: 5rem; align-items: center; }
@@ -179,8 +182,7 @@ const linha = [
   .grupo__leg { color: var(--noite); }
 
   @media (max-width: 860px) {
-    :global(.ac-velas) { width: 70vw; right: -20%; opacity: .16; }
-    .indice ol { gap: 0 1.25rem; }
+    :global(.ac-velas) { display: none; }
     .cap__in, .cap__in--inv, .doc, .atas { grid-template-columns: 1fr; gap: 2rem; }
     .cap__in--inv .cap__foto { order: -1; }
     .moldura { box-shadow: 6px 6px 0 var(--vermelho); }
@@ -189,7 +191,7 @@ const linha = [
     .ficha { box-shadow: 6px 6px 0 var(--ouro); padding: 1rem 1rem 1.25rem; }
     .revela { grid-template-columns: 1fr; gap: 1rem; }
     .festa { grid-template-columns: 1fr; }
-    .festa__foto { min-height: 0; aspect-ratio: 880 / 560; }
+    .festa__foto { min-height: 0; height: 300px; }
     .festa__painel { padding: var(--esp-secao) var(--gutter); }
     .tempo { grid-template-columns: 1fr; gap: 1.75rem; padding-left: 2rem; }
     .tempo::before { left: 8px; right: auto; top: 0; bottom: 0; width: 2px; height: auto; }
