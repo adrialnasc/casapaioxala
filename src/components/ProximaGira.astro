@@ -10,7 +10,7 @@ const g = proximaGira();
         <span class="pg__dia" data-campo="dia">{g.dia}</span>
         <span class="rotulo"><span data-campo="mes">{g.mes}</span> · <span data-campo="ano">{g.ano}</span><br /><span data-campo="semana">{g.semana}</span> · {g.hora}</span>
       </div>
-      <h2 id="pg-titulo" class="destaque"><em data-campo="titulo">{g.titulo}</em></h2>
+      <h2 id="pg-titulo" class="destaque">Atende <em data-campo="atende">{g.atende}</em></h2>
       <p class="nota" data-campo="resumo">{g.resumo}</p>
       {g.aviso && <p class="nota pg__aviso" data-campo="aviso">{g.aviso}</p>}
       <a class="pg__cal" data-campo="calendario" href={g.calendario} target="_blank" rel="noopener">Adicionar ao calendário<span class="sr-only"> (abre o Google Agenda)</span></a>
@@ -26,7 +26,7 @@ const g = proximaGira();
   const el = document.querySelector<HTMLElement>('.pg');
   const g = proximaGira();
   if (el && g) {
-    for (const k of ['dia', 'mes', 'ano', 'semana', 'titulo', 'resumo'] as const) {
+    for (const k of ['dia', 'mes', 'ano', 'semana', 'atende', 'resumo'] as const) {
       const n = el.querySelector(`[data-campo="${k}"]`); if (n) n.textContent = String(g[k]);
     }
     el.querySelector<HTMLAnchorElement>('[data-campo="calendario"]')?.setAttribute('href', g.calendario);

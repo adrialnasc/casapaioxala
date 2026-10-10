@@ -29,18 +29,28 @@ const deveres = [
     ['12', 'Nunca desejar o mal a ninguém nem devolver o mal recebido, pois a lei do retorno não falha.'],
   ] },
   { aba: 'Na gira', itens: [
-    ['03', 'Respeitar a roupa de santo, usando-a só no trabalho mediúnico.'],
+    ['03', 'Respeitar a roupa de santo e usá-la só no trabalho mediúnico.'],
     ['05', 'Respeitar o horário de início dos trabalhos, pois muitos irmãos precisam acordar cedo no dia seguinte.'],
-    ['06', 'Seguir com respeito as orientações do seu Orientador Espiritual, que tem a incumbência de mostrar o bom caminho.'],
-    ['08', 'Nos dias de trabalho, estar sempre com o corpo limpo.'],
-    ['09', 'Tomar o banho de defesa antes dos trabalhos ou sempre que os Guias mandarem.'],
+    ['06', 'Seguir com respeito as orientações do seu Orientador Espiritual, que tem a tarefa de mostrar o bom caminho.'],
+    ['07', 'Evitar bebidas alcoólicas, que trazem problemas materiais e espirituais. Nos dias de trabalho, não beber nem comer carne de modo algum.'],
+    ['08', 'Estar sempre com o corpo limpo nos dias de trabalho.'],
+    ['09', 'Tomar o banho de defesa antes dos trabalhos e sempre que os Guias pedirem.'],
+    ['11', 'Respeitar os Exus, sem colocá-los no nível ou à frente dos Orixás, e nunca pedir a eles que façam o mal.'],
   ] },
   { aba: 'No dia a dia', itens: [
-    ['07', 'Evitar bebidas alcoólicas. Nos dias de trabalho, não beber e não comer carne.'],
-    ['11', 'Manter respeito com os Exus, sem colocá-los ao nível ou à frente dos Orixás, e nunca pedir que façam o mal.'],
-    ['13', 'Manter a paz dentro do lar. Assim você ajuda outras pessoas a encontrá-la.'],
+    ['13', 'Manter a paz dentro do seu lar, porque assim você ajuda outras pessoas a encontrá-la.'],
     ['14', 'Dar de graça o que de graça Deus lhe deu.'],
-    ['15', 'Lembrar que a impaciência e a falta de educação sujam o nome da nossa Umbanda. Pense nisso e sorria sempre.'],
+    ['15', 'Lembrar que uma pessoa explosiva, mal-educada e sem paciência só suja o nome da Umbanda. Pense nisso e sorria sempre.'],
+  ] },
+  { aba: 'Com a Casa', intro: 'A Casa é de todos nós. O zelo pela Casa é responsabilidade de toda a corrente, e cada tarefa é vital para a harmonia dos trabalhos.', itens: [
+    [null, 'Cuidar do espaço: varrer, passar pano, organizar bancos, cadeiras e materiais de uso comum e recolher o lixo antes do início dos trabalhos.'],
+    [null, 'Zelar pelo sagrado: manter o congá, os assentamentos e os pontos de força em ordem, sem tocar em nada sem orientação.'],
+    [null, 'Preparar a gira: deixar o defumador e as velas prontos e, depois, ajudar a organizar o que foi usado.'],
+    [null, 'Olhar o que falta: conferir velas, pólvora, ervas, carvão e produtos de limpeza e avisar o grupo com antecedência.'],
+    [null, 'Cumprir a escala: quem não puder vir avisa a Mãe de Santo e combina a troca com um irmão.'],
+    [null, 'Respeitar os irmãos: respeitar todos os irmãos da Casa e orar pelos que estão perturbados.'],
+    [null, 'Nenhuma função vale mais: cambone, curimbeiro ou médium de incorporação, todos têm responsabilidades e merecem o mesmo respeito.'],
+    [null, 'Dias de festa: atenção redobrada, porque o movimento é maior.'],
   ] },
 ];
 const estudar = [
@@ -100,7 +110,8 @@ const estrelas = Array.from({ length: 46 }, (_, i) => ({ x: (i * 37.7) % 100, y:
           </div>
           {deveres.map((d, i) => (
             <div role="tabpanel" id={`painel-${i}`} aria-labelledby={`aba-${i}`} hidden={i !== 0} tabindex="0">
-              <ol class="deveres">{d.itens.map(([n, t]) => <li><span class="dev__n" aria-hidden="true">{n}</span><span><span class="sr-only">Dever {Number(n)}: </span>{t}</span></li>)}</ol>
+              {d.intro && <p class="dev__intro">{d.intro}</p>}
+              <ol class="deveres">{d.itens.map(([n, t]) => <li><span class={n ? 'dev__n' : 'dev__n dev__n--estrela'} aria-hidden="true">{n ?? '✦'}</span><span>{n && <span class="sr-only">Dever {Number(n)}: </span>}{t}</span></li>)}</ol>
             </div>
           ))}
         </div>
@@ -151,9 +162,8 @@ const estrelas = Array.from({ length: 46 }, (_, i) => ({ x: (i * 37.7) % 100, y:
 </Base>
 
 <script>
-  import { proximaGira, porExtenso } from '../../lib/gira.js';
-  const ref = new Date(); ref.setHours(0, 0, 0, 0);
-  document.querySelectorAll<HTMLElement>('[data-futuras] > li').forEach((li) => { li.hidden = new Date(li.dataset.data + 'T00:00:00') < ref; });
+  import { proximaGira, porExtenso, jaPassou } from '../../lib/gira.js';
+  document.querySelectorAll<HTMLElement>('[data-futuras] > li').forEach((li) => { li.hidden = jaPassou(li.dataset.data!); });
   const g = proximaGira(); const card = document.querySelector('[data-proxima]');
   if (g && card) {
     const e = card.querySelector('[data-campo="extenso"]'); if (e) e.textContent = porExtenso(g);
@@ -205,6 +215,8 @@ const estrelas = Array.from({ length: 46 }, (_, i) => ({ x: (i * 37.7) % 100, y:
   .deveres { list-style: none; padding: 0; margin: 2.25rem 0 0; display: grid; gap: 1.5rem; }
   .deveres li { display: grid; grid-template-columns: 3rem 1fr; gap: 1rem; font-size: var(--t-destaque-p); line-height: 1.5; }
   .dev__n { font-size: var(--t-subtitulo); font-style: italic; font-weight: 600; color: var(--vermelho); line-height: 1.1; }
+  .dev__n--estrela { font-style: normal; font-size: var(--t-destaque-p); line-height: 1.5; }
+  .dev__intro { margin: 2.25rem 0 0; max-width: 40rem; font-style: italic; font-size: var(--t-destaque-p); line-height: 1.5; }
   .manual { display: grid; gap: 1rem; justify-items: start; padding: 2rem; box-shadow: var(--sombra-p); border-width: 1px; }
   .manual :global(.manual__g) { width: 7.5rem; }
   .manual__rot { color: var(--vermelho); }

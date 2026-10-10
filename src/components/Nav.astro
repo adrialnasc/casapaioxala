@@ -8,12 +8,12 @@ const links = [
 const atual = Astro.url.pathname;
 const contato = site.links.whatsapp || '/primeira-vez/#contato';
 ---
-<aside class="faixa-topo" aria-label="Aviso para quem vai pela primeira vez">
+{!atual.startsWith('/primeira-vez') && <aside class="faixa-topo" aria-label="Aviso para quem vai pela primeira vez">
   <div class="contido faixa-topo__in">
     <p><span class="longo">É a sua primeira vez na Casa? Veja como é uma gira, o que vestir e como chegar.</span><span class="curto">Primeira vez na Casa?</span></p>
     <a class="seta" href="/primeira-vez/"><span class="longo">Guia da primeira visita</span><span class="curto">Veja o guia</span> <span aria-hidden="true">→</span></a>
   </div>
-</aside>
+</aside>}
 <header class="nav">
   <div class="contido nav__in">
     <a class="marca" href="/"><span class="estrela" aria-hidden="true">✦</span> Pai Oxalá<span class="sr-only">, página inicial</span></a>
@@ -44,7 +44,7 @@ const contato = site.links.whatsapp || '/primeira-vez/#contato';
   .curto { display: none; }
   .nav { background: var(--papel); border-bottom: 1px solid var(--pedra); position: sticky; top: 0; z-index: 50; }
   .nav__in { display: flex; align-items: center; justify-content: space-between; min-height: 4.5rem; gap: 2rem; }
-  .marca { font-size: 1.25rem; font-weight: 600; text-decoration: none; letter-spacing: -.01em; white-space: nowrap; }
+  .marca { display: inline-flex; align-items: center; gap: .35em; min-height: 44px; font-size: 1.25rem; font-weight: 600; text-decoration: none; letter-spacing: -.01em; white-space: nowrap; }
   .estrela { color: var(--ouro-escuro); }
   .links { list-style: none; margin: 0; padding: 0; display: flex; align-items: center; gap: clamp(1rem, 2vw, 1.75rem); }
   .links a:not(.botao) { text-decoration: none; font-size: .9375rem; padding-block: .75rem; }

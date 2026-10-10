@@ -6,11 +6,13 @@ import Cabecalho from '../../components/Cabecalho.astro';
 import LinhaGira from '../../components/LinhaGira.astro';
 import site from '../../data/site.json';
 import EstadoVazio from '../../components/EstadoVazio.astro';
-import { agenda, todasGiras, proximaGira, MESES_CURTOS } from '../../lib/gira.js';
+import { agenda, todasGiras, proximaGira, jaPassou, MESES_CURTOS } from '../../lib/gira.js';
 
 const giras = todasGiras();
-const hoje = new Date(); const ref = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
-const passou = (iso) => new Date(iso + 'T00:00:00') < ref;
+const hoje = new Date();
+const passou = (iso) => jaPassou(iso);
+const temPassadas = giras.some((x) => passou(x.data));
+const mesesFuturos = new Set(giras.filter((x) => !passou(x.data)).map((x) => x.mesNum));
 const g = proximaGira();
 const meses = [...new Set(giras.map((x) => x.mesNum))];
 const festas = agenda.festas.map((f) => { const d = new Date(f.data + 'T00:00:00'); return { ...f, rotulo: `${f.nome} · ${String(d.getDate()).padStart(2, '0')}/${MESES_CURTOS[d.getMonth()]}` }; });
@@ -45,11 +47,11 @@ const contato = site.links.whatsapp || '/primeira-vez/#contato';
       <div class="secao__topo">
         <h2 id="cal-t" class="titulo">Próximas <em>giras</em></h2>
         <ul class="chips" aria-label="Filtrar por mês">
-          {meses.map((m) => <li><button type="button" class="chip" data-filtro-mes={m} aria-pressed="false">{MESES_CURTOS[m]}</button></li>)}
+          {meses.map((m) => <li hidden={!mesesFuturos.has(m)}><button type="button" class="chip" data-filtro-mes={m} aria-pressed="false">{MESES_CURTOS[m]}</button></li>)}
         </ul>
       </div>
       <ul class="lista-giras" data-futuras>
-        {giras.map((x) => <LinhaGira g={x} />)}
+        {giras.map((x) => <LinhaGira g={x} oculta={passou(x.data)} />)}
       </ul>
       <div class="vazio" hidden><EstadoVazio gravura="crescente" titulo="Sem giras<br />neste mês." texto="A Casa descansa. A próxima gira aparece na agenda." acao="Ver todas as giras" botao /></div>
     </div>
@@ -67,10 +69,10 @@ const contato = site.links.whatsapp || '/primeira-vez/#contato';
 
   <section class="secao" aria-label="Giras que já aconteceram">
     <div class="contido">
-      <details class="sanfona sanfona--topo">
+      <details class="sanfona sanfona--topo" hidden={!temPassadas}>
         <summary>Giras que já aconteceram em {ano}<span class="sanfona__extra">mostrar</span></summary>
         <ul class="lista-giras" data-passadas>
-          {giras.map((x) => <LinhaGira g={x} />)}
+          {giras.map((x) => <LinhaGira g={x} oculta={!passou(x.data)} />)}
         </ul>
       </details>
       <div class="cartao cartao--escuro aviso">
@@ -82,14 +84,16 @@ const contato = site.links.whatsapp || '/primeira-vez/#contato';
 </Base>
 
 <script>
-  import { proximaGira } from '../../lib/gira.js';
-  const ref = new Date(); ref.setHours(0, 0, 0, 0);
-  const passou = (iso: string) => new Date(iso + 'T00:00:00') < ref;
+  import { proximaGira, jaPassou } from '../../lib/gira.js';
+  const passou = (iso: string) => jaPassou(iso);
   // separa as giras futuras das que já aconteceram, com a data de hoje do visitante
   document.querySelectorAll<HTMLElement>('[data-futuras] > li').forEach((li) => { li.hidden = passou(li.dataset.data!); });
   document.querySelectorAll<HTMLElement>('[data-passadas] > li').forEach((li) => { li.hidden = !passou(li.dataset.data!); });
   const passadas = document.querySelectorAll('[data-passadas] > li:not([hidden])').length;
   const det = document.querySelector<HTMLElement>('.sanfona--topo'); if (det) det.hidden = passadas === 0;
+  // filtro mostra só os meses que ainda têm gira
+  const mesesFuturos = new Set([...document.querySelectorAll<HTMLElement>('[data-futuras] > li')].filter((li) => !passou(li.dataset.data!)).map((li) => li.dataset.mes));
+  document.querySelectorAll<HTMLElement>('[data-filtro-mes]').forEach((b) => { b.parentElement!.hidden = !mesesFuturos.has(b.dataset.filtroMes); });
   document.querySelectorAll<HTMLElement>('[data-festa]').forEach((el) => {
     const p = passou(el.dataset.festa!); el.classList.toggle('chip--passada', p); el.classList.toggle('festa--futura', !p);
     const sr = el.querySelector('.sr-only'); if (sr) sr.textContent = p ? ' (já aconteceu)' : ' (próxima)';

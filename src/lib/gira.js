@@ -7,10 +7,19 @@ export const MESES_CURTOS = ['jan','fev','mar','abr','mai','jun','jul','ago','se
 /** Junta nomes: ["Ogum","Exu"] -> "Ogum e Exu" */
 export const juntar = (l) => l.length < 2 ? (l[0] ?? '') : l.slice(0, -1).join(', ') + ' e ' + l.at(-1);
 
+/** Data de hoje (AAAA-MM-DD) no fuso da Casa, em São Paulo, para qualquer visitante do mundo.
+ *  Assim a gira só vira "já aconteceu" quando o dia termina no Brasil. */
+export function hojeNaCasa(agora = new Date()) {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit' }).format(agora);
+}
+
+/** A data (AAAA-MM-DD) já passou? A gira de hoje ainda conta como próxima. */
+export const jaPassou = (iso, agora = new Date()) => iso < hojeNaCasa(agora);
+
 /** Próxima gira a partir de hoje (inclui a de hoje). */
-export function proximaGira(hoje = new Date()) {
-  const ref = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
-  const g = agenda.giras.find((x) => new Date(x.data + 'T00:00:00') >= ref);
+export function proximaGira(agora = new Date()) {
+  const hoje = hojeNaCasa(agora);
+  const g = [...agenda.giras].sort((a, b) => a.data.localeCompare(b.data)).find((x) => x.data >= hoje);
   return g ? descrever(g) : null;
 }
 
@@ -27,7 +36,8 @@ export function descrever(g) {
     semana: DIAS[d.getDay()],
     hora: agenda.horarios.gira,
     titulo: g.festa ?? `Gira de ${linhas}`,
-    resumo: `Linha de ${linhas}. Atendimento com ${g.atende}. Gira aberta à assistência às ${agenda.horarios.gira}.`,
+    // Mesmo modelo da Agenda: título = quem atende; linhas (e festa) no texto de apoio.
+    resumo: `${g.festa ? g.festa + '. ' : ''}Linha de ${linhas}. Gira aberta à assistência às ${agenda.horarios.gira}.`,
     calendario: linkCalendario(g, linhas),
   };
 }

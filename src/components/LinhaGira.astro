@@ -1,11 +1,11 @@
 ---
 import Gravura from './Gravura.astro';
 /** Uma linha do calendário de giras. Recebe a gira já descrita (lib/gira.js). */
-interface Props { g: any }
-const { g } = Astro.props;
+interface Props { g: any; oculta?: boolean }
+const { g, oculta = false } = Astro.props;
 const festaAtual = !!g.festa;
 ---
-<li class="lg" data-data={g.data} data-mes={g.mesNum}>
+<li class="lg" data-data={g.data} data-mes={g.mesNum} hidden={oculta}>
   <p class="lg__data"><span class="subtitulo">{g.dia} {g.mesCurto}</span><span class="rotulo suave">{g.semana}</span></p>
   <span class:list={['lg__med', { 'lg__med--festa': festaAtual }]}><Gravura nome={g.gravura} largura={88} /></span>
   <p class="lg__quem destaque">Atende {g.atende}</p>

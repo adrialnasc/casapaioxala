@@ -158,11 +158,11 @@ const faq = [
 </script>
 
 <style>
-  .pv-cab__in { display: grid; grid-template-columns: 1fr 1fr; align-items: end; gap: var(--esp-bloco); }
+  .pv-cab__in { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: end; gap: var(--esp-bloco); }
   .prateleira { position: relative; padding-top: 5rem; padding-bottom: var(--esp-cabecalho); }
   .prateleira :global(.pr-lua) { position: absolute; right: 8%; top: 1rem; width: 7rem; }
   .pr-itens { display: flex; align-items: flex-end; justify-content: center; gap: .25rem; }
-  .pr-itens :global(.gravura) { flex: none; }
+  .pr-itens :global(.gravura) { flex: 0 1 auto; min-width: 0; }
   .pr-itens :global(.pr-ramo) { width: 9.5rem; } .pr-itens :global(.pr-coco) { width: 9rem; }
   .pr-itens :global(.pr-concha) { width: 7.5rem; } .pr-itens :global(.pr-rosa) { width: 8rem; } .pr-itens :global(.pr-cachimbo) { width: 9.5rem; }
   .pr-tabua { display: block; height: 14px; background: #6B4A2E; border: 1.5px solid var(--tinta); margin-top: -2px; }
@@ -203,7 +203,7 @@ const faq = [
 
   @media (max-width: 1100px) { .passos { grid-template-columns: repeat(3, 1fr); row-gap: 2.5rem; } }
   @media (max-width: 860px) {
-    .pv-cab__in { grid-template-columns: 1fr; gap: 0; }
+    .pv-cab__in { grid-template-columns: minmax(0, 1fr); gap: 0; }
     .pv-cab .cab__in { padding-bottom: 0; }
     .prateleira { padding-top: 4.5rem; padding-bottom: var(--esp-colada); }
     .prateleira :global(.pr-lua) { width: 4.5rem; right: 4%; }

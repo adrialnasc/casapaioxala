@@ -145,9 +145,9 @@ const contato = L.whatsapp || '/primeira-vez/#contato';
         {playlists.map((p) => (
           <li><a href={L.youtube || '/pontos/'} class="pl__card">
             <span class="pl__capa" style={`background:${p.c};color:${p.claro ? 'var(--tinta)' : 'var(--papel)'}`}>
-              {p.foto ? <img src={p.foto} alt={p.alt} width="518" height="520" loading="lazy" class="pl__foto" /> : <><Gravura nome={p.g!} largura={96} class="pl__g" /><span class="subtitulo"><em>{p.t}</em></span></>}
+              {p.foto ? <img src={p.foto} alt={p.alt} width="518" height="520" loading="lazy" class="pl__foto" /> : <><Gravura nome={p.g!} largura={96} class="pl__g" /><span class="subtitulo" aria-hidden="true"><em>{p.t}</em></span></>}
             </span>
-            <span class="rotulo">{p.t}</span>
+            {p.foto ? <span class="rotulo">{p.t}</span> : <span class="sr-only">{p.t}</span>}
           </a></li>
         ))}
       </ul>
@@ -169,7 +169,7 @@ const contato = L.whatsapp || '/primeira-vez/#contato';
   .hero__fundo :global(.gravura) { position: absolute; filter: grayscale(1) brightness(1.6); mix-blend-mode: screen; opacity: .28; }
   .hero__fundo :global(.hero__sol) { width: min(46vw, 640px); left: 40%; top: -8%; opacity: .35; }
   .hero__fundo :global(.hero__ramo) { width: 200px; bottom: -40px; opacity: .2; }
-  .hero__fundo :global(.hero__ramo--e) { left: -40px; transform: rotate(-20deg); }
+  .hero__fundo :global(.hero__ramo--e) { left: -60px; bottom: -100px; transform: rotate(-20deg); }
   .hero__fundo :global(.hero__ramo--d) { right: -40px; transform: scaleX(-1) rotate(-20deg); }
   .hero__in { position: relative; display: grid; grid-template-columns: 1.2fr minmax(300px, 400px); gap: var(--esp-bloco) clamp(2rem, 6vw, 6rem); align-items: center; padding-block: var(--esp-secao); }
   .hero__nome { display: block; margin-top: .1em; }
@@ -237,8 +237,11 @@ const contato = L.whatsapp || '/primeira-vez/#contato';
   .pv p { max-width: 22rem; }
 
   @media (max-width: 1100px) {
-    .central { grid-template-columns: repeat(3, 1fr); }
+    .central { grid-template-columns: repeat(6, 1fr); }
+    .central > li { grid-column: span 2; }
+    .central > li:nth-child(n + 4) { grid-column: span 3; }
     .pl { grid-template-columns: repeat(2, 1fr); }
+    .pl__capa { aspect-ratio: 16 / 10; }
   }
   @media (max-width: 860px) {
     .hero__in, .raizes { grid-template-columns: 1fr; }
@@ -248,6 +251,7 @@ const contato = L.whatsapp || '/primeira-vez/#contato';
     .faixa__in { grid-template-columns: 1fr; gap: var(--esp-grupo); }
     .faixa__in > div { padding: 0; border: 0; }
     .central { grid-template-columns: 1fr; gap: var(--esp-item); }
+    .central > li, .central > li:nth-child(n + 4) { grid-column: auto; }
     .central__card { min-height: 0; flex-direction: row; align-items: center; gap: 1rem; padding: 1rem 1.25rem; box-shadow: var(--sombra-p); }
     .central__topo { order: 3; margin-left: auto; } .central__topo span:first-child { display: none; }
     .central :global(.central__g) { width: 44px; margin: 0; order: 1; }
@@ -262,7 +266,7 @@ const contato = L.whatsapp || '/primeira-vez/#contato';
     .estudos__mais { text-align: left; }
     .pl { grid-template-columns: 1fr 1fr; gap: var(--esp-item); }
     .pl-wrap { display: flex; flex-direction: column; } .pl-wrap .pl { order: 1; margin-top: var(--esp-grupo); } .pl-wrap > * { order: 0; } .pl-wrap .pl__btns { order: 2; margin-top: var(--esp-grupo); }
-    .pl__capa { border-width: 5px; } .pl__capa .subtitulo { font-size: 1rem; } .pl :global(.pl__g) { width: 44px; }
+    .pl__capa { border-width: 5px; aspect-ratio: 1; } .pl__capa .subtitulo { font-size: 1rem; } .pl :global(.pl__g) { width: 44px; }
     .faixa :global(.faixa__cta) { justify-self: stretch; }
     .pv { grid-template-columns: 1fr; gap: var(--esp-item); border-bottom: 0; }
   }
