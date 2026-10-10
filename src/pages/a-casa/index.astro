@@ -98,6 +98,17 @@ const linha = [
           <figcaption><span class="chip">Ata</span><span class="subtitulo ficha__t">Continuidade institucional</span><span class="suave-tinta">Ata de renovação da diretoria, registrada em 2001.</span></figcaption>
         </figure>
       </div>
+      <div class="terreiro">
+        <p class="rotulo kicker ouro terreiro__k">No terreiro</p>
+        <figure class="ficha">
+          <img src="/fotos/altar-guias.webp" width="448" height="823" loading="lazy" alt="Guias de contas vermelhas e brancas penduradas sob uma prateleira, ao lado de uma imagem de São Jorge a cavalo e de uma vela acesa" />
+          <figcaption><span class="chip">Fotografia</span><span class="subtitulo ficha__t">Guias e São Jorge</span><span class="suave-tinta">Detalhe do terreiro, com as guias e a imagem de São Jorge.</span></figcaption>
+        </figure>
+        <figure class="ficha">
+          <img src="/fotos/dia-de-gira.webp" width="264" height="371" loading="lazy" alt="Duas pessoas vestidas de branco e com guias no pescoço, de braços dados, diante de quadros na parede do terreiro" />
+          <figcaption><span class="chip">Fotografia</span><span class="subtitulo ficha__t">Dia de gira</span><span class="suave-tinta">Filhos da Casa reunidos no terreiro.</span></figcaption>
+        </figure>
+      </div>
     </div>
   </section>
 
@@ -164,6 +175,8 @@ const linha = [
   .revela { display: grid; grid-template-columns: 260px 1fr; gap: 3rem; padding-block: 2.5rem; margin-block: var(--esp-secao) var(--esp-bloco); border-block: 1px solid var(--ouro-claro); align-items: center; }
   .revela .kicker { margin: 0; }
   .atas { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+  .terreiro { display: grid; grid-template-columns: repeat(2, minmax(0, 20rem)); gap: 3rem; margin-top: var(--esp-secao); align-items: start; }
+  .terreiro__k { grid-column: 1 / -1; margin: 0; }
 
   .festa { display: grid; grid-template-columns: 880fr 560fr; }
   .festa__foto { width: 100%; height: 100%; object-fit: cover; min-height: 22rem; }
@@ -198,5 +211,6 @@ const linha = [
     .tempo li { padding: 0; }
     .tempo__ponto { position: absolute; left: -2rem; top: .6rem; }
     .grupo img { box-shadow: 6px 6px 0 var(--vinho); }
+    .terreiro { grid-template-columns: minmax(0, 20rem); gap: 2rem; }
   }
 </style>
