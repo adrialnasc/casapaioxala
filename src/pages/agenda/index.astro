@@ -19,7 +19,7 @@ const festas = agenda.festas.map((f) => { const d = new Date(f.data + 'T00:00:00
 const comAviso = giras.filter((x) => x.aviso).map((x) => `${x.dia}/${x.mesCurto}`);
 const ano = giras[0]?.ano ?? hoje.getFullYear();
 const webcal = `webcal://${new URL(Astro.site!).host}/agenda.ics`;
-const contato = site.links.whatsapp || '/primeira-vez/#contato';
+import { contato } from '../../lib/contato.js';
 ---
 <Base titulo="Agenda · Casa de Umbanda Pai Oxalá" descricao={`Giras quinzenais às sextas-feiras. Estudo mediúnico das ${agenda.horarios.estudo}, só para médiuns. Gira de Umbanda às ${agenda.horarios.gira}, aberta à assistência.`}>
   <Cabecalho tema="t-mata" class="ag-cab" titulo='<span class="it">Agenda</span>' lead={`Estudo mediúnico, voltado ao kardecismo, das ${agenda.horarios.estudo} (só para médiuns). Gira de Umbanda a partir das ${agenda.horarios.gira}, aberta à assistência.`}>
@@ -77,7 +77,7 @@ const contato = site.links.whatsapp || '/primeira-vez/#contato';
       </details>
       <div class="cartao cartao--escuro aviso">
         <p class="leitura">Algumas datas podem mudar. Confirme a programação com a Casa antes de ir.</p>
-        <a class="seta" href={contato} {...(site.links.whatsapp ? { target: '_blank', rel: 'noopener' } : {})}>Falar com a Casa <span aria-hidden="true">→</span></a>
+        <a class="seta" href={contato.href} {...(contato.externo ? { target: '_blank', rel: 'noopener' } : {})}>{contato.rotulo} <span aria-hidden="true">→</span></a>
       </div>
     </div>
   </section>

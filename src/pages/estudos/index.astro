@@ -20,10 +20,10 @@ const materiais = [
 ];
 const caderno = ['Cultura e Pesquisa', 'Divindades e Entidades', 'Doutrina e Teologia', 'Música e Curimba', 'Práticas e Rituais', 'Trabalhos Acadêmicos'];
 const biblio = [
-  { t: 'Umbanda', livros: [['Conhecendo a Umbanda: Dentro do Terreiro', 'Douglas Rainho'], ['O Espiritismo, a Magia e as Sete Linhas de Umbanda', 'Leal de Souza'], ['Umbanda de Todos Nós', 'W. W. da Matta e Silva'], ['Lições de Umbanda e Quimbanda na Palavra de um Preto Velho', 'W. W. da Matta e Silva'], ['Fogo no Mato: A Ciência Encantada das Macumbas', 'Luiz Antônio Simas e Luiz Rufino']] },
-  { t: 'Orixás, história e ancestralidade', livros: [['Mitologia dos Orixás', 'Reginaldo Prandi'], ['Encantaria Brasileira', 'Reginaldo Prandi'], ['Candomblé Bem Explicado', 'Odé Kileuy e Vera de Oxaguiã'], ['Bantos, Malês e Identidade Negra', 'Nei Lopes'], ['A Terra dos Mil Povos', 'Kaká Werá'], ['São Jorge: O santo do povo e o povo do santo', 'Luiz Antônio Simas', 'https://proassets.planetadelivros.com.br/usuaris/libros_contenido/arxius/66/65102_1_978-85-422-4060-3.pdf']] },
-  { t: 'Mediunidade e espiritualidade', livros: [['O Livro dos Médiuns', 'Allan Kardec'], ['Nos Domínios da Mediunidade', 'André Luiz e Chico Xavier'], ['Diálogo com as Sombras', 'Hermínio C. Miranda']] },
-  { t: 'Ervas e benzimento', livros: [['As Ervas na Umbanda', 'Douglas Rainho'], ['O Poder das Ervas na Umbanda', 'José Ribeiro'], ['Rituais com Ervas: Banhos, Defumações e Benzimentos', 'Adriano Camargo']] },
+  { t: 'Umbanda', tema: 'Umbanda', livros: [['Conhecendo a Umbanda: Dentro do Terreiro', 'Douglas Rainho'], ['O Espiritismo, a Magia e as Sete Linhas de Umbanda', 'Leal de Souza'], ['Umbanda de Todos Nós', 'W. W. da Matta e Silva'], ['Lições de Umbanda e Quimbanda na Palavra de um Preto Velho', 'W. W. da Matta e Silva'], ['Fogo no Mato: A Ciência Encantada das Macumbas', 'Luiz Antônio Simas e Luiz Rufino']] },
+  { t: 'Orixás, história e ancestralidade', tema: 'Orixás e ancestralidade', livros: [['Mitologia dos Orixás', 'Reginaldo Prandi'], ['Encantaria Brasileira', 'Reginaldo Prandi'], ['Candomblé Bem Explicado', 'Odé Kileuy e Vera de Oxaguiã'], ['Bantos, Malês e Identidade Negra', 'Nei Lopes'], ['A Terra dos Mil Povos', 'Kaká Werá'], ['São Jorge: O santo do povo e o povo do santo', 'Luiz Antônio Simas', 'https://proassets.planetadelivros.com.br/usuaris/libros_contenido/arxius/66/65102_1_978-85-422-4060-3.pdf']] },
+  { t: 'Mediunidade e espiritualidade', tema: 'Mediunidade', livros: [['O Livro dos Médiuns', 'Allan Kardec'], ['Nos Domínios da Mediunidade', 'André Luiz e Chico Xavier'], ['Diálogo com as Sombras', 'Hermínio C. Miranda']] },
+  { t: 'Ervas e benzimento', tema: 'Ervas e benzimento', livros: [['As Ervas na Umbanda', 'Douglas Rainho'], ['O Poder das Ervas na Umbanda', 'José Ribeiro'], ['Rituais com Ervas: Banhos, Defumações e Benzimentos', 'Adriano Camargo']] },
 ];
 ---
 <Base titulo="Estudos · Casa de Umbanda Pai Oxalá" descricao="Apresentações, livros e o caderno de estudos da Casa de Umbanda Pai Oxalá, para aprender no seu tempo.">
@@ -80,6 +80,7 @@ const biblio = [
           </li>
         ))}
       </ul>
+      <p class="na-biblio" hidden aria-live="polite"><span data-na-biblio></span> <a href="#bib-t">Ver na bibliografia <span aria-hidden="true">↓</span></a></p>
       <div class="vazio" hidden><EstadoVazio gravura="laco" titulo="Nenhum material<br />com essa busca." texto="Tente outra palavra ou outro filtro." acao="Limpar a busca" botao /></div>
     </div>
   </section>
@@ -106,9 +107,9 @@ const biblio = [
       <p class="suave secao__lead"><em>Nenhum livro substitui a vivência, os fundamentos e a orientação dos mais velhos da Casa. As obras abaixo apresentam perspectivas diferentes e devem ser lidas com senso crítico.</em></p>
       <div class="biblio">
         {biblio.map((b, i) => (
-          <details class="sanfona">
-            <summary>0{i + 1} · {b.t}<span class="sanfona__extra">{b.livros.length} livros</span></summary>
-            <ul class="sanfona__corpo livros">{b.livros.map(([t, a, u]) => <li><span class="livro__t">{u ? <a href={u} target="_blank" rel="noopener">{t}<span class="sr-only"> (trecho em PDF, abre em nova aba)</span></a> : t}</span><span class="suave">{a}{u && ' · trecho em PDF'}</span></li>)}</ul>
+          <details class="sanfona" data-grupo-tema={b.tema}>
+            <summary>0{i + 1} · {b.t}<span class="sanfona__extra" data-total={b.livros.length}>{b.livros.length} livros</span></summary>
+            <ul class="sanfona__corpo livros">{b.livros.map(([t, a, u]) => <li class="livro" data-busca={`${t} ${a} ${b.t}`.toLowerCase()}><span class="livro__t">{u ? <a href={u} target="_blank" rel="noopener">{t}<span class="sr-only"> (trecho em PDF, abre em nova aba)</span></a> : t}</span><span class="suave">{a}{u && ' · trecho em PDF'}</span></li>)}</ul>
           </details>
         ))}
       </div>
@@ -124,6 +125,8 @@ const biblio = [
   const itens = document.querySelectorAll<HTMLElement>('.mat');
   const vazio = document.querySelector<HTMLElement>('.vazio');
   const cont = document.querySelector('[data-contagem]');
+  const grupos = document.querySelectorAll<HTMLDetailsElement>('[data-grupo-tema]');
+  const naBiblio = document.querySelector<HTMLElement>('.na-biblio');
   let tipo = 'tudo'; let tema = '';
   const tira = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
   function aplicar() {
@@ -132,7 +135,27 @@ const biblio = [
       const ok = (tipo === 'tudo' || el.dataset.tipo === tipo) && (!tema || el.dataset.tema === tema) && (!q || tira(el.dataset.busca!).includes(q));
       el.hidden = !ok; if (ok) n++;
     });
-    if (vazio) vazio.hidden = n > 0;
+    // A bibliografia entra na mesma busca: livros e filtros de tema.
+    let livros = 0; const filtrando = !!q || !!tema;
+    const livroOk = tipo === 'tudo' || tipo === 'livro';
+    grupos.forEach((gr) => {
+      let k = 0;
+      gr.querySelectorAll<HTMLElement>('.livro').forEach((li) => {
+        const ok = !filtrando || (livroOk && (!tema || gr.dataset.grupoTema === tema) && (!q || tira(li.dataset.busca!).includes(q)));
+        li.hidden = !ok; if (ok) k++;
+      });
+      gr.hidden = filtrando && k === 0;
+      gr.open = filtrando && k > 0;
+      const ex = gr.querySelector<HTMLElement>('.sanfona__extra');
+      if (ex) ex.textContent = filtrando ? `${k} de ${ex.dataset.total} livros` : `${ex.dataset.total} livros`;
+      if (filtrando) livros += k;
+    });
+    if (vazio) vazio.hidden = n > 0 || livros > 0;
+    if (naBiblio) {
+      naBiblio.hidden = !filtrando || livros === 0;
+      const t = naBiblio.querySelector('[data-na-biblio]');
+      if (t) t.textContent = `${livros === 1 ? '1 livro' : livros + ' livros'} da bibliografia ${livros === 1 ? 'combina' : 'combinam'} com a busca.`;
+    }
     if (cont) cont.textContent = n === 1 ? '1 material' : `${n} materiais`;
   }
   tipos.forEach((b) => b.addEventListener('click', () => { tipo = b.dataset.tipo!; tipos.forEach((x) => x.setAttribute('aria-pressed', String(x === b))); aplicar(); }));
@@ -178,6 +201,8 @@ const biblio = [
   .caderno__corpo b { display: block; height: .5rem; background: var(--pedra); margin-block: .6rem; }
   .caderno__corpo b:nth-child(2) { width: 80%; } .caderno__corpo b:nth-child(4) { width: 60%; }
   .biblio { margin-top: var(--esp-bloco); border-top: 1.5px solid var(--tinta); }
+  .na-biblio { margin-top: 1.5rem; padding: 1rem 1.25rem; border: 1.5px solid var(--tinta); background: var(--papel-escuro); }
+  .na-biblio a { font-weight: 600; }
   .livros { list-style: none; padding: 0 0 1.5rem; margin: 0; display: grid; gap: .75rem; }
   .livros li { display: grid; }
   .livro__t { font-weight: 600; }

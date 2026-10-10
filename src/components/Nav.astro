@@ -1,12 +1,11 @@
 ---
 import Botao from './Botao.astro';
-import site from '../data/site.json';
+import { contato } from '../lib/contato.js';
 const links = [
-  ['A Casa', '/a-casa/'], ['Agenda', '/agenda/'], ['Estudos', '/estudos/'],
-  ['Pontos', '/pontos/'], ['Corrente', '/corrente/'], ['Primeira vez', '/primeira-vez/'],
+  ['Início', '/'], ['A Casa', '/a-casa/'], ['Agenda', '/agenda/'], ['Estudos', '/estudos/'],
+  ['Pontos', '/pontos/'], ['Corrente', '/corrente/'], ['Primeira vez', '/primeira-vez/'], ['Comunidade', '/comunidade/'],
 ];
 const atual = Astro.url.pathname;
-const contato = site.links.whatsapp || '/primeira-vez/#contato';
 ---
 {!atual.startsWith('/primeira-vez') && <aside class="faixa-topo" aria-label="Aviso para quem vai pela primeira vez">
   <div class="contido faixa-topo__in">
@@ -19,8 +18,8 @@ const contato = site.links.whatsapp || '/primeira-vez/#contato';
     <a class="marca" href="/"><span class="estrela" aria-hidden="true">✦</span> Pai Oxalá<span class="sr-only">, página inicial</span></a>
     <nav aria-label="Principal">
       <ul class="links" id="menu">
-        {links.map(([t, h]) => <li><a href={h} aria-current={atual.startsWith(h) ? 'page' : undefined}>{t}</a></li>)}
-        <li class="links__cta"><Botao href={contato} externo={!!site.links.whatsapp}>Falar com a Casa</Botao></li>
+        {links.map(([t, h]) => <li><a href={h} aria-current={(h === '/' ? atual === '/' : atual.startsWith(h)) ? 'page' : undefined}>{t}</a></li>)}
+        <li class="links__cta"><Botao href={contato.href} externo={contato.externo}>{contato.rotulo}</Botao></li>
       </ul>
     </nav>
     <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
@@ -51,7 +50,7 @@ const contato = site.links.whatsapp || '/primeira-vez/#contato';
   .links a:not(.botao):hover, .links a[aria-current] { text-decoration: underline; text-underline-offset: 6px; text-decoration-color: var(--ouro); text-decoration-thickness: 2px; }
   .links__cta { margin-left: clamp(0rem, 3vw, 2.5rem); }
   .menu-btn { display: none; font: 500 .75rem var(--mono); letter-spacing: .12em; text-transform: uppercase; background: transparent; color: var(--tinta); border: 1.5px solid var(--tinta); min-height: 44px; padding: 0 1rem; cursor: pointer; }
-  @media (max-width: 960px) {
+  @media (max-width: 1200px) {
     .longo { display: none; } .curto { display: inline; }
     .menu-btn { display: inline-flex; align-items: center; }
     .links { display: none; position: absolute; left: 0; right: 0; top: 100%; flex-direction: column; align-items: stretch; gap: 0;

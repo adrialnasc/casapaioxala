@@ -26,7 +26,7 @@ const playlists = [
   { t: 'Curimba', g: 'atabaque', c: 'var(--vinho)', claro: false },
 ];
 const L = site.links;
-const contato = L.whatsapp || '/primeira-vez/#contato';
+import { contato, comoPedirEndereco } from '../lib/contato.js';
 ---
 <Base>
   <!-- HERO -->
@@ -53,7 +53,7 @@ const contato = L.whatsapp || '/primeira-vez/#contato';
     <div class="contido faixa__in">
       <div><p class="rotulo kicker-pt">Atendimento</p><p class="subtitulo">Quinzenal, às sextas</p><p class="nota suave">Todos são bem-vindos e a entrada é gratuita</p></div>
       <div><p class="rotulo kicker-pt">Horários</p><p class="subtitulo">Gira às {agenda.horarios.gira}</p><p class="nota suave">Aberta ao público.<br />Estudo mediúnico kardecista: {agenda.horarios.estudo}, só para médiuns.</p></div>
-      <div><p class="rotulo kicker-pt">Onde estamos</p><p class="subtitulo">Embu-Guaçu · SP</p><p class="nota suave">Solicite o endereço à Casa antes da visita.</p><a class="seta" href="/primeira-vez/">Orientações de visita <span aria-hidden="true">→</span></a><Botao href={contato} externo={!!L.whatsapp} class="faixa__cta">Solicitar endereço</Botao></div>
+      <div><p class="rotulo kicker-pt">Onde estamos</p><p class="subtitulo">Embu-Guaçu · SP</p><p class="nota suave">{comoPedirEndereco}</p><a class="seta" href="/primeira-vez/">Orientações de visita <span aria-hidden="true">→</span></a><Botao href={contato.href} externo={contato.externo} class="faixa__cta">{contato.grupo ? 'Pedir o endereço no grupo' : 'Solicitar endereço'}</Botao></div>
     </div>
   </section>
 
@@ -158,7 +158,7 @@ const contato = L.whatsapp || '/primeira-vez/#contato';
   <section class="contido" aria-labelledby="pv-t"><div class="pv">
     <h2 id="pv-t" class="titulo-p">Vai pela <em>primeira vez?</em></h2>
     <p class="suave">Veja como é uma gira, o que vestir e como chegar.</p>
-    <div class="pv__btns"><Botao href="/primeira-vez/" variante="papel">Guia da primeira vez →</Botao><Botao href={contato} externo={!!L.whatsapp}>Falar com a Casa</Botao></div>
+    <div class="pv__btns"><Botao href="/primeira-vez/" variante="papel">Guia da primeira vez →</Botao><Botao href={contato.href} externo={contato.externo}>{contato.rotulo}</Botao></div>
   </div></section>
 </Base>
 

@@ -5,14 +5,14 @@ import Gravura from '../../components/Gravura.astro';
 import Cabecalho from '../../components/Cabecalho.astro';
 import LinhaGira from '../../components/LinhaGira.astro';
 import site from '../../data/site.json';
-import { agenda, todasGiras, proximaGira, porExtenso } from '../../lib/gira.js';
+import { agenda, todasGiras, proximaGira, porExtenso, jaPassou } from '../../lib/gira.js';
 
 const L = site.links;
 const H = agenda.horarios;
 const giras = todasGiras();
 const g = proximaGira();
-const webcal = `webcal://${new URL(Astro.site!).host}/agenda.ics`;
-const contato = L.whatsapp || '/primeira-vez/#contato';
+const webcal = `webcal://${new URL(Astro.site!).host}/corrente.ics`;
+import { contato } from '../../lib/contato.js';
 const linhaParaPontos = (l: string) => ({ Oriente: 'Ritos da Casa', 'Iemanjá': 'Iemanjá', Ogum: 'Ogum', Exu: 'Exus', 'Criança': 'Crianças', Boiadeiro: 'Boiadeiros' } as Record<string, string>)[l];
 const prep = [
   { t: 'Antes', itens: ['Resguardo conforme orientação da Casa', 'Banho de ervas', 'Chegar no horário'] },
@@ -130,7 +130,7 @@ const estrelas = Array.from({ length: 46 }, (_, i) => ({ x: (i * 37.7) % 100, y:
   <section class="secao secao--sem-topo" aria-labelledby="cc-t">
     <div class="contido">
       <div class="secao__topo cc-topo"><h2 id="cc-t" class="titulo">Calendário da <em>corrente</em></h2><Botao href={webcal} variante="papel">Assinar no meu celular</Botao></div>
-      <ul class="lista-giras" data-futuras>{giras.map((x) => <LinhaGira g={x} />)}</ul>
+      <ul class="lista-giras" data-futuras>{giras.map((x) => <LinhaGira g={x} corrente oculta={jaPassou(x.data)} />)}</ul>
     </div>
   </section>
 
@@ -155,7 +155,7 @@ const estrelas = Array.from({ length: 46 }, (_, i) => ({ x: (i * 37.7) % 100, y:
       <div class="fechado t-noite">
         <div><h2 id="gf-t" class="subtitulo">O que fica só no grupo da corrente</h2>
           <p class="leitura">Atas completas, escalas, nomes, orientações individuais e avisos internos. A entrada no grupo é combinada com a Casa.</p></div>
-        <Botao href={contato} variante="papel" externo={!!L.whatsapp}>Falar com a Casa</Botao>
+        <Botao href={contato.href} variante="papel" externo={contato.externo}>{contato.rotulo}</Botao>
       </div>
     </div>
   </section>

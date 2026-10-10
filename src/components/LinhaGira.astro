@@ -1,8 +1,10 @@
 ---
 import Gravura from './Gravura.astro';
 /** Uma linha do calendário de giras. Recebe a gira já descrita (lib/gira.js). */
-interface Props { g: any; oculta?: boolean }
-const { g, oculta = false } = Astro.props;
+interface Props { g: any; oculta?: boolean; corrente?: boolean }
+const { g, oculta = false, corrente = false } = Astro.props;
+import { agenda } from '../lib/gira.js';
+const estudo = agenda.horarios.estudo.split(' ')[0];
 const festaAtual = !!g.festa;
 ---
 <li class="lg" data-data={g.data} data-mes={g.mesNum} hidden={oculta}>
@@ -14,8 +16,10 @@ const festaAtual = !!g.festa;
     {g.aviso && <li><span class="chip chip--alerta">{g.aviso}</span></li>}
     {g.festa && <li><span class="chip chip--ouro">{g.festa}</span></li>}
   </ul>
-  <p class="lg__hora titulo-p">{g.hora}</p>
-  <a class="lg__cal" href={g.calendario} target="_blank" rel="noopener">+ calendário<span class="sr-only"> da gira de {g.dia} de {g.mes} (abre o Google Agenda)</span></a>
+  {corrente
+    ? <p class="lg__hora lg__hora--dupla"><span><span class="rotulo suave">Estudo</span> <span class="titulo-p">{estudo}</span></span><span><span class="rotulo suave">Gira</span> <span class="titulo-p">{g.hora}</span></span></p>
+    : <p class="lg__hora titulo-p">{g.hora}</p>}
+  <a class="lg__cal" href={corrente ? g.calendarioCorrente : g.calendario} target="_blank" rel="noopener">+ calendário<span class="sr-only"> da gira de {g.dia} de {g.mes} (abre o Google Agenda)</span></a>
 </li>
 <style>
   .lg { display: grid; grid-template-columns: 7rem 4rem 1fr auto auto auto; align-items: center; gap: 2rem; padding-block: 1.125rem; border-bottom: 1.5px solid var(--tinta); }
@@ -28,12 +32,16 @@ const festaAtual = !!g.festa;
   .lg__chips { justify-content: flex-end; }
   .lg__chips .chip:not(.chip--ouro):not(.chip--alerta) { color: var(--texto-suave); border-color: var(--tinta); }
   .lg__hora { font-weight: 600; }
+  .lg__hora--dupla { display: grid; gap: .125rem; font-weight: 400; }
+  .lg__hora--dupla > span { display: flex; align-items: baseline; gap: .5rem; justify-content: space-between; }
+  .lg__hora--dupla .titulo-p { font-weight: 600; }
+  .lg__hora--dupla .rotulo { font-size: .6875rem; }
   .lg__cal { font-weight: 600; text-decoration: none; padding-block: .75rem; white-space: nowrap; }
   .lg__cal:hover { text-decoration: underline; }
   @media (max-width: 860px) {
     .lg { grid-template-columns: 4rem 1fr; grid-template-areas: 'med data' 'med quem' 'med chips' 'med hora' 'med cal'; gap: .375rem 1rem; align-items: start; padding-block: 1.5rem; }
     .lg__med { grid-area: med; width: 4rem; height: 4rem; }
     .lg__data { grid-area: data; } .lg__quem { grid-area: quem; } .lg__chips { grid-area: chips; justify-content: flex-start; margin-block: .25rem; }
-    .lg__hora { grid-area: hora; } .lg__cal { grid-area: cal; padding-block: .5rem; }
+    .lg__hora { grid-area: hora; } .lg__hora--dupla { display: flex; gap: 1.25rem; } .lg__hora--dupla > span { justify-content: flex-start; } .lg__cal { grid-area: cal; padding-block: .5rem; }
   }
 </style>

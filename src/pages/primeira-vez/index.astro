@@ -8,7 +8,7 @@ import { agenda, proximaGira, porExtenso } from '../../lib/gira.js';
 const L = site.links;
 const H = agenda.horarios;
 const g = proximaGira();
-const contato = L.whatsapp || '#contato';
+import { contato, comoPedirEndereco } from '../../lib/contato.js';
 // Horários de 19h30 e 21h vêm do Figma e ainda precisam de confirmação da Casa.
 const gira = [
   { h: H.estudo.split(' ')[0], t: 'Estudo mediúnico', d: 'Fechado, só para os médiuns. A assistência aguarda do lado de fora.', g: 'solr' },
@@ -40,7 +40,7 @@ const faq = [
   ['Paga alguma coisa?', 'Não. A caridade é gratuita e não se paga pelo atendimento espiritual. Doações, como velas e ervas, são bem-vindas, mas nada é obrigatório.'],
   ['Posso levar criança?', falar],
   ['Posso ir sozinho?', falar],
-  ['Por que o endereço não está no site?', 'O endereço é passado pela Casa por mensagem privada, antes da visita. Peça o seu pelo botão Falar com a Casa.'],
+  ['Por que o endereço não está no site?', `${comoPedirEndereco} Peça o seu pelo botão ${contato.rotulo}.`],
   ['Posso ir se estiver menstruada, doente ou de luto?', falar],
 ];
 ---
@@ -140,10 +140,10 @@ const faq = [
       <div class="vir cartao">
         <div>
           <h2 id="vir-t" class="titulo">Pronto para <em>vir?</em></h2>
-          <p class="leitura suave">{g ? <>Próxima gira: <span data-campo="extenso">{porExtenso(g).toLowerCase()}</span>, {g.hora}. </> : null}O endereço é enviado pelo WhatsApp.</p>
+          <p class="leitura suave">{g ? <>Próxima gira: <span data-campo="extenso">{porExtenso(g).toLowerCase()}</span>, {g.hora}. </> : null}{comoPedirEndereco}</p>
         </div>
         <div class="vir__btns">
-          {L.whatsapp ? <Botao href={L.whatsapp} externo>Falar com a Casa</Botao> : <p class="em-breve">O WhatsApp da Casa entra aqui em breve</p>}
+          {contato.externo ? <Botao href={contato.href} externo>{contato.rotulo}</Botao> : <p class="em-breve">O WhatsApp da Casa entra aqui em breve</p>}
           <Botao href="/agenda/" variante="papel">Ver a agenda</Botao>
         </div>
       </div>

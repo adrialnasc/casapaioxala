@@ -1,4 +1,5 @@
 import agenda from '../data/agenda.json';
+import { comoPedirEndereco } from './contato.js';
 
 export const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const DIAS = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
@@ -39,20 +40,36 @@ export function descrever(g) {
     // Mesmo modelo da Agenda: título = quem atende; linhas (e festa) no texto de apoio.
     resumo: `${g.festa ? g.festa + '. ' : ''}Linha de ${linhas}. Gira aberta à assistência às ${agenda.horarios.gira}.`,
     calendario: linkCalendario(g, linhas),
+    calendarioCorrente: linkCalendario(g, linhas, true),
   };
 }
 
-/** Link do Google Agenda. Duração de 3h é uma estimativa: confirmar com a Casa. */
-function linkCalendario(g, linhas) {
-  const [a, m, d] = g.data.split('-');
-  const ini = `${a}${m}${d}T220000Z`; // 19h em São Paulo (UTC-3)
-  const fimData = new Date(Date.UTC(+a, +m - 1, +d + 1));
-  const fim = fimData.toISOString().slice(0, 10).replaceAll('-', '') + 'T010000Z';
+/** Nome do evento salvo no calendário: o mesmo que a página mostra (quem atende). A festa vem antes, quando houver. */
+export const nomeEvento = (g) => `${g.festa ? g.festa + ' · ' : 'Gira · '}atende ${g.atende}`;
+
+/** Horário "18h" ou "18h45" em UTC (São Paulo é UTC-3), no formato do iCalendar. Passa da meia-noite quando precisa. */
+export function utc(data, hora) {
+  const [a, m, d] = data.split('-').map(Number);
+  const [h, min = '0'] = hora.replace('h', ':').split(':');
+  const t = new Date(Date.UTC(a, m - 1, d, Number(h) + 3, Number(min || 0)));
+  return t.toISOString().replace(/[-:]/g, '').slice(0, 15) + 'Z';
+}
+
+/** Duração da gira: 3h é uma estimativa (fim às 22h). Confirmar com a Casa. */
+const FIM_GIRA = '22h';
+
+/** Link do Google Agenda. Na versão da corrente, o evento começa no estudo mediúnico. */
+function linkCalendario(g, linhas, corrente = false) {
+  const H = agenda.horarios;
+  const inicio = corrente ? H.estudo.split(' ')[0] : H.gira;
+  const detalhes = corrente
+    ? `Chegada dos médiuns às ${H.chegadaMediuns}. Estudo mediúnico das ${H.estudo}. Gira às ${H.gira}. Linha de ${linhas}.`
+    : `Gira aberta à assistência às ${H.gira}. Linha de ${linhas}. ${comoPedirEndereco}`;
   const p = new URLSearchParams({
     action: 'TEMPLATE',
-    text: `${g.festa ?? 'Gira de ' + linhas} · Casa de Umbanda Pai Oxalá`,
-    dates: `${ini}/${fim}`,
-    details: 'Gira aberta à assistência. Solicite o endereço à Casa antes da visita.',
+    text: `${corrente ? 'Corrente · ' : ''}${nomeEvento(g)} · Casa de Umbanda Pai Oxalá`,
+    dates: `${utc(g.data, inicio)}/${utc(g.data, FIM_GIRA)}`,
+    details: detalhes,
     location: 'Embu-Guaçu, SP',
   });
   return `https://calendar.google.com/calendar/render?${p}`;
