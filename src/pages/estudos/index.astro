@@ -16,11 +16,12 @@ const materiais = [
   { t: 'Fogo no Mato', autor: 'Luiz Antônio Simas e Luiz Rufino', tipo: 'livro', tag: 'Livro', tema: 'Umbanda', g: 'folha', cor: 'var(--mata)' },
   { t: 'Toque de Congo de Ouro', autor: 'curimba', tipo: 'video', tag: 'Vídeo', tema: 'Curimba', g: 'atabaque', cor: 'var(--vermelho)' },
   { t: 'As Ervas na Umbanda', autor: 'Douglas Rainho', tipo: 'livro', tag: 'Livro', tema: 'Ervas e benzimento', g: 'ramo', cor: 'var(--estudos)' },
+  { t: 'São Jorge: O santo do povo e o povo do santo', autor: 'Luiz Antônio Simas', tipo: 'livro', tag: 'Livro · trecho em PDF', tema: 'Orixás e ancestralidade', g: 'espada', cor: 'var(--vinho)', href: 'https://proassets.planetadelivros.com.br/usuaris/libros_contenido/arxius/66/65102_1_978-85-422-4060-3.pdf' },
 ];
 const caderno = ['Cultura e Pesquisa', 'Divindades e Entidades', 'Doutrina e Teologia', 'Música e Curimba', 'Práticas e Rituais', 'Trabalhos Acadêmicos'];
 const biblio = [
   { t: 'Umbanda', livros: [['Conhecendo a Umbanda: Dentro do Terreiro', 'Douglas Rainho'], ['O Espiritismo, a Magia e as Sete Linhas de Umbanda', 'Leal de Souza'], ['Umbanda de Todos Nós', 'W. W. da Matta e Silva'], ['Lições de Umbanda e Quimbanda na Palavra de um Preto Velho', 'W. W. da Matta e Silva'], ['Fogo no Mato: A Ciência Encantada das Macumbas', 'Luiz Antônio Simas e Luiz Rufino']] },
-  { t: 'Orixás, história e ancestralidade', livros: [['Mitologia dos Orixás', 'Reginaldo Prandi'], ['Encantaria Brasileira', 'Reginaldo Prandi'], ['Candomblé Bem Explicado', 'Odé Kileuy e Vera de Oxaguiã'], ['Bantos, Malês e Identidade Negra', 'Nei Lopes'], ['A Terra dos Mil Povos', 'Kaká Werá']] },
+  { t: 'Orixás, história e ancestralidade', livros: [['Mitologia dos Orixás', 'Reginaldo Prandi'], ['Encantaria Brasileira', 'Reginaldo Prandi'], ['Candomblé Bem Explicado', 'Odé Kileuy e Vera de Oxaguiã'], ['Bantos, Malês e Identidade Negra', 'Nei Lopes'], ['A Terra dos Mil Povos', 'Kaká Werá'], ['São Jorge: O santo do povo e o povo do santo', 'Luiz Antônio Simas', 'https://proassets.planetadelivros.com.br/usuaris/libros_contenido/arxius/66/65102_1_978-85-422-4060-3.pdf']] },
   { t: 'Mediunidade e espiritualidade', livros: [['O Livro dos Médiuns', 'Allan Kardec'], ['Nos Domínios da Mediunidade', 'André Luiz e Chico Xavier'], ['Diálogo com as Sombras', 'Hermínio C. Miranda']] },
   { t: 'Ervas e benzimento', livros: [['As Ervas na Umbanda', 'Douglas Rainho'], ['O Poder das Ervas na Umbanda', 'José Ribeiro'], ['Rituais com Ervas: Banhos, Defumações e Benzimentos', 'Adriano Camargo']] },
 ];
@@ -73,8 +74,9 @@ const biblio = [
               {m.foto ? <img src={m.foto} alt={m.alt} width="717" height="440" loading="lazy" /> : <><Gravura nome={m.g!} largura={160} /><span class="mat__capa-t"><em>{m.t}</em></span></>}
             </span>
             <span class="chip">{m.tag}</span>
-            <h3 class="destaque mat__t">{m.t}</h3>
+            <h3 class="destaque mat__t">{m.href ? <a href={m.href} target="_blank" rel="noopener" class="mat__link">{m.t}<span class="sr-only"> (PDF, abre em nova aba)</span></a> : m.t}</h3>
             <p class="suave">{m.autor}</p>
+            {m.href && <p class="suave mat__nota">Trecho divulgado pela Editora Planeta</p>}
           </li>
         ))}
       </ul>
@@ -106,7 +108,7 @@ const biblio = [
         {biblio.map((b, i) => (
           <details class="sanfona">
             <summary>0{i + 1} · {b.t}<span class="sanfona__extra">{b.livros.length} livros</span></summary>
-            <ul class="sanfona__corpo livros">{b.livros.map(([t, a]) => <li><span class="livro__t">{t}</span><span class="suave">{a}</span></li>)}</ul>
+            <ul class="sanfona__corpo livros">{b.livros.map(([t, a, u]) => <li><span class="livro__t">{u ? <a href={u} target="_blank" rel="noopener">{t}<span class="sr-only"> (trecho em PDF, abre em nova aba)</span></a> : t}</span><span class="suave">{a}{u && ' · trecho em PDF'}</span></li>)}</ul>
           </details>
         ))}
       </div>
@@ -163,6 +165,8 @@ const biblio = [
   .mat__capa-t { font-size: var(--t-subtitulo); line-height: 1.15; max-width: 9ch; }
   .mat .chip { color: var(--texto-suave); border-color: var(--tinta); }
   .mat__t { font-weight: 600; }
+  .mat__link { color: inherit; text-decoration: underline; text-underline-offset: .2em; text-decoration-thickness: 1px; }
+  .mat__nota { font-size: .875rem; margin-top: -.25rem; }
   .caderno { display: grid; grid-template-columns: 740fr 420fr; gap: 2.5rem; align-items: center; }
   .caderno__chips { margin-block: var(--esp-grupo); }
   .caderno__chips .chip { color: var(--creme); }
@@ -192,5 +196,6 @@ const biblio = [
     .mat__capa :global(.gravura) { width: 70%; }
     .mat__capa-t { display: none; }
     .mat .chip { min-height: 1.75rem; font-size: .6875rem; }
+    .mat > :not(.mat__capa) { grid-column: 2; }
   }
 </style>
