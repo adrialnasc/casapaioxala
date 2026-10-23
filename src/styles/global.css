@@ -48,7 +48,7 @@ p { text-wrap: pretty; }
 .kicker::before { content: ''; width: 2rem; height: 1px; background: currentColor; opacity: .7; }
 
 /* link com seta */
-.seta { font-family: var(--mono); font-weight: 500; font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; text-decoration: none; display: inline-flex; gap: .4em; align-items: center; padding-block: .5rem; }
+.seta { font-family: var(--mono); font-weight: 500; font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; text-decoration: none; display: inline-flex; gap: .4em; align-items: center; padding-block: .5rem; min-height: 2.75rem; }
 .seta:hover { text-decoration: underline; text-underline-offset: 4px; }
 
 /* temas de seção */
@@ -120,7 +120,7 @@ button.chip { cursor: pointer; }
 .moldura { border: 1.5px solid var(--tinta); box-shadow: 10px 10px 0 var(--vermelho); width: 100%; height: auto; filter: saturate(.85); }
 
 /* link que ainda não existe */
-.em-breve { font-family: var(--mono); font-size: .6875rem; letter-spacing: .12em; text-transform: uppercase; }
+.em-breve { font-family: var(--mono); font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; }
 
 @media (max-width: 860px) {
   .grade--3, .grade--4 { grid-template-columns: 1fr; }

@@ -15,10 +15,10 @@ const central = [
   { t: 'Corrente', d: 'Para os médiuns da Casa', h: '/corrente/', g: 'solr', c: 't-noite' },
 ];
 const playlists = [
-  { t: 'Pontos de Baiano', g: 'coco', c: 'var(--vermelho)', claro: false },
-  { t: 'Pontos de Caboclo', g: 'atabaque', c: '#E8B8A6', claro: true },
-  { t: 'Discoteca da Casa', foto: '/fotos/tincoas.webp', alt: 'Capa de disco de Os Tincoãs', c: 'var(--noite)', claro: false },
-  { t: 'Curimba', g: 'atabaque', c: 'var(--vinho)', claro: false },
+  { t: 'Pontos de Baiano', g: 'coco', c: 'var(--vinho)', claro: false, pl: 'PLMwfw3-kU_tA' },
+  { t: 'Pontos de Caboclo', g: 'folha', c: 'var(--mata)', claro: false, pl: 'PLAjRdXknipds' },
+  { t: 'Discoteca da Casa', foto: '/fotos/tincoas.webp', alt: 'Capa de disco de Os Tincoãs', c: 'var(--noite)', claro: false, h: '/pontos/#discoteca' },
+  { t: 'Pontos de Preto-Velho', g: 'cachimbo', c: 'var(--terra)', claro: false, pl: 'PLZasR1FC2x64' },
 ];
 const L = site.links;
 import { contato, comoPedirEndereco } from '../lib/contato.js';
@@ -47,7 +47,7 @@ import { contato, comoPedirEndereco } from '../lib/contato.js';
   <section class="faixa t-creme" aria-label="Informações rápidas">
     <div class="contido faixa__in">
       <div><p class="rotulo kicker-pt">Atendimento</p><p class="subtitulo">Quinzenal, às sextas</p><p class="nota suave">Todos são bem-vindos e a entrada é gratuita</p></div>
-      <div><p class="rotulo kicker-pt">Horários</p><p class="subtitulo">Gira às {agenda.horarios.gira}</p><p class="nota suave">Aberta ao público.<br />Estudo mediúnico kardecista: {agenda.horarios.estudo}, só para médiuns.</p></div>
+      <div><p class="rotulo kicker-pt">Horários</p><p class="subtitulo">Gira às {agenda.horarios.gira}</p><p class="nota suave">Aberta ao público.</p></div>
       <div><p class="rotulo kicker-pt">Onde estamos</p><p class="subtitulo">Embu-Guaçu · SP</p><p class="nota suave">{comoPedirEndereco}</p><a class="seta" href="/primeira-vez/">Orientações de visita <span aria-hidden="true">→</span></a><Botao href={contato.href} externo={contato.externo} class="faixa__cta">{contato.grupo ? 'Pedir o endereço no grupo' : 'Solicitar endereço'}</Botao></div>
     </div>
   </section>
@@ -116,11 +116,11 @@ import { contato, comoPedirEndereco } from '../lib/contato.js';
       </div>
       <ul class="pl">
         {playlists.map((p) => (
-          <li><a href={L.youtube || '/pontos/'} class="pl__card">
+          <li><a href={p.pl ? `https://www.youtube.com/playlist?list=${p.pl}` : p.h} class="pl__card" target={p.pl ? '_blank' : undefined} rel={p.pl ? 'noopener' : undefined}>
             <span class="pl__capa" style={`background:${p.c};color:${p.claro ? 'var(--tinta)' : 'var(--papel)'}`}>
               {p.foto ? <img src={p.foto} alt={p.alt} width="518" height="520" loading="lazy" class="pl__foto" /> : <><Gravura nome={p.g!} largura={96} class="pl__g" /><span class="subtitulo" aria-hidden="true"><em>{p.t}</em></span></>}
             </span>
-            {p.foto ? <span class="rotulo">{p.t}</span> : <span class="sr-only">{p.t}</span>}
+            {p.foto ? <span class="rotulo">{p.t}</span> : <span class="sr-only">{p.t}</span>}{p.pl && <span class="sr-only"> no YouTube (abre em nova aba)</span>}
           </a></li>
         ))}
       </ul>
@@ -161,7 +161,7 @@ import { contato, comoPedirEndereco } from '../lib/contato.js';
   .central { list-style: none; padding: 0; margin: var(--esp-bloco) 0 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--esp-grupo); }
   .central__card { display: flex; flex-direction: column; min-height: 300px; padding: 1.25rem; text-decoration: none; border: 1.5px solid var(--tinta); box-shadow: var(--sombra); transition: transform .15s, box-shadow .15s; height: 100%; }
   .central__card:hover { transform: translate(3px, 3px); box-shadow: 3px 3px 0 var(--tinta); }
-  .central__topo { display: flex; justify-content: space-between; font-size: .6875rem; }
+  .central__topo { display: flex; justify-content: space-between; font-size: .75rem; }
   .central :global(.central__g) { width: 96px; margin: auto auto 1.5rem; }
   .central__txt { display: grid; gap: .35rem; }
   .central :global(.central__g--p) { width: 68px; }
@@ -190,8 +190,8 @@ import { contato, comoPedirEndereco } from '../lib/contato.js';
   .pl { list-style: none; padding: 0; margin: var(--esp-bloco) 0 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--esp-grupo); }
   .pl__card { display: grid; gap: .75rem; text-decoration: none; }
   .pl__capa { position: relative; overflow: hidden; aspect-ratio: 1; border: 8px solid var(--papel); box-shadow: var(--sombra-p); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; text-align: center; padding: 1rem; }
-  .pl :global(.pl__g) { width: 80px; }
-  .pl__card > .rotulo { font-size: .6875rem; }
+  .pl :global(.pl__g) { width: 96px; height: 96px; padding: 14px; border-radius: 50%; background: var(--papel); border: 1.5px solid var(--tinta); }
+  .pl__card > .rotulo { font-size: .75rem; }
   .pl__card:hover .pl__capa { transform: translate(2px, 2px); }
 
   /* PRIMEIRA VEZ */
@@ -223,7 +223,7 @@ import { contato, comoPedirEndereco } from '../lib/contato.js';
     .banner__estrela { display: none; }
     .pl { grid-template-columns: 1fr 1fr; gap: var(--esp-item); }
     .pl-wrap { display: flex; flex-direction: column; } .pl-wrap .pl { order: 1; margin-top: var(--esp-grupo); } .pl-wrap > * { order: 0; } .pl-wrap .pl__btns { order: 2; margin-top: var(--esp-grupo); }
-    .pl__capa { border-width: 5px; aspect-ratio: 1; } .pl__capa .subtitulo { font-size: 1rem; } .pl :global(.pl__g) { width: 44px; }
+    .pl__capa { border-width: 5px; aspect-ratio: 1; } .pl__capa .subtitulo { font-size: 1rem; } .pl :global(.pl__g) { width: 56px; height: 56px; padding: 8px; }
     .faixa :global(.faixa__cta) { justify-self: stretch; }
     .pv { grid-template-columns: 1fr; gap: var(--esp-item); border-bottom: 0; }
   }

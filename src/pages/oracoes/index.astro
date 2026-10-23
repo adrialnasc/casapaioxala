@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import Gravura from '../../components/Gravura.astro';
 import Cabecalho from '../../components/Cabecalho.astro';
+import Moldura from '../../components/Moldura.astro';
 import livro from '../../data/pontos.json';
 
 // A Prece de Cáritas vem do Livro de Pontos (Ritos da Casa, 04), para não existir em dois lugares.
@@ -43,26 +44,27 @@ const yt = (id: string) => `https://www.youtube.com/watch?v=${id}`;
       </div>
 
       <div class="or-lista" data-or-lista>
-        {oracoes.map((o) => (
+        {oracoes.map((o, k) => (
           <article id={o.id} class:list={['or', o.breve && 'or--breve']} aria-labelledby={`${o.id}-t`}>
-            <div class="or__lado">
-              <span class="or__medalhao"><Gravura nome={o.g} largura={160} /></span>
-              <p class="rotulo suave">{o.quando}</p>
-            </div>
-            <div class="or__corpo">
-              <h2 id={`${o.id}-t`} class="titulo">{o.t}</h2>
-              {o.breve ? (
+            {o.breve ? (
+              <div class="or__breve">
+                <p class="rotulo suave">{o.quando}</p>
+                <h2 id={`${o.id}-t`} class="titulo">{o.t}</h2>
                 <p class="leitura suave">O texto da Oração a Ogum que a Casa reza será publicado aqui em breve.</p>
-              ) : (
-                <>
+              </div>
+            ) : (
+              <>
+                <Moldura semente={k * 2}>
+                  <p class="rotulo or__quando">{o.quando}</p>
+                  <h2 id={`${o.id}-t`} class="titulo or__t">{o.t}</h2>
                   <div class="or__versos" data-versos>{o.versos.map((v) => <p>{v}</p>)}</div>
-                  <div class="or__acoes">
-                    <button type="button" class="seta or__copiar" data-copiar={o.id}>Copiar a oração</button>
-                    {o.youtube && <a class="seta" href={yt(o.youtube)} target="_blank" rel="noopener">Ouvir no YouTube <span aria-hidden="true">↗</span><span class="sr-only"> (abre em nova aba)</span></a>}
-                  </div>
-                </>
-              )}
-            </div>
+                </Moldura>
+                <div class="or__acoes">
+                  <button type="button" class="seta or__copiar" data-copiar={o.id}>Copiar a oração</button>
+                  {o.youtube && <a class="seta" href={yt(o.youtube)} target="_blank" rel="noopener">Ouvir no YouTube <span aria-hidden="true">↗</span><span class="sr-only"> (abre em nova aba)</span></a>}
+                </div>
+              </>
+            )}
           </article>
         ))}
       </div>
@@ -100,22 +102,17 @@ const yt = (id: string) => `https://www.youtube.com/watch?v=${id}`;
   .or-ferramentas { display: flex; align-items: center; gap: .75rem; justify-content: flex-end; margin-bottom: var(--esp-grupo); }
   .or-tam { min-width: 44px; min-height: 44px; font: 600 1rem var(--serif); color: var(--tinta); background: transparent; border: 1.5px solid var(--tinta); cursor: pointer; }
   .or-tam:hover { background: var(--papel-escuro); }
-  .or-lista { --or-escala: 1; border-top: 1.5px solid var(--tinta); }
-  .or { display: grid; grid-template-columns: 200px 1fr; gap: var(--esp-bloco); padding-block: var(--esp-bloco); border-bottom: 1.5px solid var(--tinta); scroll-margin-top: 6rem; }
-  .or__lado { display: grid; gap: .75rem; align-content: start; justify-items: start; }
-  .or__medalhao { width: 96px; height: 96px; border-radius: 50%; background: var(--papel-escuro); border: 1.5px solid var(--tinta); display: grid; place-items: center; }
-  .or__medalhao :global(.gravura) { width: 68%; }
-  .or__corpo { display: grid; gap: var(--esp-grupo); max-width: 46rem; }
-  .or__versos { display: grid; gap: .35em; font-size: calc(var(--t-leitura) * var(--or-escala)); line-height: 1.5; }
-  .or__acoes { display: flex; gap: 1.5rem; flex-wrap: wrap; }
-  .or__copiar { background: none; border: 0; color: inherit; cursor: pointer; padding-inline: 0; min-height: 44px; }
-  .or--breve .or__medalhao { opacity: .6; }
+  .or-lista { --or-escala: 1; display: grid; gap: var(--esp-secao); max-width: 52rem; margin-inline: auto; }
+  .or { scroll-margin-top: 6rem; }
+  .or__quando { text-align: center; color: var(--vermelho); }
+  .or__t { text-align: center; margin: .5rem 0 1.5rem; font-style: italic; }
+  .or__versos { display: grid; gap: .35em; text-align: center; font-size: calc(var(--t-leitura) * var(--or-escala)); line-height: 1.55; max-width: 36rem; margin-inline: auto; }
+  .or__acoes { display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; margin-top: 1rem; }
+  .or__copiar { background: none; border: 0; color: inherit; cursor: pointer; padding-inline: 0; }
+  .or__breve { text-align: center; display: grid; gap: .5rem; padding: 2rem; border: 1.5px dashed var(--texto-suave); }
   .or-fim { margin-top: var(--esp-bloco); }
   @media (max-width: 860px) {
     :global(.or-velas) { display: none; }
-    .or { grid-template-columns: 1fr; gap: var(--esp-grupo); }
-    .or__lado { grid-auto-flow: column; align-items: center; justify-content: start; }
-    .or__medalhao { width: 64px; height: 64px; }
     .or-ferramentas { justify-content: flex-start; }
   }
 </style>

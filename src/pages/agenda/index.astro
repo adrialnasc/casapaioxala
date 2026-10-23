@@ -21,8 +21,8 @@ const ano = giras[0]?.ano ?? hoje.getFullYear();
 const webcal = `webcal://${new URL(Astro.site!).host}/agenda.ics`;
 import { contato } from '../../lib/contato.js';
 ---
-<Base titulo="Agenda · Casa de Umbanda Pai Oxalá" descricao={`Giras quinzenais às sextas-feiras. Estudo mediúnico das ${agenda.horarios.estudo}, só para médiuns. Gira de Umbanda às ${agenda.horarios.gira}, aberta à assistência.`}>
-  <Cabecalho tema="t-mata" class="ag-cab" titulo='<span class="it">Agenda</span>' lead={`Estudo mediúnico, voltado ao kardecismo, das ${agenda.horarios.estudo} (só para médiuns). Gira de Umbanda a partir das ${agenda.horarios.gira}, aberta à assistência.`}>
+<Base titulo="Agenda · Casa de Umbanda Pai Oxalá" descricao={`Giras quinzenais às sextas-feiras. Gira de Umbanda às ${agenda.horarios.gira}, aberta à assistência.`}>
+  <Cabecalho tema="t-mata" class="ag-cab" titulo='<span class="it">Agenda</span>' lead={`Giras quinzenais às sextas-feiras. Gira de Umbanda a partir das ${agenda.horarios.gira}, aberta à assistência.`}>
     <div slot="deco" class="cab__deco ag-deco" aria-hidden="true"><span class="ag-ano">{ano}</span><Gravura nome="solr" largura={480} class="ag-sol" eager /></div>
     <div class="cab__acoes"><Botao href={webcal}>Assinar calendário da Casa</Botao></div>
   </Cabecalho>

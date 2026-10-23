@@ -1,0 +1,33 @@
+---
+import Gravura from './Gravura.astro';
+/** Moldura de gravuras em volta de um texto (orações, citações). Decorativa: as gravuras ficam escondidas do leitor de tela. */
+interface Props { semente?: number; class?: string }
+const { semente = 0, class: cls = '' } = Astro.props;
+const base = ['rosa', 'ramo', 'crescente', 'coco', 'concha', 'cachimbo', 'folha', 'lua'];
+const giro = (n: number, k: number) => Array.from({ length: n }, (_, i) => base[(i + k + semente) % base.length]);
+const topo = giro(9, 0), baseLinha = giro(9, 3), esq = giro(4, 5), dir = giro(4, 2);
+---
+<div class:list={['mold', cls]}>
+  <div class="mold__linha" aria-hidden="true">{topo.map((n) => <Gravura nome={n} largura={64} class="mold__g" />)}</div>
+  <div class="mold__meio">
+    <div class="mold__lado" aria-hidden="true">{esq.map((n) => <Gravura nome={n} largura={64} class="mold__g" />)}</div>
+    <div class="mold__conteudo"><slot /></div>
+    <div class="mold__lado" aria-hidden="true">{dir.map((n) => <Gravura nome={n} largura={64} class="mold__g" espelhar />)}</div>
+  </div>
+  <div class="mold__linha" aria-hidden="true">{baseLinha.map((n) => <Gravura nome={n} largura={64} class="mold__g" espelhar />)}</div>
+</div>
+<style>
+  .mold { --g: 3.25rem; position: relative; display: grid; grid-template-rows: auto 1fr auto; }
+  /* o fio passa pelo meio das gravuras */
+  .mold::before { content: ''; position: absolute; inset: calc(var(--g) / 2); border: 1.5px solid var(--texto-suave); opacity: .55; pointer-events: none; }
+  .mold__linha { display: flex; justify-content: space-between; align-items: center; position: relative; }
+  .mold__meio { display: grid; grid-template-columns: var(--g) 1fr var(--g); }
+  .mold__lado { display: flex; flex-direction: column; justify-content: space-evenly; align-items: center; position: relative; }
+  .mold :global(.mold__g) { width: var(--g); height: var(--g); flex: none; background: var(--papel); padding: .2rem; }
+  .mold__conteudo { padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 4vw, 3.5rem); }
+  @media (max-width: 640px) {
+    .mold { --g: 1.875rem; }
+    .mold__linha :global(.mold__g:nth-child(2n)) { display: none; }
+    .mold__lado :global(.mold__g:nth-child(n + 4)) { display: none; }
+  }
+</style>
