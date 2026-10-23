@@ -3,9 +3,11 @@ import '../styles/global.css';
 import Nav from '../components/Nav.astro';
 import Rodape from '../components/Rodape.astro';
 import Friso from '../components/Friso.astro';
-interface Props { titulo?: string; descricao?: string }
+import Portao from '../components/Portao.astro';
+interface Props { titulo?: string; descricao?: string; restrito?: boolean }
 const {
   titulo = 'Casa de Umbanda Pai Oxalá · Embu-Guaçu, SP',
+  restrito = false,
   descricao = 'Fé, caridade e ancestralidade. Giras quinzenais às sextas-feiras, abertas à assistência. Regida pelo Caboclo Xamã.',
 } = Astro.props;
 const canonica = new URL(Astro.url.pathname, Astro.site);
@@ -23,12 +25,14 @@ const canonica = new URL(Astro.url.pathname, Astro.site);
   <meta property="og:locale" content="pt_BR" />
   <meta property="og:title" content={titulo} />
   <meta property="og:description" content={descricao} />
+  {restrito && <meta name="robots" content="noindex, nofollow" />}
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 </head>
 <body>
   <a class="pular" href="#conteudo">Pular para o conteúdo</a>
   <Nav />
-  <main id="conteudo"><slot /></main>
+  {restrito && <Portao />}
+  <main id="conteudo" data-restrito={restrito ? '' : undefined} hidden={restrito}><slot /></main>
   <Friso />
   <Rodape />
 </body>

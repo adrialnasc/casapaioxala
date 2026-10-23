@@ -61,7 +61,7 @@ const estudar = [
 ];
 const estrelas = Array.from({ length: 46 }, (_, i) => ({ x: (i * 37.7) % 100, y: (i * 53.3) % 100, s: 8 + ((i * 7) % 14) }));
 ---
-<Base titulo="Corrente · Casa de Umbanda Pai Oxalá" descricao="O que os médiuns da Casa de Umbanda Pai Oxalá precisam no dia a dia: preparação, calendário, pontos e estudos.">
+<Base restrito titulo="Corrente · Casa de Umbanda Pai Oxalá" descricao="O que os médiuns da Casa de Umbanda Pai Oxalá precisam no dia a dia: preparação, calendário, pontos e estudos.">
   <Cabecalho tema="t-noite" titulo="Para a <em>corrente</em>" lead="O que os médiuns da Casa precisam no dia a dia: preparação, calendário, pontos e estudos.">
     <div slot="deco" class="cab__deco co-ceu" aria-hidden="true">
       {estrelas.map((e) => <span style={`left:${e.x}%;top:${e.y}%;font-size:${e.s}px`}>✦</span>)}

@@ -21,12 +21,12 @@ const materiais = [
 const caderno = ['Cultura e Pesquisa', 'Divindades e Entidades', 'Doutrina e Teologia', 'Música e Curimba', 'Práticas e Rituais', 'Trabalhos Acadêmicos'];
 const biblio = [
   { t: 'Umbanda', tema: 'Umbanda', livros: [['Conhecendo a Umbanda: Dentro do Terreiro', 'Douglas Rainho'], ['O Espiritismo, a Magia e as Sete Linhas de Umbanda', 'Leal de Souza'], ['Umbanda de Todos Nós', 'W. W. da Matta e Silva'], ['Lições de Umbanda e Quimbanda na Palavra de um Preto Velho', 'W. W. da Matta e Silva'], ['Fogo no Mato: A Ciência Encantada das Macumbas', 'Luiz Antônio Simas e Luiz Rufino']] },
-  { t: 'Orixás, história e ancestralidade', tema: 'Orixás e ancestralidade', livros: [['Mitologia dos Orixás', 'Reginaldo Prandi'], ['Encantaria Brasileira', 'Reginaldo Prandi'], ['Candomblé Bem Explicado', 'Odé Kileuy e Vera de Oxaguiã'], ['Bantos, Malês e Identidade Negra', 'Nei Lopes'], ['A Terra dos Mil Povos', 'Kaká Werá'], ['São Jorge: O santo do povo e o povo do santo', 'Luiz Antônio Simas', 'https://proassets.planetadelivros.com.br/usuaris/libros_contenido/arxius/66/65102_1_978-85-422-4060-3.pdf']] },
-  { t: 'Mediunidade e espiritualidade', tema: 'Mediunidade', livros: [['O Livro dos Médiuns', 'Allan Kardec'], ['Nos Domínios da Mediunidade', 'André Luiz e Chico Xavier'], ['Diálogo com as Sombras', 'Hermínio C. Miranda']] },
+  { t: 'Orixás, história e ancestralidade', tema: 'Orixás e ancestralidade', livros: [['Mitologia dos Orixás', 'Reginaldo Prandi'], ['Encantaria Brasileira', 'Reginaldo Prandi'], ['Candomblé Bem Explicado', 'Odé Kileuy e Vera de Oxaguiã'], ['Bantos, Malês e Identidade Negra', 'Nei Lopes'], ['A Terra dos Mil Povos', 'Kaká Werá'], ['São Jorge: O santo do povo e o povo do santo', 'Luiz Antônio Simas', 'https://proassets.planetadelivros.com.br/usuaris/libros_contenido/arxius/66/65102_1_978-85-422-4060-3.pdf', 'trecho em PDF']] },
+  { t: 'Mediunidade e espiritualidade', tema: 'Mediunidade', livros: [['O Livro dos Médiuns', 'Allan Kardec', 'https://download.espiritismo.net/literatura_espirita/WEB-O-Livro-dos-Mediuns-Guillon.pdf', 'PDF'], ['Nos Domínios da Mediunidade', 'André Luiz e Chico Xavier'], ['Diálogo com as Sombras', 'Hermínio C. Miranda']] },
   { t: 'Ervas e benzimento', tema: 'Ervas e benzimento', livros: [['As Ervas na Umbanda', 'Douglas Rainho'], ['O Poder das Ervas na Umbanda', 'José Ribeiro'], ['Rituais com Ervas: Banhos, Defumações e Benzimentos', 'Adriano Camargo']] },
 ];
 ---
-<Base titulo="Estudos · Casa de Umbanda Pai Oxalá" descricao="Apresentações, livros e o caderno de estudos da Casa de Umbanda Pai Oxalá, para aprender no seu tempo.">
+<Base restrito titulo="Estudos · Casa de Umbanda Pai Oxalá" descricao="Apresentações, livros e o caderno de estudos da Casa de Umbanda Pai Oxalá, para aprender no seu tempo.">
   <Cabecalho tema="t-estudos" titulo="Caderno<br /><em>de Estudos.</em>" lead="Apresentações, livros e o caderno de estudos da Casa, para aprender no seu tempo.">
     <Gravura slot="deco" nome="folha" largura={480} class="cab__deco es-folha" eager />
   </Cabecalho>
@@ -55,7 +55,7 @@ const biblio = [
           <p class="suave">Casa de Umbanda Pai Oxalá · 2026</p>
           {L.apresentacao || L.apresentacaoPdf ? (
             <div class="destaque-ap__btns">
-              {L.apresentacao && <Botao href={L.apresentacao} externo>Ver apresentação</Botao>}
+              {L.apresentacao && <Botao href={L.apresentacao} externo>Abrir apresentação</Botao>}
               {L.apresentacaoPdf && <Botao href={L.apresentacaoPdf} variante="papel" externo>Baixar PDF</Botao>}
             </div>
           ) : <p class="em-breve">A apresentação será publicada aqui em breve</p>}
@@ -91,7 +91,8 @@ const biblio = [
         <h2 id="cad-t" class="titulo">Caderno de estudos da <em class="ouro">Casa</em></h2>
         <p class="leitura suave secao__lead">Um caderno online com as fontes que a Casa reuniu. Dá para fazer perguntas, ouvir resumos em áudio e ver mapas mentais.</p>
         <ul class="chips caderno__chips">{caderno.map((c) => <li><span class="chip">{c}</span></li>)}</ul>
-        {L.caderno ? <Botao href={L.caderno} externo>Abrir o caderno</Botao> : <p class="em-breve">O link do caderno será publicado em breve</p>}
+        {L.caderno ? <div class="caderno__btns"><Botao href={L.caderno} externo>Abrir o caderno</Botao>{L.cadernoVideo && <Botao href={L.cadernoVideo} variante="papel" externo>Ver o resumo em vídeo</Botao>}</div> : <p class="em-breve">O link do caderno será publicado em breve</p>}
+        {L.cadernoVideo && <p class="nota suave caderno__nota">O vídeo "Espiritualismo e Umbanda" (8 min) foi gerado por IA a partir das fontes do caderno.</p>}
       </div>
       <div class="caderno__mini" aria-hidden="true">
         <span class="caderno__barra"><i></i><i></i><i></i></span>
@@ -109,7 +110,7 @@ const biblio = [
         {biblio.map((b, i) => (
           <details class="sanfona" data-grupo-tema={b.tema}>
             <summary>0{i + 1} · {b.t}<span class="sanfona__extra" data-total={b.livros.length}>{b.livros.length} livros</span></summary>
-            <ul class="sanfona__corpo livros">{b.livros.map(([t, a, u]) => <li class="livro" data-busca={`${t} ${a} ${b.t}`.toLowerCase()}><span class="livro__t">{u ? <a href={u} target="_blank" rel="noopener">{t}<span class="sr-only"> (trecho em PDF, abre em nova aba)</span></a> : t}</span><span class="suave">{a}{u && ' · trecho em PDF'}</span></li>)}</ul>
+            <ul class="sanfona__corpo livros">{b.livros.map(([t, a, u, rot]) => <li class="livro" data-busca={`${t} ${a} ${b.t}`.toLowerCase()}><span class="livro__t">{u ? <a href={u} target="_blank" rel="noopener">{t}<span class="sr-only"> ({rot}, abre em nova aba)</span></a> : t}</span><span class="suave">{a}{u && ` · ${rot}`}</span></li>)}</ul>
           </details>
         ))}
       </div>
@@ -191,6 +192,8 @@ const biblio = [
   .mat__link { color: inherit; text-decoration: underline; text-underline-offset: .2em; text-decoration-thickness: 1px; }
   .mat__nota { font-size: .875rem; margin-top: -.25rem; }
   .caderno { display: grid; grid-template-columns: 740fr 420fr; gap: 2.5rem; align-items: center; }
+  .caderno__btns { display: flex; gap: .75rem; flex-wrap: wrap; }
+  .caderno__nota { margin-top: .75rem; }
   .caderno__chips { margin-block: var(--esp-grupo); }
   .caderno__chips .chip { color: var(--creme); }
   .caderno__mini { background: var(--papel); border: 1.5px solid var(--tinta); box-shadow: var(--sombra); aspect-ratio: 42 / 26; display: grid; grid-template-rows: auto 1fr; }

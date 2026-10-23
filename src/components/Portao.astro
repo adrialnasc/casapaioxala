@@ -1,0 +1,57 @@
+---
+/**
+ * Portão simples para as páginas da corrente (Estudos e Corrente).
+ * Não é login nem segurança de verdade: o conteúdo continua no HTML.
+ * Serve para quem chega ao site não cair direto no material dos médiuns.
+ * A senha não fica no repositório, só o SHA-256 dela.
+ */
+import Gravura from './Gravura.astro';
+import { contato } from '../lib/contato.js';
+---
+<section class="portao secao t-noite" data-portao hidden aria-labelledby="portao-t">
+  <div class="contido portao__in">
+    <Gravura nome="crescente" largura={160} class="portao__g" />
+    <p class="rotulo ouro">Só para os médiuns da Casa</p>
+    <h1 id="portao-t" class="titulo">Espaço da <em class="ouro">corrente</em></h1>
+    <p class="leitura suave">Este conteúdo é para quem faz parte da corrente. A senha é passada no grupo da corrente.</p>
+    <form class="portao__form" data-portao-form>
+      <label for="portao-senha" class="rotulo">Senha da corrente</label>
+      <div class="portao__linha">
+        <input id="portao-senha" type="password" autocomplete="current-password" required />
+        <button type="submit" class="portao__btn">Entrar</button>
+      </div>
+      <p class="nota portao__erro" data-portao-erro role="alert" hidden>Senha incorreta. Confira no grupo da corrente.</p>
+    </form>
+    <p class="nota suave">Não é da corrente? <a href="/pontos/">Os pontos</a> e <a href="/oracoes/">as orações</a> são abertos a todos. <a href={contato.href} target={contato.externo ? '_blank' : undefined} rel="noopener">{contato.rotulo}</a>.</p>
+  </div>
+</section>
+<script>
+  const HASH = 'dec9982f9a1e8af329d118d4b0555612400055ba806e6cb99754b2072bdd3488';
+  const CHAVE = 'corrente-ok';
+  const portao = document.querySelector<HTMLElement>('[data-portao]')!;
+  const main = document.querySelector<HTMLElement>('[data-restrito]')!;
+  const abrir = () => { portao.hidden = true; main.hidden = false; };
+  let ok = false;
+  try { ok = localStorage.getItem(CHAVE) === HASH; } catch {}
+  if (ok) abrir(); else portao.hidden = false;
+  const sha = async (t: string) => Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)))).map((b) => b.toString(16).padStart(2, '0')).join('');
+  document.querySelector('[data-portao-form]')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const campo = document.querySelector<HTMLInputElement>('#portao-senha')!;
+    const h = await sha(campo.value.trim().toLowerCase().replace(/\s+/g, ''));
+    if (h === HASH) { try { localStorage.setItem(CHAVE, HASH); } catch {} abrir(); main.querySelector<HTMLElement>('h1')?.focus?.(); window.scrollTo(0, 0); }
+    else { document.querySelector<HTMLElement>('[data-portao-erro]')!.hidden = false; campo.select(); }
+  });
+</script>
+<style>
+  .portao { min-height: 70vh; display: flex; align-items: center; }
+  .portao__in { display: grid; gap: var(--esp-grupo); justify-items: start; max-width: 44rem; }
+  .portao :global(.portao__g) { width: 96px; }
+  .portao__form { display: grid; gap: .5rem; width: 100%; margin-top: var(--esp-item); }
+  .portao__linha { display: flex; gap: .75rem; flex-wrap: wrap; }
+  .portao input { flex: 1 1 16rem; min-height: 3rem; padding: .5rem 1rem; font: inherit; color: var(--tinta); background: var(--papel); border: 1.5px solid var(--papel); }
+  .portao__btn { min-height: 3rem; padding: .75rem 1.5rem; font: 500 .75rem var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--tinta); background: var(--ouro); border: 1.5px solid var(--tinta); box-shadow: 4px 4px 0 var(--papel); cursor: pointer; }
+  .portao__btn:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--papel); }
+  .portao__erro { color: var(--ouro-texto); }
+  .portao a { color: var(--ouro-texto); }
+</style>
