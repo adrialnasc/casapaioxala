@@ -66,9 +66,11 @@ const prateleiras = [
     { rot: 'Apresentação', t: 'Conhecendo a Umbanda', a: 'Casa Pai Oxalá', h: L.apresentacao, g: 'velas' },
     { rot: 'Caderno · NotebookLM', t: 'Caderno de estudos da Casa', a: 'Perguntas, resumos em áudio e mapas mentais', h: L.caderno, g: 'folha' },
     { rot: 'Vídeo · 8 min', t: 'Espiritualismo e Umbanda', a: 'Resumo gerado por IA a partir do caderno', h: L.cadernoVideo, g: 'lua' },
-    { rot: 'Caderno · em preparação', t: 'Caderno de ervas', a: 'Nomes, usos e cuidados de cada erva', h: '/corrente/ervas/', g: 'ramo' },
   ] },
-  ...biblio.map((b) => ({ t: b.t, itens: b.livros.map(([t, a, h, rot], i) => ({ rot: rot || 'Livro', t, a, h, g: b.g[i % b.g.length] })) })),
+  ...biblio.map((b) => ({ t: b.t, itens: [
+    ...(b.t === 'Ervas e benzimento' ? [{ rot: 'Caderno da Casa', t: 'Caderno de ervas', a: 'Nomes, usos e cuidados de cada erva', h: '/corrente/ervas/', g: 'ramo' }] : []),
+    ...b.livros.map(([t, a, h, rot], i) => ({ rot: rot || 'Livro', t, a, h, g: b.g[i % b.g.length] })),
+  ] })),
 ];
 // Painel no topo: atalhos com o estado de cada coisa.
 const futuras = giras.filter((x) => !jaPassou(x.data));
@@ -76,7 +78,7 @@ const calStatus = futuras.length ? `${futuras.length} ${futuras.length === 1 ? '
 const nPrep = prep.reduce((n, p) => n + p.itens.length, 0);
 const painel = [
   { t: 'Preparação', s: `0 de ${nPrep}`, h: '#preparacao', g: 'ramo', campo: 'prep' },
-  { t: 'Deveres', s: 'e o Manual do médium', h: '#deveres', g: 'velas' },
+  { t: 'Deveres', s: 'Com o sagrado, na gira e com a Casa', h: '#deveres', g: 'velas' },
   { t: 'Calendário', s: calStatus, h: '#calendario', g: 'crescente', campo: 'cal' },
   { t: 'Pontos', s: 'Livro e playlists', h: '/pontos/', g: 'atabaque' },
   { t: 'Orações', s: '4 orações', h: '/oracoes/', g: 'rosa' },
@@ -138,7 +140,7 @@ const estrelas = Array.from({ length: 46 }, (_, i) => ({ x: (i * 37.7) % 100, y:
     <div class="contido">
       <p class="rotulo dev__fonte">Orientações da Ialorixá Magdalena · 1º de março de 1983</p>
       <h2 id="dev-t" class="titulo">Deveres de um <em>bom médium</em></h2>
-      <p class="nota suave dev__num">A numeração segue o Manual do médium.</p>
+      <p class="nota suave dev__num">A numeração segue as orientações originais de 1983.</p>
       <div class="dev">
         <div class="abas">
           <div class="chips" role="tablist" aria-label="Deveres">
@@ -153,11 +155,10 @@ const estrelas = Array.from({ length: 46 }, (_, i) => ({ x: (i * 37.7) % 100, y:
         </div>
         <aside class="manual cartao cartao--escuro" aria-labelledby="manual-t">
           <Gravura nome="velas" largura={160} class="manual__g" />
-          <p class="rotulo manual__rot">PDF · só para a corrente</p>
+          <p class="rotulo manual__rot">{L.manualMedium ? 'PDF · só para a corrente' : 'Em preparação'}</p>
           <h3 id="manual-t" class="titulo-p">Manual do médium</h3>
           <p class="suave">Roupa, guias, frequência e as orientações da Casa para quem está na corrente, num arquivo para guardar no celular.</p>
-          {L.manualMedium ? <Botao href={L.manualMedium} variante="tinta" externo>Baixar o manual ↓</Botao> : <p class="em-breve">Peça o manual à Casa</p>}
-          <p class="nota suave"><em>O arquivo pede a senha do grupo da corrente.</em></p>
+          {L.manualMedium ? <Botao href={L.manualMedium} variante="tinta" externo>Baixar o manual ↓</Botao> : <p class="nota suave">Quando estiver pronto, o manual fica aqui. Enquanto isso, as orientações passam pelo grupo da corrente.</p>}
         </aside>
       </div>
     </div>

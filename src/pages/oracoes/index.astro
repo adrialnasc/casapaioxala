@@ -62,7 +62,7 @@ const yt = (id: string) => `https://www.youtube.com/watch?v=${id}&list=${PLAYLIS
           </div>
         </nav>
         <div class="livro__conteudo" data-or-lista>
-          {oracoes.map((o) => (
+          {oracoes.map((o, k) => (
             <article id={o.id} class="painel" data-painel={o.id} hidden={o.id !== inicial} aria-labelledby={`${o.id}-t`}>
               <p class="rotulo painel__rot">{o.quando}</p>
               <h3 id={`${o.id}-t`} class="titulo painel__t">{o.t}</h3>
@@ -78,6 +78,11 @@ const yt = (id: string) => `https://www.youtube.com/watch?v=${id}&list=${PLAYLIS
                   </div>
                 </>
               )}
+              <nav class="livro-nav" aria-label="Outras orações">
+                {oracoes[k - 1] ? <a href={`#${oracoes[k - 1].id}`} data-ir={oracoes[k - 1].id} class="livro-nav__ant"><span aria-hidden="true">←</span> {oracoes[k - 1].t}</a> : <span></span>}
+                <a href="#lista" class="livro-nav__indice">Índice <span aria-hidden="true">↑</span></a>
+                {oracoes[k + 1] ? <a href={`#${oracoes[k + 1].id}`} data-ir={oracoes[k + 1].id} class="livro-nav__prox">{oracoes[k + 1].t} <span aria-hidden="true">→</span></a> : <span></span>}
+              </nav>
             </article>
           ))}
         </div>
@@ -99,6 +104,9 @@ const yt = (id: string) => `https://www.youtube.com/watch?v=${id}&list=${PLAYLIS
   links.forEach((a) => a.addEventListener('click', (e) => {
     e.preventDefault(); mostrar(a.dataset.or!, matchMedia('(max-width: 860px)').matches);
     history.replaceState(null, '', '#' + a.dataset.or);
+  }));
+  document.querySelectorAll<HTMLAnchorElement>('[data-ir]').forEach((a) => a.addEventListener('click', (e) => {
+    e.preventDefault(); mostrar(a.dataset.ir!, true); history.replaceState(null, '', '#' + a.dataset.ir);
   }));
   const abrirHash = () => { const h = location.hash.slice(1); if (h && mostrar(h)) document.getElementById('oracoes')?.scrollIntoView(); };
   abrirHash(); window.addEventListener('hashchange', abrirHash);
@@ -149,7 +157,14 @@ const yt = (id: string) => `https://www.youtube.com/watch?v=${id}&list=${PLAYLIS
   .or__texto { padding-top: 1.25rem; max-width: 44rem; }
   .or__estrofe { font-size: calc(var(--t-leitura) * var(--or-escala)); line-height: 1.6; }
   .or__estrofe + .or__estrofe { margin-top: .75rem; }
+  .livro-nav { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center; margin-top: var(--esp-bloco); padding-top: 1rem; border-top: 1.5px solid var(--tinta); font-family: var(--mono); font-size: .8125rem; letter-spacing: .06em; text-transform: uppercase; }
+  .livro-nav a { min-height: 44px; display: inline-flex; align-items: center; gap: .4em; text-decoration: none; font-weight: 500; }
+  .livro-nav a:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .livro-nav__prox { justify-self: end; text-align: right; }
+  .livro-nav__indice { visibility: hidden; }
   @media (max-width: 860px) {
+    .livro-nav { grid-template-columns: 1fr 1fr; }
+    .livro-nav__indice { visibility: visible; grid-column: 1 / -1; grid-row: 2; justify-self: center; }
     :global(.or-velas) { display: none; }
     .livro { grid-template-columns: 1fr; }
     .linhas { position: static; padding: 1.25rem; }

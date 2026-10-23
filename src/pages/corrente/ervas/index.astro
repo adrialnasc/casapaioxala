@@ -68,8 +68,9 @@ const id = (e: Erva) => 'erva-' + tira(e.nome).toLowerCase().replace(/[^a-z]+/g,
                     </summary>
                     <dl class="ce-ficha">
                       {e.outros && <><dt class="rotulo">Outros nomes</dt><dd>{e.outros}</dd></>}
-                      <dt class="rotulo">Usos na Casa</dt><dd>{e.usos.length ? e.usos.join(', ') : <span class="suave">A Casa vai preencher</span>}</dd>
-                      <dt class="rotulo">Para quê</dt><dd>{e.paraQue || <span class="suave">A Casa vai preencher</span>}</dd>
+                      {e.usos.length > 0 && <><dt class="rotulo">Usos na Casa</dt><dd>{e.usos.join(', ')}</dd></>}
+                      {e.paraQue && <><dt class="rotulo">Para quê</dt><dd>{e.paraQue}</dd></>}
+                      {!e.usos.length && !e.paraQue && <><dt class="rotulo">Usos</dt><dd class="suave">A Casa ainda vai contar como usa esta erva.</dd></>}
                       {e.orixas.length > 0 && <><dt class="rotulo">Orixás e linhas</dt><dd>{e.orixas.join(', ')}</dd></>}
                       {e.elemento && <><dt class="rotulo">Elemento</dt><dd>{e.elemento}</dd></>}
                       {e.cuidados && <><dt class="rotulo ce-alerta">Cuidados</dt><dd>{e.cuidados}</dd></>}

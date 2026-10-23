@@ -55,8 +55,9 @@ const discos = [
           </ul>
         </nav>
         <div class="livro__conteudo">
-          {linhas.map((l) => {
+          {linhas.map((l, k) => {
             const id = slug(l.nome);
+            const ant = linhas[k - 1], prox = linhas[k + 1];
             return (
               <div class="painel" data-painel={id} hidden={l.nome !== inicial}>
                 <p class="rotulo painel__rot">{l.rotulo}</p>
@@ -80,6 +81,11 @@ const discos = [
                 <div class="vazio" hidden>
                   <EstadoVazio gravura="laco" titulo="Nenhum ponto<br />com essa palavra." texto="Tente outra palavra ou escolha uma linha." acao="Ver todas as linhas" href="#linhas" />
                 </div>
+                <nav class="livro-nav" aria-label="Outras linhas">
+                  {ant ? <a href={`#${slug(ant.nome)}`} data-ir={slug(ant.nome)} class="livro-nav__ant"><span aria-hidden="true">←</span> {ant.nome}</a> : <span></span>}
+                  <a href="#linhas" class="livro-nav__indice">Linhas <span aria-hidden="true">↑</span></a>
+                  {prox ? <a href={`#${slug(prox.nome)}`} data-ir={slug(prox.nome)} class="livro-nav__prox">{prox.nome} <span aria-hidden="true">→</span></a> : <span></span>}
+                </nav>
               </div>
             );
           })}
@@ -136,6 +142,9 @@ const discos = [
     e.preventDefault(); mostrar(a.dataset.linha!, matchMedia('(max-width: 860px)').matches);
     history.replaceState(null, '', '#' + a.dataset.linha);
   }));
+  document.querySelectorAll<HTMLAnchorElement>('[data-ir]').forEach((a) => a.addEventListener('click', (e) => {
+    e.preventDefault(); mostrar(a.dataset.ir!, true); history.replaceState(null, '', '#' + a.dataset.ir);
+  }));
   const h = location.hash.slice(1); if (h && mostrar(h)) document.getElementById('livro')?.scrollIntoView();
   const tira = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   document.querySelectorAll<HTMLInputElement>('[data-busca-pontos]').forEach((inp) => inp.addEventListener('input', () => {
@@ -170,7 +179,7 @@ const discos = [
   .livro__cab { margin-bottom: var(--esp-bloco); display: grid; gap: .5rem; }
   .ouvir-tag { font-weight: 600; color: var(--tinta); }
   .painel__rot { color: var(--vermelho); margin-bottom: .5rem; }
-  .painel__t { margin-bottom: .5rem !important; }
+  .painel__t { margin-bottom: .5rem !important; scroll-margin-top: 6rem; }
   .painel__lema { margin-bottom: .75rem; max-width: 40rem; }
   .painel__pl { margin-bottom: 1rem; min-height: 44px; }
   .pontos__grupo { padding: 2rem 0 .25rem; color: var(--vermelho); list-style: none; border-bottom: 1.5px solid var(--tinta); }
@@ -185,6 +194,11 @@ const discos = [
   .ponto__t { font-weight: 600; }
   .ponto__ouvir { display: inline-flex; align-items: center; min-height: 44px; padding-inline: .25rem; margin-inline: -.25rem; font-weight: 600; text-decoration: none; white-space: nowrap; }
   .painel__vazio { display: grid; gap: .75rem; padding-top: .5rem; }
+  .livro-nav { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center; margin-top: var(--esp-bloco); font-family: var(--mono); font-size: .8125rem; letter-spacing: .06em; text-transform: uppercase; }
+  .livro-nav a { min-height: 44px; display: inline-flex; align-items: center; gap: .4em; text-decoration: none; font-weight: 500; }
+  .livro-nav a:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .livro-nav__prox { justify-self: end; text-align: right; }
+  .livro-nav__indice { visibility: hidden; }
 
   .pls { margin-top: var(--esp-bloco); }
   .pl { display: flex; gap: 1rem; align-items: center; text-decoration: none; height: 100%; }
@@ -211,6 +225,8 @@ const discos = [
     .pt-cab__txt { padding-top: 1.5rem; }
     .pt-atalhos { display: grid; } .pt-atalhos .chip { width: 100%; }
     .livro { grid-template-columns: 1fr; }
+    .livro-nav { grid-template-columns: 1fr 1fr; }
+    .livro-nav__indice { visibility: visible; grid-column: 1 / -1; grid-row: 2; justify-self: center; }
     .linhas { position: static; padding: 1.25rem; }
     .linhas ul { grid-template-columns: 1fr 1fr; gap: .5rem; }
     .linha { font-size: .9375rem; min-height: 2.75rem; padding: .5rem; }
