@@ -23,10 +23,17 @@ const oracoes: Oracao[] = [
     'Ave Maria, cheia de graça,', 'o Senhor é convosco;', 'bendita sois vós entre as mulheres,',
     'e bendito é o fruto do vosso ventre, Jesus.', 'Santa Maria, Mãe de Deus,', 'rogai por nós, pecadores,',
     'agora e na hora de nossa morte.', 'Amém.']] },
-  { id: 'oracao-a-ogum', t: 'Oração a Ogum', quando: 'Em breve', lema: 'O texto da Oração a Ogum que a Casa reza será publicado aqui em breve.', estrofes: [], breve: true },
+  { id: 'oracao-de-sao-jorge', t: 'Oração de São Jorge', quando: 'Para proteção', lema: 'Para pedir a proteção de São Jorge.', youtube: 'pzFfYwgk3gg', estrofes: [
+    ['Eu andarei vestido e armado com as armas de São Jorge para que meus inimigos tendo pés, não me alcancem; tendo mãos, não me peguem; tendo olhos não me vejam e nem em pensamentos eles possam me fazer mal.'],
+    ['Armas de fogo o meu corpo não alcançarão, facas e lanças se quebrem sem o meu corpo tocar, cordas e correntes se arrebentem sem o meu corpo amarrar.'],
+    ['Jesus Cristo me proteja e me defenda com o poder de sua santa e divina graça, Virgem de Nazaré me cubra com o seu manto sagrado e divino, protegendo-me em todas as minhas dores e aflições, e Deus com sua Divina Misericórdia e grande poder seja meu defensor contra as maldades e perseguições dos meus inimigos.'],
+    ['Glorioso São Jorge, em nome de Deus, estenda-me o seu escudo e as suas poderosas armas, defendendo-me com a sua força e com a sua grandeza, e que debaixo das patas de seu fiel ginete meus inimigos fiquem humildes e submissos a vós.'],
+    ['Assim seja com o poder de Deus, de Jesus e da falange do Divino Espírito Santo.']] },
 ];
 const inicial = oracoes[0].id;
-const yt = (id: string) => `https://www.youtube.com/watch?v=${id}`;
+// Playlist "Casa de Umbanda Pai Oxalá Orações e Rezos" no YouTube da Casa.
+const PLAYLIST = 'PLbB1ulc3sfAQ';
+const yt = (id: string) => `https://www.youtube.com/watch?v=${id}&list=${PLAYLIST}`;
 ---
 <Base titulo="Orações · Casa de Umbanda Pai Oxalá" descricao="As orações rezadas na Casa de Umbanda Pai Oxalá: Prece de Cáritas, Pai Nosso e Ave Maria, para rezar junto na gira e em casa.">
   <Cabecalho tema="t-vermelho" titulo="Orações <em>da Casa</em>" lead="Para rezar junto na gira e em casa. A Prece de Cáritas abre os trabalhos.">
@@ -45,6 +52,7 @@ const yt = (id: string) => `https://www.youtube.com/watch?v=${id}`;
           <ul>
             {oracoes.map((o) => <li><a href={`#${o.id}`} class="linha" data-or={o.id} aria-current={o.id === inicial ? 'true' : undefined}><span>{o.t}</span>{o.breve && <span class="linha__n">em breve</span>}</a></li>)}
           </ul>
+          <a class="seta or-pl" href={`https://www.youtube.com/playlist?list=${PLAYLIST}`} target="_blank" rel="noopener">Playlist de orações no YouTube <span aria-hidden="true">↗</span><span class="sr-only"> (abre em nova aba)</span></a>
           <div class="or-tam-grupo" role="group" aria-label="Tamanho do texto">
             <span class="rotulo suave">Tamanho do texto</span>
             <span class="or-tam-btns">
@@ -126,7 +134,8 @@ const yt = (id: string) => `https://www.youtube.com/watch?v=${id}`;
   .linha:hover { background: color-mix(in srgb, var(--papel) 60%, transparent); }
   .linha[aria-current] { background: var(--papel); font-weight: 600; }
   .linha__n { font: 500 .75rem var(--mono); color: var(--texto-suave); }
-  .or-tam-grupo { display: grid; gap: .5rem; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--pedra); }
+  .or-pl { margin-top: 1rem; }
+  .or-tam-grupo { display: grid; gap: .5rem; margin-top: 1rem; padding-top: 1.25rem; border-top: 1px solid var(--pedra); }
   .or-tam-btns { display: flex; gap: .5rem; }
   .or-tam { min-width: 44px; min-height: 44px; font: 600 1rem var(--serif); color: var(--tinta); background: var(--papel); border: 1.5px solid var(--tinta); cursor: pointer; }
   .or-tam:hover { background: var(--tinta); color: var(--papel); }
