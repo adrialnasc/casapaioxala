@@ -2,7 +2,6 @@
 import Base from '../../layouts/Base.astro';
 import Gravura from '../../components/Gravura.astro';
 import Cabecalho from '../../components/Cabecalho.astro';
-import Moldura from '../../components/Moldura.astro';
 import livro from '../../data/pontos.json';
 
 // A Prece de Cáritas vem do Livro de Pontos (Ritos da Casa, 04), para não existir em dois lugares.
@@ -11,70 +10,91 @@ const caritas = ritos?.pontos.find((p: any) => p.titulo === 'Prece de Cáritas')
 
 // Pai Nosso e Ave Maria: versões tradicionais em português, de domínio público.
 // A confirmar com a Casa se são as versões rezadas na gira.
-const oracoes = [
-  { id: 'prece-de-caritas', t: 'Prece de Cáritas', quando: 'Abre a gira', g: 'velas',
-    versos: caritas ? caritas.estrofes.flat() : [], youtube: caritas?.youtube },
-  { id: 'pai-nosso', t: 'Pai Nosso', quando: 'Na gira e em casa', g: 'sol', versos: [
+type Oracao = { id: string; t: string; quando: string; lema: string; estrofes: string[][]; youtube?: string; breve?: boolean };
+const oracoes: Oracao[] = [
+  { id: 'prece-de-caritas', t: 'Prece de Cáritas', quando: 'Abre a gira', lema: 'A prece que abre os trabalhos da Casa.',
+    estrofes: caritas ? caritas.estrofes : [], youtube: caritas?.youtube },
+  { id: 'pai-nosso', t: 'Pai Nosso', quando: 'Na gira e em casa', lema: 'Para rezar junto na gira e em casa.', estrofes: [[
     'Pai nosso que estais nos céus,', 'santificado seja o vosso nome;', 'venha a nós o vosso reino;',
     'seja feita a vossa vontade,', 'assim na terra como no céu.', 'O pão nosso de cada dia nos dai hoje;',
     'perdoai-nos as nossas ofensas,', 'assim como nós perdoamos', 'a quem nos tem ofendido;',
-    'e não nos deixeis cair em tentação,', 'mas livrai-nos do mal.', 'Amém.'] },
-  { id: 'ave-maria', t: 'Ave Maria', quando: 'Na gira e em casa', g: 'rosa', versos: [
+    'e não nos deixeis cair em tentação,', 'mas livrai-nos do mal.', 'Amém.']] },
+  { id: 'ave-maria', t: 'Ave Maria', quando: 'Na gira e em casa', lema: 'Para rezar junto na gira e em casa.', estrofes: [[
     'Ave Maria, cheia de graça,', 'o Senhor é convosco;', 'bendita sois vós entre as mulheres,',
     'e bendito é o fruto do vosso ventre, Jesus.', 'Santa Maria, Mãe de Deus,', 'rogai por nós, pecadores,',
-    'agora e na hora de nossa morte.', 'Amém.'] },
-  { id: 'oracao-a-ogum', t: 'Oração a Ogum', quando: 'Em breve', g: 'espada', versos: [], breve: true },
+    'agora e na hora de nossa morte.', 'Amém.']] },
+  { id: 'oracao-a-ogum', t: 'Oração a Ogum', quando: 'Em breve', lema: 'O texto da Oração a Ogum que a Casa reza será publicado aqui em breve.', estrofes: [], breve: true },
 ];
+const inicial = oracoes[0].id;
 const yt = (id: string) => `https://www.youtube.com/watch?v=${id}`;
 ---
 <Base titulo="Orações · Casa de Umbanda Pai Oxalá" descricao="As orações rezadas na Casa de Umbanda Pai Oxalá: Prece de Cáritas, Pai Nosso e Ave Maria, para rezar junto na gira e em casa.">
   <Cabecalho tema="t-vermelho" titulo="Orações <em>da Casa</em>" lead="Para rezar junto na gira e em casa. A Prece de Cáritas abre os trabalhos.">
     <Gravura slot="deco" nome="velas" largura={480} class="cab__deco or-velas" eager />
-    <ul class="chips or-indice" aria-label="Orações nesta página">
-      {oracoes.map((o) => <li><a class="chip" href={`#${o.id}`}>{o.t}</a></li>)}
-    </ul>
   </Cabecalho>
 
-  <section class="secao secao--colada" aria-label="Orações">
+  <section id="oracoes" class="secao secao--colada" aria-labelledby="or-t">
     <div class="contido">
-      <div class="or-ferramentas" role="group" aria-label="Tamanho do texto">
-        <span class="rotulo suave">Tamanho do texto</span>
-        <button type="button" class="or-tam" data-tam="-1" aria-label="Diminuir o texto">A−</button>
-        <button type="button" class="or-tam" data-tam="1" aria-label="Aumentar o texto">A+</button>
+      <div class="or-cab">
+        <h2 id="or-t" class="titulo">Livro de <em>orações</em></h2>
+        <p class="suave">{oracoes.filter((o) => !o.breve).length} orações rezadas na Casa. A Prece de Cáritas também está no <a href="/pontos/#ritos-da-casa">Livro de Pontos</a>, em Ritos da Casa.</p>
       </div>
-
-      <div class="or-lista" data-or-lista>
-        {oracoes.map((o, k) => (
-          <article id={o.id} class:list={['or', o.breve && 'or--breve']} aria-labelledby={`${o.id}-t`}>
-            {o.breve ? (
-              <div class="or__breve">
-                <p class="rotulo suave">{o.quando}</p>
-                <h2 id={`${o.id}-t`} class="titulo">{o.t}</h2>
-                <p class="leitura suave">O texto da Oração a Ogum que a Casa reza será publicado aqui em breve.</p>
-              </div>
-            ) : (
-              <>
-                <Moldura semente={k * 2}>
-                  <p class="rotulo or__quando">{o.quando}</p>
-                  <h2 id={`${o.id}-t`} class="titulo or__t">{o.t}</h2>
-                  <div class="or__versos" data-versos>{o.versos.map((v) => <p>{v}</p>)}</div>
-                </Moldura>
-                <div class="or__acoes">
-                  <button type="button" class="seta or__copiar" data-copiar={o.id}>Copiar a oração</button>
-                  {o.youtube && <a class="seta" href={yt(o.youtube)} target="_blank" rel="noopener">Ouvir no YouTube <span aria-hidden="true">↗</span><span class="sr-only"> (abre em nova aba)</span></a>}
-                </div>
-              </>
-            )}
-          </article>
-        ))}
+      <div class="livro">
+        <nav class="linhas cartao cartao--escuro" aria-label="Orações" id="lista">
+          <p class="rotulo suave">Orações</p>
+          <ul>
+            {oracoes.map((o) => <li><a href={`#${o.id}`} class="linha" data-or={o.id} aria-current={o.id === inicial ? 'true' : undefined}><span>{o.t}</span>{o.breve && <span class="linha__n">em breve</span>}</a></li>)}
+          </ul>
+          <div class="or-tam-grupo" role="group" aria-label="Tamanho do texto">
+            <span class="rotulo suave">Tamanho do texto</span>
+            <span class="or-tam-btns">
+              <button type="button" class="or-tam" data-tam="-1" aria-label="Diminuir o texto">A−</button>
+              <button type="button" class="or-tam" data-tam="1" aria-label="Aumentar o texto">A+</button>
+            </span>
+          </div>
+        </nav>
+        <div class="livro__conteudo" data-or-lista>
+          {oracoes.map((o) => (
+            <article id={o.id} class="painel" data-painel={o.id} hidden={o.id !== inicial} aria-labelledby={`${o.id}-t`}>
+              <p class="rotulo painel__rot">{o.quando}</p>
+              <h3 id={`${o.id}-t`} class="titulo painel__t">{o.t}</h3>
+              <p class="leitura suave painel__lema">{o.lema}</p>
+              {!o.breve && (
+                <>
+                  <div class="or__acoes">
+                    {o.youtube && <a class="seta" href={yt(o.youtube)} target="_blank" rel="noopener">Ouvir no YouTube <span aria-hidden="true">↗</span><span class="sr-only"> (abre em nova aba)</span></a>}
+                    <button type="button" class="seta or__copiar" data-copiar={o.id}>Copiar a oração</button>
+                  </div>
+                  <div class="or__texto">
+                    {o.estrofes.map((e) => <p class="leitura or__estrofe">{e.map((v, j) => <>{j > 0 && <br />}{v}</>)}</p>)}
+                  </div>
+                </>
+              )}
+            </article>
+          ))}
+        </div>
       </div>
-
-      <p class="nota suave or-fim">A Prece de Cáritas também está no <a href="/pontos/#ritos-da-casa">Livro de Pontos</a>, em Ritos da Casa.</p>
     </div>
   </section>
 </Base>
 
 <script>
+  const links = document.querySelectorAll<HTMLAnchorElement>('[data-or]');
+  const paineis = document.querySelectorAll<HTMLElement>('[data-painel]');
+  function mostrar(id: string, rolar = false) {
+    const alvo = document.querySelector<HTMLElement>(`[data-painel="${id}"]`); if (!alvo) return false;
+    links.forEach((x) => x.dataset.or === id ? x.setAttribute('aria-current', 'true') : x.removeAttribute('aria-current'));
+    paineis.forEach((p) => { p.hidden = p !== alvo; });
+    if (rolar) alvo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return true;
+  }
+  links.forEach((a) => a.addEventListener('click', (e) => {
+    e.preventDefault(); mostrar(a.dataset.or!, matchMedia('(max-width: 860px)').matches);
+    history.replaceState(null, '', '#' + a.dataset.or);
+  }));
+  const abrirHash = () => { const h = location.hash.slice(1); if (h && mostrar(h)) document.getElementById('oracoes')?.scrollIntoView(); };
+  abrirHash(); window.addEventListener('hashchange', abrirHash);
+
   const lista = document.querySelector<HTMLElement>('[data-or-lista]')!;
   const passos = [1, 1.15, 1.3, 1.5];
   let i = 0;
@@ -87,8 +107,8 @@ const yt = (id: string) => `https://www.youtube.com/watch?v=${id}`;
   }));
   document.querySelectorAll<HTMLButtonElement>('[data-copiar]').forEach((b) => b.addEventListener('click', async () => {
     const art = document.getElementById(b.dataset.copiar!)!;
-    const titulo = art.querySelector('h2')?.textContent || '';
-    const texto = Array.from(art.querySelectorAll('[data-versos] p')).map((p) => p.textContent).join('\n');
+    const titulo = art.querySelector('h3')?.textContent || '';
+    const texto = Array.from(art.querySelectorAll<HTMLElement>('.or__estrofe')).map((p) => p.innerText).join('\n\n');
     try { await navigator.clipboard.writeText(`${titulo}\n\n${texto}`); b.textContent = 'Copiada'; }
     catch { b.textContent = 'Não foi possível copiar'; }
     setTimeout(() => { b.textContent = 'Copiar a oração'; }, 2000);
@@ -97,22 +117,36 @@ const yt = (id: string) => `https://www.youtube.com/watch?v=${id}`;
 
 <style>
   :global(.or-velas) { right: 2%; top: 50%; transform: translateY(-50%); width: min(36vw, 420px); mix-blend-mode: screen; filter: grayscale(1) invert(1) brightness(.9); opacity: .35; }
-  .or-indice { margin-top: var(--esp-grupo); }
-  .or-indice .chip { color: var(--papel); border-color: var(--papel); text-decoration: none; min-height: 44px; }
-  .or-ferramentas { display: flex; align-items: center; gap: .75rem; justify-content: flex-end; margin-bottom: var(--esp-grupo); }
-  .or-tam { min-width: 44px; min-height: 44px; font: 600 1rem var(--serif); color: var(--tinta); background: transparent; border: 1.5px solid var(--tinta); cursor: pointer; }
-  .or-tam:hover { background: var(--papel-escuro); }
-  .or-lista { --or-escala: 1; display: grid; gap: var(--esp-secao); max-width: 52rem; margin-inline: auto; }
-  .or { scroll-margin-top: 6rem; }
-  .or__quando { text-align: center; color: var(--vermelho); }
-  .or__t { text-align: center; margin: .5rem 0 1.5rem; font-style: italic; }
-  .or__versos { display: grid; gap: .35em; text-align: center; font-size: calc(var(--t-leitura) * var(--or-escala)); line-height: 1.55; max-width: 36rem; margin-inline: auto; }
-  .or__acoes { display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; margin-top: 1rem; }
+  /* mesmo desenho do Livro de pontos */
+  .or-cab { margin-bottom: var(--esp-bloco); display: grid; gap: .5rem; }
+  .livro { display: grid; grid-template-columns: 280px 1fr; gap: 2.5rem; align-items: start; }
+  .linhas { padding: 1.75rem; position: sticky; top: 6rem; }
+  .linhas ul { list-style: none; padding: 0; margin: .75rem 0 0; display: grid; gap: .25rem; }
+  .linha { display: flex; justify-content: space-between; align-items: center; gap: .5rem; width: 100%; color: var(--tinta); text-decoration: none; padding: .625rem .75rem; min-height: 2.75rem; }
+  .linha:hover { background: color-mix(in srgb, var(--papel) 60%, transparent); }
+  .linha[aria-current] { background: var(--papel); font-weight: 600; }
+  .linha__n { font: 500 .75rem var(--mono); color: var(--texto-suave); }
+  .or-tam-grupo { display: grid; gap: .5rem; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--pedra); }
+  .or-tam-btns { display: flex; gap: .5rem; }
+  .or-tam { min-width: 44px; min-height: 44px; font: 600 1rem var(--serif); color: var(--tinta); background: var(--papel); border: 1.5px solid var(--tinta); cursor: pointer; }
+  .or-tam:hover { background: var(--tinta); color: var(--papel); }
+  .livro__conteudo { --or-escala: 1; min-width: 0; }
+  .painel { scroll-margin-top: 6rem; }
+  .painel__rot { color: var(--vermelho); margin-bottom: .5rem; }
+  .painel__t { margin-bottom: .5rem; }
+  .painel__lema { margin-bottom: .75rem; max-width: 40rem; }
+  .or__acoes { display: flex; gap: 1.5rem; flex-wrap: wrap; padding-bottom: .5rem; border-bottom: 1.5px solid var(--tinta); }
   .or__copiar { background: none; border: 0; color: inherit; cursor: pointer; padding-inline: 0; }
-  .or__breve { text-align: center; display: grid; gap: .5rem; padding: 2rem; border: 1.5px dashed var(--texto-suave); }
-  .or-fim { margin-top: var(--esp-bloco); }
+  .or__texto { padding-top: 1.25rem; max-width: 44rem; }
+  .or__estrofe { font-size: calc(var(--t-leitura) * var(--or-escala)); line-height: 1.6; }
+  .or__estrofe + .or__estrofe { margin-top: .75rem; }
   @media (max-width: 860px) {
     :global(.or-velas) { display: none; }
-    .or-ferramentas { justify-content: flex-start; }
+    .livro { grid-template-columns: 1fr; }
+    .linhas { position: static; padding: 1.25rem; }
+    .linhas ul { grid-template-columns: 1fr 1fr; gap: .5rem; }
+    .linha { font-size: .9375rem; padding: .5rem; }
+    .linha__n { display: none; }
+    .or-tam-grupo { grid-auto-flow: column; justify-content: space-between; align-items: center; }
   }
 </style>
