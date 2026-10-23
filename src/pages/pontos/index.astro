@@ -7,11 +7,13 @@ const L = site.links;
 import livro from '../../data/pontos.json';
 import EstadoVazio from '../../components/EstadoVazio.astro';
 // Letras exatamente como no Livro de Pontos 2026 da Casa. Links do YouTube: planilha da playlist da Casa.
-const linhas = livro as { nome: string; rotulo: string; lema: string; frase: string; pontos: { n: string; titulo: string; grupo: string | null; estrofes: string[][]; youtube?: string }[] }[];
+const linhas = livro as { nome: string; rotulo: string; lema: string; frase: string; playlist?: string; pontos: { n: string; titulo: string; grupo: string | null; estrofes: string[][]; youtube?: string; lista?: string }[] }[];
 const inicial = 'Caboclos';
 const slug = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z]+/g, '-').replace(/-$/, '');
 const lista = (L.youtube.match(/list=([\w-]+)/) || [])[1];
-const ouvir = (id: string) => `https://www.youtube.com/watch?v=${id}${lista ? '&list=' + lista : ''}`;
+// Cada ponto abre dentro da playlist da sua linha; sem ela, a playlist geral da Casa.
+const ouvir = (id: string, l?: string) => `https://www.youtube.com/watch?v=${id}${(l || lista) ? '&list=' + (l || lista) : ''}`;
+const playlistDe = (id: string) => `https://www.youtube.com/playlist?list=${id}`;
 const total = linhas.reduce((n, l) => n + l.pontos.length, 0);
 const playlists = [
   { onde: 'YouTube', t: 'Pontos cantados', h: L.youtube },
@@ -60,6 +62,7 @@ const discos = [
                 <p class="rotulo painel__rot">{l.rotulo}</p>
                 <h3 class="titulo painel__t">{l.nome}</h3>
                 <p class="leitura suave painel__lema">{l.lema} <em>{l.frase}</em></p>
+                {l.playlist && <a class="seta painel__pl" href={playlistDe(l.playlist)} target="_blank" rel="noopener">Playlist de {l.nome} no YouTube <span aria-hidden="true">↗</span><span class="sr-only"> (abre em nova aba)</span></a>}
                 <label class="sr-only" for={`busca-${id}`}>Buscar um ponto de {l.nome} por palavra</label>
                 <input id={`busca-${id}`} class="busca" type="search" placeholder="Buscar um ponto por palavra" autocomplete="off" data-busca-pontos />
                 <ol class="pontos">
@@ -68,7 +71,7 @@ const discos = [
                       {p.grupo && p.grupo !== l.pontos[i - 1]?.grupo && <li class="pontos__grupo rotulo" aria-hidden="true">{p.grupo.toLowerCase()}</li>}
                       <li class="ponto" data-texto={(p.titulo + ' ' + p.estrofes.flat().join(' ')).toLowerCase()}>
                         <p class="ponto__topo"><span class="destaque ponto__t"><span class="ponto__n">{p.n}</span> {p.titulo}</span>
-                          {p.youtube && <a href={ouvir(p.youtube)} target="_blank" rel="noopener" class="ponto__ouvir">Ouvir →<span class="sr-only"> {p.titulo} no YouTube (abre em nova aba)</span></a>}</p>
+                          {p.youtube && <a href={ouvir(p.youtube, p.lista)} target="_blank" rel="noopener" class="ponto__ouvir">Ouvir →<span class="sr-only"> {p.titulo} no YouTube (abre em nova aba)</span></a>}</p>
                         {p.estrofes.map((e) => <p class="leitura ponto__estrofe">{e.map((v, j) => <>{j > 0 && <br />}{v}</>)}</p>)}
                       </li>
                     </>
@@ -168,7 +171,8 @@ const discos = [
   .ouvir-tag { font-weight: 600; color: var(--tinta); }
   .painel__rot { color: var(--vermelho); margin-bottom: .5rem; }
   .painel__t { margin-bottom: .5rem !important; }
-  .painel__lema { margin-bottom: 1.25rem; max-width: 40rem; }
+  .painel__lema { margin-bottom: .75rem; max-width: 40rem; }
+  .painel__pl { margin-bottom: 1rem; min-height: 44px; }
   .pontos__grupo { padding: 2rem 0 .25rem; color: var(--vermelho); list-style: none; border-bottom: 1.5px solid var(--tinta); }
   .ponto__n { font: 500 .75rem var(--mono); color: var(--vermelho); letter-spacing: .08em; margin-right: .25rem; }
   .ponto__estrofe + .ponto__estrofe { margin-top: .75rem; }
