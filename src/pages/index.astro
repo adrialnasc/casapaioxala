@@ -10,7 +10,7 @@ import { agenda } from '../lib/gira.js';
 const central = [
   { t: 'A Casa', d: 'História, regência e acervo', h: '/a-casa/', g: 'nuvem', c: 't-noite' },
   { t: 'Agenda', d: 'Giras e datas especiais', h: '/agenda/', g: 'sol', c: 't-mata' },
-  { t: 'Estudos', d: 'Apresentações, livros e o caderno', h: '/estudos/', g: 'folha', c: 't-estudos' },
+  { t: 'Estudos', d: 'Apresentações, livros e o caderno', h: '/corrente/#estudar', g: 'folha', c: 't-estudos' },
   { t: 'Pontos', d: 'Livro de pontos e playlists', h: '/pontos/', g: 'atabaque', c: 't-vermelho' },
   { t: 'Corrente', d: 'Para os médiuns da Casa', h: '/corrente/', g: 'solr', c: 't-noite' },
 ];
@@ -116,7 +116,7 @@ import { contato, comoPedirEndereco } from '../lib/contato.js';
       <h2 id="est-t" class="titulo-g">Novidades nos <em class="ouro">Estudos</em></h2>
       <ul class="estudos">
         {estudos.map((e) => (
-          <li><a href="/estudos/" class="estudo">
+          <li><a href="/corrente/#estudar" class="estudo">
             <span class="estudo__img" style={e.fundo ? `background:${e.fundo}` : undefined}>
               {e.foto ? <img src={e.foto} alt={e.alt} width="717" height="440" loading="lazy" class="estudo__foto" /> : e.capa ? <span class="estudo__capa"><span class="subtitulo"><em>Mitologia<br />dos Orixás</em></span><span class="rotulo">Reginaldo Prandi</span></span>
                       : <Gravura nome={e.g!} largura={200} />}
@@ -127,7 +127,7 @@ import { contato, comoPedirEndereco } from '../lib/contato.js';
           </a></li>
         ))}
       </ul>
-      <p class="estudos__mais"><a class="seta" href="/estudos/">Ver todos os estudos <span aria-hidden="true">→</span></a></p>
+      <p class="estudos__mais"><a class="seta" href="/corrente/#estudar">Ver todos os estudos <span aria-hidden="true">→</span></a></p>
     </div>
   </section>
 

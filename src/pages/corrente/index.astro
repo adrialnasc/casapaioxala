@@ -53,11 +53,33 @@ const deveres = [
     [null, 'Dias de festa: atenção redobrada, porque o movimento é maior.'],
   ] },
 ];
-const estudar = [
-  { t: 'Livro de pontos', d: 'Todos os pontos por linha', h: '/pontos/#livro-t', g: 'atabaque' },
-  { t: 'Playlists', d: 'Para aprender a cantar', h: '/pontos/#playlists', g: 'folha' },
-  { t: 'Apresentações', d: 'As aulas da Casa, como Conhecendo a Umbanda', h: '/estudos/', calendario: true },
-  { t: 'Fundamentos da Casa', d: 'Regras e organização', h: '/a-casa/#acervo', g: 'nuvem' },
+// Biblioteca de estudos (antes na página /estudos/). Cada livro vira um cartão; o 3º item é o link, o 4º o rótulo.
+const biblio = [
+  { t: 'Umbanda', g: ['cachimbo', 'espada', 'velas', 'charuto', 'folha'], livros: [['Conhecendo a Umbanda: Dentro do Terreiro', 'Douglas Rainho'], ['O Espiritismo, a Magia e as Sete Linhas de Umbanda', 'Leal de Souza'], ['Umbanda de Todos Nós', 'W. W. da Matta e Silva'], ['Lições de Umbanda e Quimbanda na Palavra de um Preto Velho', 'W. W. da Matta e Silva'], ['Fogo no Mato: A Ciência Encantada das Macumbas', 'Luiz Antônio Simas e Luiz Rufino']] },
+  { t: 'Orixás e ancestralidade', g: ['concha', 'barco', 'sol', 'coco', 'galo', 'espada'], livros: [['Mitologia dos Orixás', 'Reginaldo Prandi'], ['Encantaria Brasileira', 'Reginaldo Prandi'], ['Candomblé Bem Explicado', 'Odé Kileuy e Vera de Oxaguiã'], ['Bantos, Malês e Identidade Negra', 'Nei Lopes'], ['A Terra dos Mil Povos', 'Kaká Werá'], ['São Jorge: O santo do povo e o povo do santo', 'Luiz Antônio Simas', 'https://proassets.planetadelivros.com.br/usuaris/libros_contenido/arxius/66/65102_1_978-85-422-4060-3.pdf', 'Livro · trecho em PDF']] },
+  { t: 'Mediunidade', g: ['velas', 'nuvem', 'lua', 'crescente'], livros: [['O Livro dos Médiuns', 'Allan Kardec', 'https://download.espiritismo.net/literatura_espirita/WEB-O-Livro-dos-Mediuns-Guillon.pdf', 'PDF'], ['Apostila de mediunidade', 'Casa Pai Oxalá', '', 'Apostila · em breve', true], ['Nos Domínios da Mediunidade', 'André Luiz e Chico Xavier'], ['Diálogo com as Sombras', 'Hermínio C. Miranda']] },
+  { t: 'Ervas e benzimento', g: ['ramo', 'folha', 'rosa'], livros: [['As Ervas na Umbanda', 'Douglas Rainho'], ['O Poder das Ervas na Umbanda', 'José Ribeiro'], ['Rituais com Ervas: Banhos, Defumações e Benzimentos', 'Adriano Camargo']] },
+];
+const nLivros = biblio.reduce((n, b) => n + b.livros.filter((l) => !l[4]).length, 0);
+const prateleiras = [
+  { t: 'Da Casa', itens: [
+    { rot: 'Apresentação', t: 'Conhecendo a Umbanda', a: 'Casa Pai Oxalá', h: L.apresentacao, g: 'velas' },
+    { rot: 'Caderno · NotebookLM', t: 'Caderno de estudos da Casa', a: 'Perguntas, resumos em áudio e mapas mentais', h: L.caderno, g: 'folha' },
+    { rot: 'Vídeo · 8 min', t: 'Espiritualismo e Umbanda', a: 'Resumo gerado por IA a partir do caderno', h: L.cadernoVideo, g: 'lua' },
+  ] },
+  ...biblio.map((b) => ({ t: b.t, itens: b.livros.map(([t, a, h, rot], i) => ({ rot: rot || 'Livro', t, a, h, g: b.g[i % b.g.length] })) })),
+];
+// Painel no topo: atalhos com o estado de cada coisa.
+const futuras = giras.filter((x) => !jaPassou(x.data));
+const calStatus = futuras.length ? `${futuras.length} ${futuras.length === 1 ? 'gira' : 'giras'} até ${futuras.at(-1).mes.toLowerCase()}` : 'Sem giras marcadas';
+const nPrep = prep.reduce((n, p) => n + p.itens.length, 0);
+const painel = [
+  { t: 'Preparação', s: `0 de ${nPrep}`, h: '#preparacao', g: 'ramo', campo: 'prep' },
+  { t: 'Deveres', s: 'e o Manual do médium', h: '#deveres', g: 'velas' },
+  { t: 'Calendário', s: calStatus, h: '#calendario', g: 'crescente', campo: 'cal' },
+  { t: 'Pontos', s: 'Livro e playlists', h: '/pontos/', g: 'atabaque' },
+  { t: 'Orações', s: '3 orações', h: '/oracoes/', g: 'rosa' },
+  { t: 'Bibliografia', s: `${nLivros} livros`, h: '#estudar', g: 'concha' },
 ];
 const estrelas = Array.from({ length: 46 }, (_, i) => ({ x: (i * 37.7) % 100, y: (i * 53.3) % 100, s: 8 + ((i * 7) % 14) }));
 ---
@@ -68,6 +90,18 @@ const estrelas = Array.from({ length: 46 }, (_, i) => ({ x: (i * 37.7) % 100, y:
       <Gravura nome="crescente" largura={480} class="co-lua" eager />
     </div>
   </Cabecalho>
+
+  <nav class="contido painel" aria-label="Nesta página">
+    <ul class="painel__grade">
+      {painel.map((p) => (
+        <li><a class="cartao painel__c" href={p.h}>
+          <span class="painel__ico"><Gravura nome={p.g} largura={80} /></span>
+          <span class="painel__t">{p.t}</span>
+          <span class="painel__s" data-painel={p.campo}>{p.s}</span>
+        </a></li>
+      ))}
+    </ul>
+  </nav>
 
   {g && (
     <section class="contido co-prox" aria-labelledby="co-prox-t">
@@ -99,10 +133,11 @@ const estrelas = Array.from({ length: 46 }, (_, i) => ({ x: (i * 37.7) % 100, y:
     </div>
   </section>
 
-  <section class="secao" aria-labelledby="dev-t">
+  <section id="deveres" class="secao" aria-labelledby="dev-t">
     <div class="contido">
       <p class="rotulo dev__fonte">Orientações da Ialorixá Magdalena · 1º de março de 1983</p>
       <h2 id="dev-t" class="titulo">Deveres de um <em>bom médium</em></h2>
+      <p class="nota suave dev__num">A numeração segue o Manual do médium.</p>
       <div class="dev">
         <div class="abas">
           <div class="chips" role="tablist" aria-label="Deveres">
@@ -127,26 +162,29 @@ const estrelas = Array.from({ length: 46 }, (_, i) => ({ x: (i * 37.7) % 100, y:
     </div>
   </section>
 
-  <section class="secao secao--sem-topo" aria-labelledby="cc-t">
+  <section id="calendario" class="secao secao--sem-topo" aria-labelledby="cc-t">
     <div class="contido">
       <div class="secao__topo cc-topo"><h2 id="cc-t" class="titulo">Calendário da <em>corrente</em></h2><Botao href={webcal} variante="papel">Assinar no meu celular</Botao></div>
       <ul class="lista-giras" data-futuras>{giras.map((x) => <LinhaGira g={x} corrente oculta={jaPassou(x.data)} />)}</ul>
     </div>
   </section>
 
-  <section class="secao t-noite" aria-labelledby="ec-t">
+  <section id="estudar" class="secao t-noite" aria-labelledby="ec-t">
     <div class="contido">
       <h2 id="ec-t" class="titulo">Estudar em <em class="ouro">casa</em></h2>
-      <ul class="grade grade--4 estudar">
-        {estudar.map((e) => (
-          <li><a class="cartao est" href={e.h}>
-            {e.calendario ? <img src="/gravuras/calendario.png" alt="" width="64" height="64" class="est__g" /> : <Gravura nome={e.g!} largura={120} class="est__g" />}
-            <span class="destaque est__t">{e.t}</span>
-            <span class="suave-tinta">{e.d}</span>
-            <span class="est__abrir">Abrir →</span>
-          </a></li>
-        ))}
-      </ul>
+      <p class="leitura secao__lead est__lead">Nenhum livro substitui a vivência, os fundamentos e a orientação dos mais velhos da Casa. Leia com senso crítico.</p>
+      {prateleiras.map((p, k) => (
+        <div class="prat" role="group" aria-labelledby={`prat-${k}`}>
+          <h3 id={`prat-${k}`} class="subtitulo prat__t">{p.t} <span class="rotulo ouro">{p.itens.length} {p.itens.length === 1 ? 'item' : 'itens'}</span></h3>
+          <ul class="prat__lista">
+            {p.itens.map((e) => {
+              const corpo = <><span class="rotulo est__rot">{e.rot}</span><Gravura nome={e.g} largura={120} class="est__g" /><span class="est__t">{e.t}</span><span class="nota suave-tinta">{e.a}</span></>;
+              return <li>{e.h ? <a class="cartao est" href={e.h} target="_blank" rel="noopener">{corpo}<span class="sr-only"> (abre em nova aba)</span></a> : <div class="cartao est est--sem">{corpo}</div>}</li>;
+            })}
+          </ul>
+        </div>
+      ))}
+      <p class="nota est__fonte">Para uma lista mais extensa, veja a <a href="https://perdido.co/2019/09/bibliografia-recomendada/" target="_blank" rel="noopener">bibliografia de Douglas Rainho<span class="sr-only"> (abre em nova aba)</span></a> no portal Perdido em Pensamentos.</p>
     </div>
   </section>
 
@@ -174,6 +212,19 @@ const estrelas = Array.from({ length: 46 }, (_, i) => ({ x: (i * 37.7) % 100, y:
     try { c.checked = localStorage.getItem('corrente:' + c.name) === '1'; } catch {}
     c.addEventListener('change', () => { try { localStorage.setItem('corrente:' + c.name, c.checked ? '1' : '0'); } catch {} });
   });
+  // painel: quantos itens da preparação estão marcados e quantas giras faltam
+  const marcar = () => {
+    const cx = [...document.querySelectorAll<HTMLInputElement>('.check input')];
+    const el = document.querySelector('[data-painel="prep"]'); if (el) el.textContent = `${cx.filter((c) => c.checked).length} de ${cx.length}`;
+  };
+  marcar(); document.querySelectorAll('.check input').forEach((c) => c.addEventListener('change', marcar));
+  const vis = [...document.querySelectorAll<HTMLElement>('[data-futuras] > li')].filter((li) => !li.hidden);
+  const cal = document.querySelector('[data-painel="cal"]');
+  if (cal) {
+    const MES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+    const ult = vis.at(-1)?.dataset.mes;
+    cal.textContent = vis.length && ult ? `${vis.length} ${vis.length === 1 ? 'gira' : 'giras'} até ${MES[Number(ult)]}` : 'Sem giras marcadas';
+  }
   // abas dos deveres
   const abas = [...document.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
   const ativar = (a: HTMLButtonElement) => {
@@ -221,13 +272,29 @@ const estrelas = Array.from({ length: 46 }, (_, i) => ({ x: (i * 37.7) % 100, y:
   .manual :global(.manual__g) { width: 7.5rem; }
   .manual__rot { color: var(--vermelho); }
   .lista-giras { list-style: none; padding: 0; margin: 0; }
-  .estudar { margin-top: var(--esp-bloco); }
-  .est { display: grid; gap: .75rem; align-content: start; height: 100%; text-decoration: none; }
-  a.est:hover { transform: translate(3px, 3px); box-shadow: 3px 3px 0 var(--tinta); }
-  .est :global(.est__g), .est .est__g { width: 3.5rem; height: 3.5rem; object-fit: contain; }
-  .est__t { font-weight: 600; }
+  .painel { padding-top: var(--esp-colada); }
+  .painel__grade { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(6, 1fr); gap: 1rem; }
+  .painel__c { display: grid; gap: .5rem; align-content: start; height: 100%; padding: 1.25rem; text-decoration: none; box-shadow: var(--sombra-p); }
+  a.painel__c:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--tinta); }
+  .painel__ico { width: 3rem; height: 3rem; border-radius: 50%; border: 1.5px solid var(--tinta); background: var(--papel-escuro); display: grid; place-items: center; margin-bottom: .25rem; }
+  .painel__ico :global(.gravura) { width: 70%; }
+  .painel__t { font-size: var(--t-destaque); font-weight: 600; line-height: 1.2; }
+  .painel__s { font-size: var(--t-nota); color: var(--texto-suave); line-height: 1.4; }
+  .dev__num { margin-top: .5rem; }
+  .est__lead { color: var(--creme); max-width: 44rem; }
+  .prat { margin-top: var(--esp-bloco); }
+  .prat__t { display: flex; align-items: baseline; gap: .75rem; margin-bottom: 1rem; }
+  .prat__lista { list-style: none; margin: 0; padding: 0 6px 10px 0; display: grid; grid-auto-flow: column; grid-auto-columns: calc((100% - 4 * 1.5rem) / 4.25); gap: 1.5rem; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-color: var(--ouro) transparent; }
+  .prat__lista > li { scroll-snap-align: start; }
+  .est { display: grid; gap: .625rem; align-content: start; height: 100%; min-height: 15.5rem; text-decoration: none; box-shadow: var(--sombra-p); padding: 1.25rem; }
+  a.est:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--tinta); }
+  .est__rot { color: var(--vermelho); }
+  .est :global(.est__g) { width: 4rem; height: 4rem; object-fit: contain; margin-block: .5rem; }
+  .est__t { font-weight: 600; font-size: var(--t-destaque-p); line-height: 1.3; }
+  .est--sem { box-shadow: var(--sombra-p); }
   .suave-tinta { color: var(--texto-suave); }
-  .est__abrir { font-weight: 600; margin-top: auto; }
+  .est__fonte { margin-top: var(--esp-bloco); color: var(--creme); }
+  .est__fonte a { color: var(--ouro-texto); }
   .fechado { display: flex; justify-content: space-between; align-items: center; gap: 2rem; border: 1.5px solid var(--tinta); box-shadow: var(--sombra); padding: 2rem 2.25rem; }
   .fechado h2 { font-weight: 600; margin-bottom: .5rem; }
   @media (max-width: 860px) {
@@ -244,7 +311,9 @@ const estrelas = Array.from({ length: 46 }, (_, i) => ({ x: (i * 37.7) % 100, y:
     .manual { padding: 1.5rem; }
     .fechado { display: grid; justify-items: start; padding: 1.5rem 1.25rem; box-shadow: var(--sombra-p); }
     .cc-topo { display: grid; } .cc-topo :global(.botao) { width: 100%; }
-    .estudar { gap: var(--esp-item); }
-    .est { padding: 1.75rem; }
+    .painel__grade { grid-template-columns: repeat(2, 1fr); gap: .75rem; }
+    .painel__c { padding: 1rem; }
+    .prat__lista { grid-auto-columns: 72%; gap: 1rem; }
+    .est { min-height: 13rem; }
   }
 </style>
