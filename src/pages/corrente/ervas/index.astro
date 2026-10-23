@@ -1,0 +1,158 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Gravura from '../../../components/Gravura.astro';
+import Cabecalho from '../../../components/Cabecalho.astro';
+import dados from '../../../data/ervas.json';
+
+// Fonte: planilha "Caderno de ervas · para a Casa preencher" (Drive). Usos, orixás e elemento vêm da Casa.
+type Erva = { nome: string; cientifico: string; outros: string; usos: string[]; paraQue: string; orixas: string[]; elemento: string; cuidados: string };
+const tira = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '');
+const ervas = (dados.ervas as Erva[]).slice().sort((a, b) => tira(a.nome).localeCompare(tira(b.nome)));
+const letra = (e: Erva) => tira(e.nome)[0].toUpperCase();
+const letras = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+const temLetra = new Set(ervas.map(letra));
+const usos = [...new Set(ervas.flatMap((e) => e.usos))].sort();
+const orixas = [...new Set(ervas.flatMap((e) => e.orixas))].sort();
+const preenchidas = ervas.filter((e) => e.paraQue || e.usos.length).length;
+
+const id = (e: Erva) => 'erva-' + tira(e.nome).toLowerCase().replace(/[^a-z]+/g, '-');
+---
+<Base restrito titulo="Caderno de ervas · Corrente · Casa de Umbanda Pai Oxalá" descricao="As ervas usadas na Casa de Umbanda Pai Oxalá: nomes, usos nos banhos e defumações, e cuidados.">
+  <Cabecalho tema="t-mata" titulo="Caderno de <em>ervas</em>" lead="As ervas da Casa: como chamam, para que a Casa usa e os cuidados de cada uma.">
+    <Gravura slot="deco" nome="ramo" largura={480} class="cab__deco ce-ramo" eager />
+  </Cabecalho>
+
+  <section class="secao secao--colada" aria-label="Ervas">
+    <div class="contido">
+      <p class="ce-voltar"><a class="seta" href="/corrente/#estudar"><span aria-hidden="true">←</span> Estudar em casa</a></p>
+
+      {preenchidas < ervas.length && (
+        <p class="ce-aviso cartao cartao--escuro"><strong>Em preparação.</strong> A Casa está preenchendo os usos de cada erva. Por enquanto aparecem os nomes, os outros nomes e os cuidados.</p>
+      )}
+
+      <form class="ce-filtros" role="search" onsubmit="return false">
+        <label class="sr-only" for="ce-busca">Buscar erva por nome, nome científico ou uso</label>
+        <input id="ce-busca" class="ce-busca" type="search" placeholder="Buscar erva" autocomplete="off" />
+        {usos.length > 0 && (
+          <ul class="chips" aria-label="Uso">
+            <li><button type="button" class="chip" data-uso="" aria-pressed="true">Todos os usos</button></li>
+            {usos.map((u) => <li><button type="button" class="chip" data-uso={u} aria-pressed="false">{u}</button></li>)}
+          </ul>
+        )}
+        {orixas.length > 0 && (
+          <label class="ce-orixa"><span class="rotulo suave">Orixá e linha</span>
+            <select id="ce-orixa"><option value="">Todos</option>{orixas.map((o) => <option>{o}</option>)}</select>
+          </label>
+        )}
+        <p class="nota suave" aria-live="polite" data-ce-total>{ervas.length} ervas</p>
+      </form>
+
+      <nav class="ce-az" aria-label="Ervas de A a Z">
+        {letras.map((l) => temLetra.has(l) ? <a href={`#letra-${l}`}>{l}</a> : <span aria-hidden="true">{l}</span>)}
+      </nav>
+
+      <div class="ce-lista">
+        {letras.filter((l) => temLetra.has(l)).map((l) => (
+          <div class="ce-grupo" data-grupo>
+            <h2 id={`letra-${l}`} class="subtitulo ce-letra">{l}</h2>
+            <ul>
+              {ervas.filter((e) => letra(e) === l).map((e, i) => (
+                <li class="ce-erva" id={id(e)} data-usos={e.usos.join('|')} data-orixas={e.orixas.join('|')}
+                  data-busca={tira(`${e.nome} ${e.cientifico} ${e.outros} ${e.usos.join(' ')} ${e.paraQue}`).toLowerCase()}>
+                  <details>
+                    <summary>
+                      <span class="ce-med" aria-hidden="true"><Gravura nome={/rosa/i.test(e.nome) ? 'rosa' : 'folha'} largura={64} /></span>
+                      <span class="ce-nome"><span class="destaque">{e.nome}</span><em class="nota suave">{e.cientifico}</em></span>
+                      <span class="ce-resumo nota">{e.paraQue || (e.outros ? `Também chamada de ${e.outros}` : '')}</span>
+                      {e.cuidados && <span class="chip chip--alerta ce-cuidado">Cuidado</span>}
+                    </summary>
+                    <dl class="ce-ficha">
+                      {e.outros && <><dt class="rotulo">Outros nomes</dt><dd>{e.outros}</dd></>}
+                      <dt class="rotulo">Usos na Casa</dt><dd>{e.usos.length ? e.usos.join(', ') : <span class="suave">A Casa vai preencher</span>}</dd>
+                      <dt class="rotulo">Para quê</dt><dd>{e.paraQue || <span class="suave">A Casa vai preencher</span>}</dd>
+                      {e.orixas.length > 0 && <><dt class="rotulo">Orixás e linhas</dt><dd>{e.orixas.join(', ')}</dd></>}
+                      {e.elemento && <><dt class="rotulo">Elemento</dt><dd>{e.elemento}</dd></>}
+                      {e.cuidados && <><dt class="rotulo ce-alerta">Cuidados</dt><dd>{e.cuidados}</dd></>}
+                    </dl>
+                  </details>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+      <p class="ce-vazio leitura suave" hidden>Nenhuma erva com essa busca.</p>
+      <p class="nota suave ce-fim">Os usos seguem a orientação da Casa. Na dúvida, pergunte antes de preparar um banho ou uma defumação. Plantas tóxicas não devem ser ingeridas.</p>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const tira = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  const busca = document.querySelector<HTMLInputElement>('#ce-busca')!;
+  const orixa = document.querySelector<HTMLSelectElement>('#ce-orixa');
+  const botoes = document.querySelectorAll<HTMLButtonElement>('[data-uso]');
+  const itens = document.querySelectorAll<HTMLElement>('.ce-erva');
+  const total = document.querySelector('[data-ce-total]');
+  const vazio = document.querySelector<HTMLElement>('.ce-vazio');
+  let uso = '';
+  function aplicar() {
+    const q = tira(busca.value.trim()); const o = orixa?.value || ''; let n = 0;
+    itens.forEach((el) => {
+      const ok = (!q || el.dataset.busca!.includes(q)) && (!uso || el.dataset.usos!.split('|').includes(uso)) && (!o || el.dataset.orixas!.split('|').includes(o));
+      el.hidden = !ok; if (ok) n++;
+    });
+    document.querySelectorAll<HTMLElement>('[data-grupo]').forEach((g) => { g.hidden = !g.querySelector('.ce-erva:not([hidden])'); });
+    if (total) total.textContent = n === 1 ? '1 erva' : `${n} ervas`;
+    if (vazio) vazio.hidden = n > 0;
+  }
+  busca.addEventListener('input', aplicar);
+  orixa?.addEventListener('change', aplicar);
+  botoes.forEach((b) => b.addEventListener('click', () => { uso = b.dataset.uso!; botoes.forEach((x) => x.setAttribute('aria-pressed', String(x === b))); aplicar(); }));
+  // abre a ficha quando o link vem com #erva-...
+  if (location.hash.startsWith('#erva-')) document.querySelector<HTMLDetailsElement>(`${location.hash} details`)?.setAttribute('open', '');
+</script>
+
+<style>
+  :global(.ce-ramo) { right: 3%; top: 50%; transform: translateY(-50%) rotate(-12deg); width: min(30vw, 380px); opacity: .5; mix-blend-mode: luminosity; }
+  .ce-voltar { margin-bottom: var(--esp-grupo); }
+  .ce-aviso { padding: 1.25rem 1.5rem; margin-bottom: var(--esp-bloco); box-shadow: var(--sombra-p); }
+  .ce-filtros { display: grid; gap: var(--esp-grupo); margin-bottom: var(--esp-grupo); }
+  .ce-busca { width: 100%; min-height: 3.5rem; border: 1.25px solid var(--texto-suave); border-radius: 999px; padding: .75rem 1.25rem .75rem 3rem; font: inherit; color: var(--tinta); background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='none' stroke='%235A5343' stroke-width='2'%3E%3Ccircle cx='8' cy='8' r='6'/%3E%3Cpath d='m13 13 4 4'/%3E%3C/svg%3E") no-repeat 1.25rem center; }
+  .ce-busca::placeholder { color: var(--texto-suave); opacity: 1; }
+  .ce-orixa { display: flex; gap: .75rem; align-items: center; }
+  .ce-orixa select { min-height: 2.75rem; font: inherit; padding: 0 1rem; border: 1.25px solid var(--tinta); background: var(--papel); }
+  .ce-az { display: flex; flex-wrap: wrap; gap: .25rem; border-block: 1.5px solid var(--tinta); padding-block: .5rem; margin-bottom: var(--esp-bloco); font-family: var(--mono); font-size: .875rem; }
+  .ce-az a, .ce-az span { min-width: 2.25rem; min-height: 2.75rem; display: grid; place-items: center; }
+  .ce-az a { font-weight: 600; text-decoration: none; }
+  .ce-az a:hover { background: var(--tinta); color: var(--papel); }
+  .ce-az span { color: var(--pedra); }
+  .ce-grupo + .ce-grupo { margin-top: var(--esp-bloco); }
+  .ce-letra { color: var(--vermelho); border-bottom: 1.5px solid var(--tinta); padding-bottom: .5rem; scroll-margin-top: 6rem; }
+  .ce-grupo ul { list-style: none; margin: 0; padding: 0; }
+  .ce-erva { border-bottom: 1px solid var(--pedra); scroll-margin-top: 6rem; }
+  .ce-erva summary { display: grid; grid-template-columns: 3.25rem minmax(12rem, 1fr) 2fr auto; gap: 1.25rem; align-items: center; padding-block: 1rem; cursor: pointer; list-style: none; }
+  .ce-erva summary::-webkit-details-marker { display: none; }
+  .ce-erva summary:hover .destaque { text-decoration: underline; }
+  .ce-med { width: 3.25rem; height: 3.25rem; border-radius: 50%; border: 1.5px solid var(--tinta); background: var(--papel-escuro); display: grid; place-items: center; }
+  .ce-med :global(.gravura) { width: 70%; }
+  .ce-nome { display: grid; }
+  .ce-nome .destaque { font-weight: 600; }
+  .ce-resumo { color: var(--texto-suave); }
+  .ce-cuidado { justify-self: end; }
+  .ce-ficha { display: grid; grid-template-columns: 11rem 1fr; gap: .75rem 1.5rem; margin: 0 0 1.5rem 4.5rem; padding: 1.25rem 1.5rem; background: var(--papel-escuro); border: 1.5px solid var(--tinta); }
+  .ce-ficha dt { padding-top: .2rem; }
+  .ce-ficha dd { margin: 0; }
+  .ce-alerta { color: var(--vermelho); }
+  .ce-vazio, .ce-fim { margin-top: var(--esp-bloco); }
+  @media (max-width: 860px) {
+    :global(.ce-ramo) { display: none; }
+    .ce-erva summary { grid-template-columns: 2.75rem 1fr auto; gap: .875rem; }
+    .ce-med { width: 2.75rem; height: 2.75rem; }
+    .ce-az { flex-wrap: nowrap; overflow-x: auto; }
+    .ce-az a, .ce-az span { flex: none; }
+    .ce-resumo { grid-column: 2 / -1; grid-row: 2; }
+    .ce-ficha { grid-template-columns: 1fr; gap: .25rem; margin-left: 0; }
+    .ce-ficha dd { margin-bottom: .75rem; }
+  }
+</style>

@@ -66,6 +66,7 @@ const prateleiras = [
     { rot: 'Apresentação', t: 'Conhecendo a Umbanda', a: 'Casa Pai Oxalá', h: L.apresentacao, g: 'velas' },
     { rot: 'Caderno · NotebookLM', t: 'Caderno de estudos da Casa', a: 'Perguntas, resumos em áudio e mapas mentais', h: L.caderno, g: 'folha' },
     { rot: 'Vídeo · 8 min', t: 'Espiritualismo e Umbanda', a: 'Resumo gerado por IA a partir do caderno', h: L.cadernoVideo, g: 'lua' },
+    { rot: 'Caderno · em preparação', t: 'Caderno de ervas', a: 'Nomes, usos e cuidados de cada erva', h: '/corrente/ervas/', g: 'ramo' },
   ] },
   ...biblio.map((b) => ({ t: b.t, itens: b.livros.map(([t, a, h, rot], i) => ({ rot: rot || 'Livro', t, a, h, g: b.g[i % b.g.length] })) })),
 ];
@@ -179,7 +180,7 @@ const estrelas = Array.from({ length: 46 }, (_, i) => ({ x: (i * 37.7) % 100, y:
           <ul class="prat__lista">
             {p.itens.map((e) => {
               const corpo = <><span class="rotulo est__rot">{e.rot}</span><Gravura nome={e.g} largura={120} class="est__g" /><span class="est__t">{e.t}</span><span class="nota suave-tinta">{e.a}</span></>;
-              return <li>{e.h ? <a class="cartao est" href={e.h} target="_blank" rel="noopener">{corpo}<span class="sr-only"> (abre em nova aba)</span></a> : <div class="cartao est est--sem">{corpo}</div>}</li>;
+              return <li>{e.h ? (e.h.startsWith('http') ? <a class="cartao est" href={e.h} target="_blank" rel="noopener">{corpo}<span class="sr-only"> (abre em nova aba)</span></a> : <a class="cartao est" href={e.h}>{corpo}</a>) : <div class="cartao est est--sem">{corpo}</div>}</li>;
             })}
           </ul>
         </div>
