@@ -10,14 +10,9 @@ import { agenda } from '../lib/gira.js';
 const central = [
   { t: 'A Casa', d: 'História, regência e acervo', h: '/a-casa/', g: 'nuvem', c: 't-noite' },
   { t: 'Agenda', d: 'Giras e datas especiais', h: '/agenda/', g: 'sol', c: 't-mata' },
-  { t: 'Estudos', d: 'Apresentações, livros e o caderno', h: '/corrente/#estudar', g: 'folha', c: 't-estudos' },
   { t: 'Pontos', d: 'Livro de pontos e playlists', h: '/pontos/', g: 'atabaque', c: 't-vermelho' },
+  { t: 'Orações', d: 'Para rezar junto na gira e em casa', h: '/oracoes/', g: 'rosa', c: 't-estudos', menor: true },
   { t: 'Corrente', d: 'Para os médiuns da Casa', h: '/corrente/', g: 'solr', c: 't-noite' },
-];
-const estudos = [
-  { tipo: 'Apresentação', t: 'Conhecendo a Umbanda', d: 'Casa de Umbanda Pai Oxalá', foto: '/fotos/altar.webp', alt: 'Congá da Casa com imagens e flores' },
-  { tipo: 'Caderno', t: 'Caderno de estudos da Casa', d: '81 fontes: perguntas, áudios e mapas', g: 'folha', fundo: '#C9D8DE' },
-  { tipo: 'Livro', t: 'Mitologia dos Orixás', d: 'Reginaldo Prandi', capa: true },
 ];
 const playlists = [
   { t: 'Pontos de Baiano', g: 'coco', c: 'var(--vermelho)', claro: false },
@@ -80,12 +75,12 @@ import { contato, comoPedirEndereco } from '../lib/contato.js';
     <div class="contido">
       <p class="rotulo kicker suave">Central da Casa</p>
       <h2 id="central-t" class="titulo-g">Tudo da Casa, <em>num só lugar</em></h2>
-      <p class="destaque suave central__lead">Conheça nossa história, consulte a agenda e encontre materiais para estudar e ouvir.</p>
+      <p class="destaque suave central__lead">Conheça nossa história, consulte a agenda e encontre pontos e orações para cantar e rezar.</p>
       <ul class="central">
         {central.map((c, i) => (
           <li><a class:list={['central__card', c.c]} href={c.h}>
             <span class="central__topo rotulo"><span>0{i + 1}</span><span aria-hidden="true">→</span></span>
-            <Gravura nome={c.g} largura={120} class="central__g" />
+            <Gravura nome={c.g} largura={120} class={c.menor ? 'central__g central__g--p' : 'central__g'} />
             <span class="central__txt"><span class="subtitulo">{c.t}</span><span class="nota">{c.d}</span></span>
           </a></li>
         ))}
@@ -106,28 +101,6 @@ import { contato, comoPedirEndereco } from '../lib/contato.js';
           <p class="suave">Avisos de gira, novos materiais de estudo e playlists, direto no celular.</p></div>
         <Botao href={L.comunidade || '/comunidade/'} externo={!!L.comunidade}>Entrar na comunidade</Botao>
       </div>
-    </div>
-  </section>
-
-  <!-- ESTUDOS -->
-  <section class="secao t-estudos" aria-labelledby="est-t">
-    <div class="contido">
-      <p class="rotulo kicker">Estudos</p>
-      <h2 id="est-t" class="titulo-g">Novidades nos <em class="ouro">Estudos</em></h2>
-      <ul class="estudos">
-        {estudos.map((e) => (
-          <li><a href="/corrente/#estudar" class="estudo">
-            <span class="estudo__img" style={e.fundo ? `background:${e.fundo}` : undefined}>
-              {e.foto ? <img src={e.foto} alt={e.alt} width="717" height="440" loading="lazy" class="estudo__foto" /> : e.capa ? <span class="estudo__capa"><span class="subtitulo"><em>Mitologia<br />dos Orixás</em></span><span class="rotulo">Reginaldo Prandi</span></span>
-                      : <Gravura nome={e.g!} largura={200} />}
-            </span>
-            <span class="rotulo estudo__tag">{e.tipo}</span>
-            <span class="destaque estudo__t">{e.t}</span>
-            <span class="nota suave">{e.d}</span>
-          </a></li>
-        ))}
-      </ul>
-      <p class="estudos__mais"><a class="seta" href="/corrente/#estudar">Ver todos os estudos <span aria-hidden="true">→</span></a></p>
     </div>
   </section>
 
@@ -191,6 +164,7 @@ import { contato, comoPedirEndereco } from '../lib/contato.js';
   .central__topo { display: flex; justify-content: space-between; font-size: .6875rem; }
   .central :global(.central__g) { width: 96px; margin: auto auto 1.5rem; }
   .central__txt { display: grid; gap: .35rem; }
+  .central :global(.central__g--p) { width: 68px; }
 
   /* RAÍZES */
   .raizes { display: grid; grid-template-columns: 1fr 1.2fr; gap: var(--esp-grupo) var(--esp-secao); align-items: start; }
@@ -200,7 +174,6 @@ import { contato, comoPedirEndereco } from '../lib/contato.js';
   .raizes__fotos img { width: 100%; height: auto; border: 1.5px solid var(--tinta); box-shadow: var(--sombra-p); filter: sepia(.15); }
   .raizes__fotos figcaption { margin-top: .5rem; }
   .faixa :global(.faixa__cta) { margin-top: var(--esp-item); justify-self: start; }
-  .estudo__foto { width: 100%; height: 100%; object-fit: cover; }
   .pl__foto { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .pv__btns { display: flex; flex-direction: column; gap: var(--esp-item); align-items: stretch; }
 
@@ -210,17 +183,6 @@ import { contato, comoPedirEndereco } from '../lib/contato.js';
   .banner__txt .titulo { margin-bottom: .5rem; }
 
   /* ESTUDOS */
-  .estudos { list-style: none; padding: 0; margin: var(--esp-bloco) 0 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--esp-grupo); }
-  .estudo { display: grid; gap: .5rem; text-decoration: none; justify-items: start; }
-  .estudo__img { width: 100%; aspect-ratio: 16 / 10; display: grid; place-items: center; border: 6px solid var(--papel); box-shadow: var(--sombra-p); margin-bottom: .75rem; overflow: hidden; background: var(--noite); }
-  .estudo__img :global(.gravura) { width: 45%; }
-  .estudo:hover .estudo__img { transform: translate(2px, 2px); }
-  .estudo__capa { display: grid; gap: .5rem; text-align: center; color: var(--papel); }
-  .estudo__capa .rotulo { font-size: .625rem; }
-  .estudo__tag { font-size: .625rem; border: 1px solid currentColor; border-radius: 999px; padding: .2rem .65rem; }
-  .estudo__t { font-weight: 600; }
-  .estudo:hover .estudo__t { text-decoration: underline; }
-  .estudos__mais { text-align: right; margin-top: var(--esp-grupo); }
 
   /* PLAYLISTS */
   .pl__lead { max-width: 36rem; margin: var(--esp-item) 0 var(--esp-grupo); color: color-mix(in srgb, var(--papel) 88%, transparent); }
@@ -259,11 +221,6 @@ import { contato, comoPedirEndereco } from '../lib/contato.js';
     .raizes__txt { padding-top: 0; }
     .banner { grid-template-columns: 1fr; gap: var(--esp-grupo); padding: var(--esp-colada) var(--esp-grupo); }
     .banner__estrela { display: none; }
-    .estudos { grid-template-columns: 1fr; }
-    .estudo { grid-template-columns: 96px 1fr; column-gap: 1rem; align-items: start; }
-    .estudo__img { grid-row: span 4; aspect-ratio: 1; border-width: 3px; margin: 0; }
-    .estudo__capa .subtitulo { font-size: .875rem; } .estudo__capa .rotulo { display: none; }
-    .estudos__mais { text-align: left; }
     .pl { grid-template-columns: 1fr 1fr; gap: var(--esp-item); }
     .pl-wrap { display: flex; flex-direction: column; } .pl-wrap .pl { order: 1; margin-top: var(--esp-grupo); } .pl-wrap > * { order: 0; } .pl-wrap .pl__btns { order: 2; margin-top: var(--esp-grupo); }
     .pl__capa { border-width: 5px; aspect-ratio: 1; } .pl__capa .subtitulo { font-size: 1rem; } .pl :global(.pl__g) { width: 44px; }
